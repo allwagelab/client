@@ -1,0 +1,160 @@
+import { useState, useEffect } from 'react'
+import styled from '@emotion/styled'
+import Modal from './Modal'
+import AccountForm from './AccountForm'
+import BusinessForm from './BusinessForm'
+import { useMutation } from '@tanstack/react-query'
+import type { BusinessInfoFormData, SignupFormData, SignupModalProps } from '@/types/auth'
+import { signup } from '@/apis/auth'
+
+type SignupStep = 'ACCOUNT' | 'BUSINESS' | 'SUCCESS'
+
+function SignupModal({ isOpen, onClose }: SignupModalProps) {
+  const [currentStep, setCurrentStep] = useState<SignupStep>('ACCOUNT')
+  const [accountData, setAccountData] = useState<SignupFormData | null>(null)
+
+  const { mutate: registerUser } = useMutation({
+    mutationFn: signup,
+    onSuccess: () => {
+      setCurrentStep('SUCCESS')
+    },
+    onError: (error: Error) => {
+      throw error
+    },
+  })
+
+  const handleAccountSubmit = (data: SignupFormData) => {
+    setAccountData(data)
+    setCurrentStep('BUSINESS')
+  }
+
+  const handleBusinessSubmit = async (businessData: BusinessInfoFormData) => {
+    if (!accountData) {
+      return
+    }
+
+    return new Promise<void>((resolve, reject) => {
+      registerUser(
+        {
+          ...accountData,
+          businessInfo: businessData,
+        },
+        {
+          onSuccess: () => {
+            resolve()
+          },
+          onError: (error) => {
+            reject(error)
+          },
+        },
+      )
+    })
+  }
+
+  const handleBack = () => {
+    setCurrentStep('ACCOUNT')
+  }
+
+  useEffect(() => {
+    if (!isOpen) {
+      setCurrentStep('ACCOUNT')
+      setAccountData(null)
+    }
+  }, [isOpen])
+
+  return (
+    <Modal isOpen={isOpen} onClose={onClose} title="회원가입">
+      <ProgressBar
+        step={currentStep === 'ACCOUNT' ? 1 : currentStep === 'BUSINESS' ? 2 : 3}
+        totalSteps={3}
+      />
+
+      {currentStep === 'ACCOUNT' ? (
+        <AccountForm onSubmit={handleAccountSubmit} defaultValues={accountData || undefined} />
+      ) : currentStep === 'BUSINESS' ? (
+        <BusinessForm onSubmit={handleBusinessSubmit} onBack={handleBack} />
+      ) : (
+        <SuccessView onComplete={onClose} />
+      )}
+    </Modal>
+  )
+}
+
+const ProgressBar = styled.div<{ step: number; totalSteps: number }>`
+  width: 100%;
+  height: 4px;
+  background: #eee;
+  margin-bottom: 24px;
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: ${({ step, totalSteps }) => (step / totalSteps) * 100}%;
+    background: #1a73e8;
+    transition: width 0.3s ease;
+  }
+`
+
+const SuccessView = ({ onComplete }: { onComplete: () => void }) => {
+  return (
+    <SuccessContainer>
+      <SuccessIcon>✓</SuccessIcon>
+      <SuccessTitle>가입 성공</SuccessTitle>
+      <SuccessMessage>회원가입이 완료되었습니다.</SuccessMessage>
+      <CompleteButton onClick={onComplete}>로그인 하기</CompleteButton>
+    </SuccessContainer>
+  )
+}
+
+const SuccessContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 24px 0;
+`
+
+const SuccessIcon = styled.div`
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background-color: #0f9d58;
+  color: white;
+  font-size: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`
+
+const SuccessTitle = styled.h3`
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0;
+`
+
+const SuccessMessage = styled.p`
+  font-size: 16px;
+  color: #666;
+  margin: 0;
+`
+
+const CompleteButton = styled.button`
+  padding: 12px 24px;
+  background-color: #1a73e8;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 16px;
+
+  &:hover {
+    background-color: #1557b0;
+  }
+`
+
+export default SignupModal

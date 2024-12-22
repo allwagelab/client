@@ -1,7 +1,10 @@
-import axios, { type AxiosInstance } from "axios";
+import axios, { type AxiosInstance } from 'axios'
 
 const axiosInstance: AxiosInstance = axios.create({
-  baseURL: "/api",
-});
+  baseURL: 'http://3.39.76.11:4001/',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+})
 
-export { axiosInstance };
+export { axiosInstance }

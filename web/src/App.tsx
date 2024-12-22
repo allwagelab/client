@@ -1,16 +1,21 @@
-import React from "react";
-import { BrowserRouter } from "react-router-dom";
+import React from 'react'
+import { BrowserRouter } from 'react-router-dom'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
-import Router from "./router";
+import Router from './router'
+
+const queryClient = new QueryClient()
 
 function App() {
   return (
-    <React.Suspense fallback={null}>
-      <BrowserRouter>
-        <Router />
-      </BrowserRouter>
-    </React.Suspense>
-  );
+    <QueryClientProvider client={queryClient}>
+      <React.Suspense fallback={null}>
+        <BrowserRouter>
+          <Router />
+        </BrowserRouter>
+      </React.Suspense>
+    </QueryClientProvider>
+  )
 }
 
-export default App;
+export default App
