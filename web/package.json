@@ -10,9 +10,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@allwagelab/constants": "workspace:*",
-    "@allwagelab/design": "^0.0.2",
+    "@allwagelab/design": "^0.0.8",
     "@allwagelab/utils": "workspace:*",
+    "@allwagelab/constants": "workspace:*",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@vitejs/plugin-react": "^4.3.4",
     "axios": "^1.7.9",
     "js-cookie": "^3.0.5",
     "react": "^18.3.1",
@@ -26,7 +29,6 @@
     "@types/js-cookie": "^3.0.6",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
-    "@vitejs/plugin-react-swc": "^3.5.0",
     "eslint": "^9.15.0",
     "eslint-plugin-react-hooks": "^5.0.0",
     "eslint-plugin-react-refresh": "^0.4.14",
