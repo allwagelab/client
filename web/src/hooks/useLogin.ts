@@ -1,4 +1,3 @@
-import Cookies from 'js-cookie'
 import { useAuthStore } from '@/stores/auth'
 import { useMutation } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
@@ -22,10 +21,7 @@ export const useLogin = ({ onError, redirectTo = '/' }: UseLoginProps = {}) => {
     mutationFn: login,
     onSuccess: (response) => {
       const { accessToken, refreshToken } = response.data
-      localStorage.setItem('accessToken', accessToken)
-      localStorage.setItem('refreshToken', refreshToken)
 
-      Cookies.set('hi', 'Hola!')
       setAuth({
         accessToken,
         refreshToken,

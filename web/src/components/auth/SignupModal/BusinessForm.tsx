@@ -38,6 +38,7 @@ function BusinessForm({ onSubmit, onBack }: BusinessFormProps) {
     formState: { errors },
   } = useForm<BusinessInfoFormData>({
     resolver: zodResolver(businessInfoSchema),
+    mode: 'onBlur',
   })
   const { mutate: verifyBusiness, isPending: isVerifyingBusiness } = useMutation({
     mutationFn: verifyBusinessNumber,

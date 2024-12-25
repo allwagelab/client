@@ -36,6 +36,7 @@ function FindIdPage() {
     formState: { errors },
   } = useForm<FindIdFormData>({
     resolver: zodResolver(findIdSchema),
+    mode: 'onBlur',
   })
 
   const { mutate: sendVerification, isPending: isSendingVerification } = useMutation({

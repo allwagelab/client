@@ -10,9 +10,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@allwagelab/constants": "workspace:*",
     "@allwagelab/design": "^0.0.8",
     "@allwagelab/utils": "workspace:*",
-    "@allwagelab/constants": "workspace:*",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@hookform/resolvers": "^3.9.1",

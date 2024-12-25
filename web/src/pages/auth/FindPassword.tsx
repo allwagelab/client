@@ -27,6 +27,7 @@ function FindPasswordPage() {
     formState: { errors },
   } = useForm<FindPasswordFormData>({
     resolver: zodResolver(findPasswordSchema),
+    mode: 'onBlur',
   })
 
   const { mutate: sendTemporaryPassword, isPending: isSendingTemp } = useMutation({

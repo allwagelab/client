@@ -30,6 +30,7 @@ function LoginPage() {
     formState: { errors },
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
+    mode: 'onBlur',
   })
 
   const onSubmit = (data: LoginFormData) => {

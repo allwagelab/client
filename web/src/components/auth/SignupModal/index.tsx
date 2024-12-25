@@ -64,11 +64,6 @@ function SignupModal({ isOpen, onClose }: SignupModalProps) {
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="회원가입">
-      <ProgressBar
-        step={currentStep === 'ACCOUNT' ? 1 : currentStep === 'BUSINESS' ? 2 : 3}
-        totalSteps={3}
-      />
-
       {currentStep === 'ACCOUNT' ? (
         <AccountForm onSubmit={handleAccountSubmit} defaultValues={accountData || undefined} />
       ) : currentStep === 'BUSINESS' ? (
@@ -79,25 +74,6 @@ function SignupModal({ isOpen, onClose }: SignupModalProps) {
     </Modal>
   )
 }
-
-const ProgressBar = styled.div<{ step: number; totalSteps: number }>`
-  width: 100%;
-  height: 4px;
-  background: #eee;
-  margin-bottom: 24px;
-  position: relative;
-
-  &::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 0;
-    height: 100%;
-    width: ${({ step, totalSteps }) => (step / totalSteps) * 100}%;
-    background: #1a73e8;
-    transition: width 0.3s ease;
-  }
-`
 
 const SuccessView = ({ onComplete }: { onComplete: () => void }) => {
   return (

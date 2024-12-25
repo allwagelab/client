@@ -41,6 +41,7 @@ function AccountForm({ onSubmit, defaultValues }: AccountFormProps) {
     formState: { errors },
   } = useForm<SignupFormData>({
     resolver: zodResolver(signupSchema),
+    mode: 'onBlur',
     defaultValues,
   })
 
