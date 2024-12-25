@@ -1,7 +1,7 @@
 import axios, { type AxiosInstance } from 'axios'
 
 const axiosInstance: AxiosInstance = axios.create({
-  baseURL: 'http://3.39.76.11:4001/',
+  baseURL: import.meta.env.VITE_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
