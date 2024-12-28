@@ -6,9 +6,14 @@ import { useState } from 'react'
 import { useMutation } from '@tanstack/react-query'
 import { requestPhoneVerification, verifyPhoneNumber, findId } from '@/apis/auth'
 import { useNavigate } from 'react-router-dom'
+import useTimer from '@/hooks/useTimer'
+import SignupModal from '@/components/auth/SignupModal'
 
 const findIdSchema = z.object({
-  phoneNumber: z.string().regex(/^01\d{9}$/, '올바른 휴대폰 번호 형식이 아닙니다'),
+  phoneNumber: z
+    .string()
+    .min(1, '휴대폰 번호를 입력해주세요')
+    .regex(/^010-\d{4}-\d{4}$/, '올바른 휴대폰 번호 형식이 아닙니다. (예: 010-0000-0000)'),
   verificationCode: z.string().min(1, '인증번호를 입력해주세요'),
 })
 
@@ -26,11 +31,13 @@ function FindIdPage() {
   const [isPhoneVerified, setIsPhoneVerified] = useState(false)
   const [showVerificationField, setShowVerificationField] = useState(false)
   const [foundData, setFoundData] = useState<FoundState | null>(null)
+  const [isSignupModalOpen, setIsSignupModalOpen] = useState(false)
 
   const {
     register,
     handleSubmit,
     watch,
+    trigger,
     setError,
     clearErrors,
     formState: { errors },
@@ -39,10 +46,27 @@ function FindIdPage() {
     mode: 'onBlur',
   })
 
+  const {
+    formatTime,
+    start: startTimer,
+    stop: stopTimer,
+    isRunning,
+  } = useTimer({
+    initialSeconds: 180,
+    onEnd: () => {
+      setError('verificationCode', {
+        type: 'manual',
+        message: '인증 시간이 만료되었습니다. 다시 시도해주세요.',
+      })
+    },
+  })
+
   const { mutate: sendVerification, isPending: isSendingVerification } = useMutation({
     mutationFn: requestPhoneVerification,
     onSuccess: () => {
       setShowVerificationField(true)
+      clearErrors('verificationCode')
+      startTimer()
     },
     onError: (error: Error) => {
       setError('phoneNumber', {
@@ -89,7 +113,6 @@ function FindIdPage() {
       if (error.message === '가입된 계정이 없습니다') {
         setCurrentStep('NOT_FOUND')
       } else {
-        // 다른 에러 처리
         setError('phoneNumber', {
           type: 'manual',
           message: error.message,
@@ -98,28 +121,12 @@ function FindIdPage() {
     },
   })
 
-  const handlePhoneVerification = () => {
-    const phoneNumber = watch('phoneNumber')
-
-    // 휴대폰 번호 형식 검사
-    const phoneNumberRegex = /^01\d{9}$/
-    if (!phoneNumber) {
-      setError('phoneNumber', {
-        type: 'manual',
-        message: '휴대폰 번호를 입력해주세요',
-      })
-      return
+  const handlePhoneVerification = async () => {
+    const isValid = await trigger('phoneNumber')
+    if (isValid) {
+      const phoneNumber = watch('phoneNumber')
+      sendVerification(phoneNumber)
     }
-
-    if (!phoneNumberRegex.test(phoneNumber)) {
-      setError('phoneNumber', {
-        type: 'manual',
-        message: '올바른 휴대폰 번호 형식이 아닙니다 (예: 01012345678)',
-      })
-      return
-    }
-
-    sendVerification(phoneNumber)
   }
 
   const handleVerifyCode = () => {
@@ -133,6 +140,27 @@ function FindIdPage() {
       return
     }
     verifyPhone({ phoneNumber, code })
+  }
+
+  const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    const numbers = value.replace(/[^\d]/g, '')
+
+    let formattedNumber = ''
+    if (numbers.length <= 3) {
+      formattedNumber = numbers
+    } else if (numbers.length <= 7) {
+      formattedNumber = `${numbers.slice(0, 3)}-${numbers.slice(3)}`
+    } else {
+      formattedNumber = `${numbers.slice(0, 3)}-${numbers.slice(3, 7)}-${numbers.slice(7, 11)}`
+    }
+
+    e.target.value = formattedNumber
+    register('phoneNumber').onChange(e)
+    setIsPhoneVerified(false)
+    setShowVerificationField(false)
+    clearErrors('phoneNumber')
+    stopTimer()
   }
 
   const onSubmit = async (data: FindIdFormData) => {
@@ -171,9 +199,13 @@ function FindIdPage() {
           회원가입 후 서비스를 이용해 주세요.
         </SubTitle>
         <ButtonGroup>
-          <SignupButton onClick={() => navigate('/login')}>회원가입하기</SignupButton>
+          <SignupButton type="button" onClick={() => setIsSignupModalOpen(true)}>
+            회원가입
+          </SignupButton>
           <RetryButton onClick={() => setCurrentStep('FORM')}>다시 찾기</RetryButton>
         </ButtonGroup>
+
+        <SignupModal isOpen={isSignupModalOpen} onClose={() => setIsSignupModalOpen(false)} />
       </Container>
     )
   }
@@ -189,14 +221,9 @@ function FindIdPage() {
           <InputWithButton>
             <Input
               type="tel"
-              placeholder="(-) 제외 입력해주세요"
+              placeholder="010-0000-0000"
               {...register('phoneNumber')}
-              onChange={(e) => {
-                register('phoneNumber').onChange(e)
-                setIsPhoneVerified(false)
-                setShowVerificationField(false)
-                clearErrors('phoneNumber')
-              }}
+              onChange={handlePhoneNumberChange}
             />
             <VerifyButton
               type="button"
@@ -222,6 +249,7 @@ function FindIdPage() {
                 {isVerifyingPhone ? '확인 중...' : '인증 확인'}
               </VerifyButton>
             </InputWithButton>
+            {isRunning && <TimerText>{formatTime()}</TimerText>}
             {errors.verificationCode && (
               <ErrorMessage>{errors.verificationCode.message}</ErrorMessage>
             )}
@@ -336,6 +364,11 @@ const FindButton = styled.button`
   &:hover:not(:disabled) {
     background-color: #1557b0;
   }
+`
+
+const TimerText = styled.span`
+  color: #1c61ff;
+  font-size: 14px;
 `
 
 const ErrorMessage = styled.span`
