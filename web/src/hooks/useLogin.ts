@@ -20,13 +20,9 @@ export const useLogin = ({ onError, redirectTo = '/' }: UseLoginProps = {}) => {
   const { mutate: loginMutate, isPending } = useMutation({
     mutationFn: login,
     onSuccess: (response) => {
-      const { accessToken, refreshToken } = response.data
+      const { accessToken } = response.data
 
-      setAuth({
-        accessToken,
-        refreshToken,
-      })
-
+      setAuth({ accessToken })
       navigate(redirectTo)
     },
     onError: (error: Error) => {

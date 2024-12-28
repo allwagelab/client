@@ -13,27 +13,14 @@ export const useAuthStore = create<IAuthStore>()(
     (set) => ({
       auth: null,
       setAuth: (authData: IToken | null) => {
-        if (authData) {
-          localStorage.setItem('accessToken', authData.accessToken)
-          localStorage.setItem('refreshToken', authData.refreshToken)
-        } else {
-          localStorage.removeItem('accessToken')
-          localStorage.removeItem('refreshToken')
-        }
         set({ auth: authData })
       },
       reset: () => {
-        localStorage.removeItem('accessToken')
-        localStorage.removeItem('refreshToken')
         set({ auth: null })
       },
     }),
     {
       name: 'auth-storage',
-      partialize: (state) => ({
-        accessToken: state.auth?.accessToken || null,
-        refreshToken: state.auth?.refreshToken || null,
-      }),
     },
   ),
 )
