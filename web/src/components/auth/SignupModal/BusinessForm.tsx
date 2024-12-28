@@ -6,11 +6,18 @@ import { useMutation } from '@tanstack/react-query'
 import type { BusinessInfoFormData } from '@/types/auth'
 import { useState } from 'react'
 import { verifyBusinessNumber, requestPhoneVerification, verifyPhoneNumber } from '@/apis/auth'
+import useTimer from '@/hooks/useTimer'
 
 const businessInfoSchema = z.object({
   businessName: z.string().min(1, '사업장 이름을 입력해주세요'),
-  businessNumber: z.string().regex(/^\d{3}-\d{2}-\d{5}$/, '올바른 사업자 등록번호 형식이 아닙니다'),
-  phoneNumber: z.string().regex(/^01\d{9}$/, '올바른 휴대폰 번호 형식이 아닙니다'),
+  businessNumber: z
+    .string()
+    .min(1, '사업장 등록 번호를 입력해주세요')
+    .regex(/^\d{3}-\d{2}-\d{5}$/, '올바른 사업자 등록번호 형식이 아닙니다'),
+  phoneNumber: z
+    .string()
+    .min(1, '휴대폰 번호를 입력해주세요')
+    .regex(/^010-\d{4}-\d{4}$/, '올바른 휴대폰 번호 형식이 아닙니다. (예: 010-0000-0000)'),
   verificationCode: z.string().min(1, '인증번호를 입력해주세요'),
   employeeCount: z.enum(['under5', 'over5'], {
     required_error: '직원 수를 선택해주세요',
@@ -33,6 +40,7 @@ function BusinessForm({ onSubmit, onBack }: BusinessFormProps) {
     register,
     handleSubmit,
     watch,
+    trigger,
     setError,
     clearErrors,
     formState: { errors },
@@ -63,10 +71,26 @@ function BusinessForm({ onSubmit, onBack }: BusinessFormProps) {
     },
   })
 
+  const {
+    formatTime,
+    start: startTimer,
+    isRunning,
+  } = useTimer({
+    initialSeconds: 10, // 3분
+    onEnd: () => {
+      setError('verificationCode', {
+        type: 'manual',
+        message: '인증 시간이 만료되었습니다. 다시 시도해주세요.',
+      })
+    },
+  })
+
   const { mutate: sendVerification, isPending: isSendingVerification } = useMutation({
     mutationFn: requestPhoneVerification,
     onSuccess: () => {
       setShowVerificationField(true)
+      clearErrors('verificationCode')
+      startTimer()
     },
     onError: (error: Error) => {
       setError('phoneNumber', {
@@ -103,65 +127,52 @@ function BusinessForm({ onSubmit, onBack }: BusinessFormProps) {
     },
   })
 
-  const handleBusinessNumberVerify = () => {
-    const businessNumber = watch('businessNumber')
+  const handleBusinessNumberVerify = async () => {
+    const isValid = await trigger('businessNumber')
 
-    // 사업자 등록번호 형식 검사
-    const businessNumberRegex = /^\d{3}-\d{2}-\d{5}$/
-    if (!businessNumber) {
-      setError('businessNumber', {
-        type: 'manual',
-        message: '사업자 등록번호를 입력해주세요',
-      })
-      return
+    if (isValid) {
+      const businessNumber = watch('businessNumber')
+      verifyBusiness(businessNumber)
     }
-
-    if (!businessNumberRegex.test(businessNumber)) {
-      setError('businessNumber', {
-        type: 'manual',
-        message: '올바른 사업자 등록번호 형식이 아닙니다 (예: 123-45-67890)',
-      })
-      return
-    }
-
-    verifyBusiness(businessNumber)
   }
 
-  const handlePhoneVerification = () => {
-    const phoneNumber = watch('phoneNumber')
+  const handlePhoneVerification = async () => {
+    const isValid = await trigger('phoneNumber')
 
-    // 휴대폰 번호 형식 검사
-    const phoneNumberRegex = /^01\d{9}$/
-    if (!phoneNumber) {
-      setError('phoneNumber', {
-        type: 'manual',
-        message: '휴대폰 번호를 입력해주세요',
-      })
-      return
+    if (isValid) {
+      const phoneNumber = watch('phoneNumber')
+      sendVerification(phoneNumber)
     }
-
-    if (!phoneNumberRegex.test(phoneNumber)) {
-      setError('phoneNumber', {
-        type: 'manual',
-        message: '올바른 휴대폰 번호 형식이 아닙니다 (예: 01012345678)',
-      })
-      return
-    }
-
-    sendVerification(phoneNumber)
   }
 
-  const handleVerifyCode = () => {
-    const code = watch('verificationCode')
-    const phoneNumber = watch('phoneNumber')
-    if (!code) {
-      setError('verificationCode', {
-        type: 'manual',
-        message: '인증번호를 입력해주세요',
-      })
-      return
+  const handleVerifyCode = async () => {
+    const isValid = await trigger('verificationCode')
+
+    if (isValid) {
+      const code = watch('verificationCode')
+      const phoneNumber = watch('phoneNumber')
+      verifyPhone({ phoneNumber, code })
     }
-    verifyPhone({ phoneNumber, code })
+  }
+
+  const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    const numbers = value.replace(/[^\d]/g, '')
+
+    let formattedNumber = ''
+    if (numbers.length <= 3) {
+      formattedNumber = numbers
+    } else if (numbers.length <= 7) {
+      formattedNumber = `${numbers.slice(0, 3)}-${numbers.slice(3)}`
+    } else {
+      formattedNumber = `${numbers.slice(0, 3)}-${numbers.slice(3, 7)}-${numbers.slice(7, 11)}`
+    }
+
+    e.target.value = formattedNumber
+    register('phoneNumber').onChange(e)
+    setIsPhoneVerified(false)
+    setShowVerificationField(false)
+    clearErrors('phoneNumber')
   }
 
   const onFormSubmit = async (data: BusinessInfoFormData) => {
@@ -205,7 +216,7 @@ function BusinessForm({ onSubmit, onBack }: BusinessFormProps) {
       </InputGroup>
 
       <InputGroup>
-        <Label>사업자 등록번호</Label>
+        <Label>사업자 등록 번호</Label>
         <InputWithButton>
           <Input
             type="text"
@@ -233,24 +244,22 @@ function BusinessForm({ onSubmit, onBack }: BusinessFormProps) {
         <InputWithButton>
           <Input
             type="tel"
-            placeholder="01012341234"
+            placeholder="010-0000-0000"
             {...register('phoneNumber')}
-            onChange={(e) => {
-              register('phoneNumber').onChange(e)
-              setIsPhoneVerified(false)
-              setShowVerificationField(false)
-              clearErrors('phoneNumber')
-            }}
+            onChange={handlePhoneNumberChange}
           />
           <VerifyButton
             type="button"
             onClick={handlePhoneVerification}
             disabled={isSendingVerification}
           >
-            {isSendingVerification ? '전송 중...' : '인증 요청'}
+            {isSendingVerification ? '전송 중...' : showVerificationField ? '재전송' : '인증 요청'}
           </VerifyButton>
         </InputWithButton>
         {errors.phoneNumber && <ErrorMessage>{errors.phoneNumber.message}</ErrorMessage>}
+        {isRunning && (
+          <SuccessMessage>인증번호를 발송했습니다. 최대 3분이 소요될 수 있습니다.</SuccessMessage>
+        )}
       </InputGroup>
 
       {showVerificationField && (
@@ -262,6 +271,7 @@ function BusinessForm({ onSubmit, onBack }: BusinessFormProps) {
               {isVerifyingPhone ? '확인 중...' : '인증 확인'}
             </VerifyButton>
           </InputWithButton>
+          {isRunning && <TimerText>{formatTime()}</TimerText>}
           {errors.verificationCode && (
             <ErrorMessage>{errors.verificationCode.message}</ErrorMessage>
           )}
@@ -408,6 +418,11 @@ const ErrorMessage = styled.span`
 
 const SuccessMessage = styled.span`
   color: #0f9d58;
+  font-size: 14px;
+`
+
+const TimerText = styled.span`
+  color: #1c61ff;
   font-size: 14px;
 `
 

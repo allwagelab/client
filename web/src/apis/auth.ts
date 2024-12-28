@@ -58,9 +58,8 @@ export const verifyBusinessNumber = async (businessNumber: string): Promise<bool
 
 export const requestPhoneVerification = async (phoneNumber: string): Promise<boolean> => {
   try {
-    // await axiosInstance.post("/auth/request-verification", { phoneNumber });
-    console.log(phoneNumber)
-    return true
+    const response = await axiosInstance.post('/auth/signup/send/code', { hp: phoneNumber })
+    return response.data
   } catch {
     throw new Error('인증번호 전송 중 오류가 발생했습니다')
   }
@@ -68,12 +67,8 @@ export const requestPhoneVerification = async (phoneNumber: string): Promise<boo
 
 export const verifyPhoneNumber = async (phoneNumber: string, code: string): Promise<boolean> => {
   try {
-    // const response = await axiosInstance.post<{ isValid: boolean }>(
-    //   "/auth/verify-phone",
-    //   { phoneNumber, code }
-    // );
-    // return response.data.isValid;
-    console.log(phoneNumber, code)
+    const response = await axiosInstance.post('/auth/signup/verify/code', { hp: phoneNumber, code })
+    console.log(response)
     return true
   } catch {
     throw new Error('인증번호 확인 중 오류가 발생했습니다')
