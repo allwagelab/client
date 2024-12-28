@@ -9,17 +9,19 @@ import type { BusinessInfoFormData } from '@/types/auth'
 
 import { verifyBusinessNumber, requestPhoneVerification, verifyPhoneNumber } from '@/apis/auth'
 import useTimer from '@/hooks/useTimer'
+import { BUSINESS_NUMBER_REGEX, PHONE_NUMBER_REGEX } from '@/lib/constants'
+import { formatBusinessNumber, formatPhoneNumber } from '@/lib/utils'
 
 const businessInfoSchema = z.object({
   businessName: z.string().min(1, '사업장 이름을 입력해주세요'),
   businessNumber: z
     .string()
     .min(1, '사업장 등록 번호를 입력해주세요')
-    .regex(/^\d{3}-\d{2}-\d{5}$/, '올바른 사업자 등록번호 형식이 아닙니다'),
+    .regex(BUSINESS_NUMBER_REGEX, '올바른 사업자 등록번호 형식이 아닙니다'),
   phoneNumber: z
     .string()
     .min(1, '휴대폰 번호를 입력해주세요')
-    .regex(/^010-\d{4}-\d{4}$/, '올바른 휴대폰 번호 형식이 아닙니다. (예: 010-0000-0000)'),
+    .regex(PHONE_NUMBER_REGEX, '올바른 휴대폰 번호 형식이 아닙니다. (예: 010-0000-0000)'),
   employeeCount: z.enum(['under5', 'over5'], {
     required_error: '직원 수를 선택해주세요',
   }),
@@ -32,7 +34,6 @@ interface BusinessFormProps {
 
 function BusinessForm({ onSubmit, onBack }: BusinessFormProps) {
   const [isBusinessNumberVerified, setIsBusinessNumberVerified] = useState(false)
-
   const [isPhoneVerified, setIsPhoneVerified] = useState(false)
   const [showVerificationField, setShowVerificationField] = useState(false)
   const [submitError, setSubmitError] = useState<string>('')
@@ -49,6 +50,22 @@ function BusinessForm({ onSubmit, onBack }: BusinessFormProps) {
     resolver: zodResolver(businessInfoSchema),
     mode: 'onBlur',
   })
+
+  const {
+    formatTime,
+    start: startTimer,
+    stop: stopTimer,
+    isRunning,
+  } = useTimer({
+    initialSeconds: 180,
+    onEnd: () => {
+      setError('verificationCode', {
+        type: 'manual',
+        message: '인증 시간이 만료되었습니다. 다시 시도해주세요.',
+      })
+    },
+  })
+
   const { mutate: verifyBusiness, isPending: isVerifyingBusiness } = useMutation({
     mutationFn: verifyBusinessNumber,
     onSuccess: (isValid) => {
@@ -69,21 +86,6 @@ function BusinessForm({ onSubmit, onBack }: BusinessFormProps) {
         message: error.message,
       })
       setIsBusinessNumberVerified(false)
-    },
-  })
-
-  const {
-    formatTime,
-    start: startTimer,
-    stop: stopTimer,
-    isRunning,
-  } = useTimer({
-    initialSeconds: 180,
-    onEnd: () => {
-      setError('verificationCode', {
-        type: 'manual',
-        message: '인증 시간이 만료되었습니다. 다시 시도해주세요.',
-      })
     },
   })
 
@@ -159,27 +161,24 @@ function BusinessForm({ onSubmit, onBack }: BusinessFormProps) {
 
     const phoneNumber = watch('phoneNumber')
     verifyPhone({ phoneNumber, code })
+    stopTimer()
+  }
+
+  const handleBusinessNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    e.target.value = formatBusinessNumber(value)
+    register('businessNumber').onChange(e)
+    setIsBusinessNumberVerified(false)
+    clearErrors('businessNumber')
   }
 
   const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
-    const numbers = value.replace(/[^\d]/g, '')
-
-    let formattedNumber = ''
-    if (numbers.length <= 3) {
-      formattedNumber = numbers
-    } else if (numbers.length <= 7) {
-      formattedNumber = `${numbers.slice(0, 3)}-${numbers.slice(3)}`
-    } else {
-      formattedNumber = `${numbers.slice(0, 3)}-${numbers.slice(3, 7)}-${numbers.slice(7, 11)}`
-    }
-
-    e.target.value = formattedNumber
+    e.target.value = formatPhoneNumber(value)
     register('phoneNumber').onChange(e)
     setIsPhoneVerified(false)
     setShowVerificationField(false)
     clearErrors('phoneNumber')
-    stopTimer()
   }
 
   const onFormSubmit = async (data: BusinessInfoFormData) => {
@@ -227,10 +226,7 @@ function BusinessForm({ onSubmit, onBack }: BusinessFormProps) {
             type="text"
             placeholder="000-00-00000"
             {...register('businessNumber')}
-            onChange={(e) => {
-              register('businessNumber').onChange(e)
-              setIsBusinessNumberVerified(false)
-            }}
+            onChange={handleBusinessNumberChange}
           />
           <VerifyButton
             type="button"

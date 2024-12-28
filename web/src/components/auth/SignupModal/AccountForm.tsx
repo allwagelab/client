@@ -8,6 +8,7 @@ import { z } from 'zod'
 import type { SignupFormData } from '@/types/auth'
 
 import { checkEmailDuplicate } from '@/apis/auth'
+import { PASSWORD_REGEX } from '@/lib/constants'
 
 const signupSchema = z
   .object({
@@ -15,10 +16,7 @@ const signupSchema = z
     password: z
       .string()
       .min(8, '비밀번호는 최소 8자 이상이어야 합니다')
-      .regex(
-        /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*])/,
-        '영문, 숫자, 특수문자를 모두 포함해야 합니다',
-      ),
+      .regex(PASSWORD_REGEX, '영문, 숫자, 특수문자를 모두 포함해야 합니다'),
     passwordConfirm: z.string(),
   })
   .refine((data) => data.password === data.passwordConfirm, {

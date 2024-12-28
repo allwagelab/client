@@ -9,12 +9,14 @@ import { z } from 'zod'
 import { requestPhoneVerification, verifyPhoneNumber, findId } from '@/apis/auth'
 import SignupModal from '@/components/auth/SignupModal'
 import useTimer from '@/hooks/useTimer'
+import { PHONE_NUMBER_REGEX } from '@/lib/constants'
+import { formatPhoneNumber } from '@/lib/utils'
 
 const findIdSchema = z.object({
   phoneNumber: z
     .string()
     .min(1, '휴대폰 번호를 입력해주세요')
-    .regex(/^010-\d{4}-\d{4}$/, '올바른 휴대폰 번호 형식이 아닙니다. (예: 010-0000-0000)'),
+    .regex(PHONE_NUMBER_REGEX, '올바른 휴대폰 번호 형식이 아닙니다. (예: 010-0000-0000)'),
   verificationCode: z.string().min(1, '인증번호를 입력해주세요'),
 })
 
@@ -132,7 +134,6 @@ function FindIdPage() {
 
   const handleVerifyCode = () => {
     const code = watch('verificationCode')
-    const phoneNumber = watch('phoneNumber')
     if (!code) {
       setError('verificationCode', {
         type: 'manual',
@@ -140,28 +141,19 @@ function FindIdPage() {
       })
       return
     }
+
+    const phoneNumber = watch('phoneNumber')
     verifyPhone({ phoneNumber, code })
+    stopTimer()
   }
 
   const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
-    const numbers = value.replace(/[^\d]/g, '')
-
-    let formattedNumber = ''
-    if (numbers.length <= 3) {
-      formattedNumber = numbers
-    } else if (numbers.length <= 7) {
-      formattedNumber = `${numbers.slice(0, 3)}-${numbers.slice(3)}`
-    } else {
-      formattedNumber = `${numbers.slice(0, 3)}-${numbers.slice(3, 7)}-${numbers.slice(7, 11)}`
-    }
-
-    e.target.value = formattedNumber
+    e.target.value = formatPhoneNumber(value)
     register('phoneNumber').onChange(e)
     setIsPhoneVerified(false)
     setShowVerificationField(false)
     clearErrors('phoneNumber')
-    stopTimer()
   }
 
   const onSubmit = async (data: FindIdFormData) => {
