@@ -27,13 +27,8 @@ export const checkEmailDuplicate = async (email: string): Promise<boolean> => {
 
 export const signup = async (data: SignupRequest): Promise<SignupResponse> => {
   try {
-    // const response = await axiosInstance.post<SignupResponse>(
-    //   "/auth/signup",
-    //   data
-    // );
-    // return response.data;
-    console.log(data)
-    return { success: true, message: '회원가입 성공' }
+    const response = await axiosInstance.post<SignupResponse>('/auth/signup/email', data)
+    return response.data
   } catch (error) {
     if (error instanceof AxiosError && error.response?.status === 400) {
       throw new Error(error.response.data.message || '회원가입에 실패했습니다')
@@ -67,8 +62,9 @@ export const requestPhoneVerification = async (phoneNumber: string): Promise<boo
 
 export const verifyPhoneNumber = async (phoneNumber: string, code: string): Promise<boolean> => {
   try {
-    const response = await axiosInstance.post('/auth/signup/verify/code', { hp: phoneNumber, code })
-    console.log(response)
+    // const response = await axiosInstance.post('/auth/signup/verify/code', { hp: phoneNumber, code })
+    // console.log(response)
+    console.log(phoneNumber, code)
     return true
   } catch {
     throw new Error('인증번호 확인 중 오류가 발생했습니다')

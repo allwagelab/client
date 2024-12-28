@@ -28,26 +28,20 @@ function SignupModal({ isOpen, onClose }: SignupModalProps) {
     setCurrentStep('BUSINESS')
   }
 
-  const handleBusinessSubmit = async (businessData: BusinessInfoFormData) => {
+  const handleBusinessSubmit = (businessData: BusinessInfoFormData) => {
     if (!accountData) {
       return
     }
 
-    return new Promise<void>((resolve, reject) => {
-      registerUser(
-        {
-          ...accountData,
-          businessInfo: businessData,
-        },
-        {
-          onSuccess: () => {
-            resolve()
-          },
-          onError: (error) => {
-            reject(error)
-          },
-        },
-      )
+    registerUser({
+      email: accountData.email,
+      password: accountData.password,
+      hp: businessData.phoneNumber,
+      sub: {
+        name: businessData.businessName,
+        registration: businessData.businessNumber,
+        staffCount: businessData.employeeCount === 'under5' ? '5인 미만' : '5인 이상',
+      },
     })
   }
 

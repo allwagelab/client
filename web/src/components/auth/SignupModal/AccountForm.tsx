@@ -9,7 +9,7 @@ import type { SignupFormData } from '@/types/auth'
 
 const signupSchema = z
   .object({
-    email: z.string().email('올바른 이메일 형식을 입력해주세요'),
+    email: z.string().min(1, '이메일을 입력해주세요').email('올바른 이메일 형식을 입력해주세요'),
     password: z
       .string()
       .min(8, '비밀번호는 최소 8자 이상이어야 합니다')
@@ -36,6 +36,7 @@ function AccountForm({ onSubmit, defaultValues }: AccountFormProps) {
     register,
     handleSubmit,
     watch,
+    trigger,
     setError,
     clearErrors,
     formState: { errors },
@@ -68,13 +69,12 @@ function AccountForm({ onSubmit, defaultValues }: AccountFormProps) {
     },
   })
 
-  const handleEmailCheck = () => {
-    const email = watch('email')
-    if (!email) {
-      setError('email', { type: 'manual', message: '이메일을 입력해주세요' })
-      return
+  const handleEmailCheck = async () => {
+    const isValid = await trigger('email')
+    if (isValid) {
+      const email = watch('email')
+      checkEmail(email)
     }
-    checkEmail(email)
   }
 
   const handleFormSubmit = (data: SignupFormData) => {

@@ -46,11 +46,20 @@ export interface ErrorResponse {
   message: string
 }
 
-export interface SignupRequest extends SignupFormData {
-  businessInfo: BusinessInfoFormData
+export interface SignupRequest {
+  email: string
+  password: string
+  hp: string
+  sub: {
+    name: string
+    registration: string
+    staffCount: '5인 미만' | '5인 이상'
+  }
 }
 
 export interface SignupResponse {
   success: boolean
-  message: string
+  data: {
+    email: string
+  }
 }

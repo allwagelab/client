@@ -18,7 +18,6 @@ const businessInfoSchema = z.object({
     .string()
     .min(1, '휴대폰 번호를 입력해주세요')
     .regex(/^010-\d{4}-\d{4}$/, '올바른 휴대폰 번호 형식이 아닙니다. (예: 010-0000-0000)'),
-  verificationCode: z.string().min(1, '인증번호를 입력해주세요'),
   employeeCount: z.enum(['under5', 'over5'], {
     required_error: '직원 수를 선택해주세요',
   }),
@@ -74,9 +73,10 @@ function BusinessForm({ onSubmit, onBack }: BusinessFormProps) {
   const {
     formatTime,
     start: startTimer,
+    stop: stopTimer,
     isRunning,
   } = useTimer({
-    initialSeconds: 10, // 3분
+    initialSeconds: 180,
     onEnd: () => {
       setError('verificationCode', {
         type: 'manual',
@@ -146,13 +146,17 @@ function BusinessForm({ onSubmit, onBack }: BusinessFormProps) {
   }
 
   const handleVerifyCode = async () => {
-    const isValid = await trigger('verificationCode')
+    const code = watch('verificationCode')
+    if (!code) {
+      setError('verificationCode', {
+        message: '인증번호를 입력해주세요',
+      })
 
-    if (isValid) {
-      const code = watch('verificationCode')
-      const phoneNumber = watch('phoneNumber')
-      verifyPhone({ phoneNumber, code })
+      return
     }
+
+    const phoneNumber = watch('phoneNumber')
+    verifyPhone({ phoneNumber, code })
   }
 
   const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -173,12 +177,12 @@ function BusinessForm({ onSubmit, onBack }: BusinessFormProps) {
     setIsPhoneVerified(false)
     setShowVerificationField(false)
     clearErrors('phoneNumber')
+    stopTimer()
   }
 
   const onFormSubmit = async (data: BusinessInfoFormData) => {
-    setSubmitError('') // 에러 메시지 초기화
+    setSubmitError('')
 
-    // 사업자 등록번호 인증 확인
     if (!isBusinessNumberVerified) {
       setError('businessNumber', {
         type: 'manual',
@@ -187,7 +191,6 @@ function BusinessForm({ onSubmit, onBack }: BusinessFormProps) {
       return
     }
 
-    // 휴대폰 인증 확인
     if (!isPhoneVerified) {
       setError('phoneNumber', {
         type: 'manual',
