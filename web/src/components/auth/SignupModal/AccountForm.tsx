@@ -1,11 +1,13 @@
+import styled from '@emotion/styled'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useMutation } from '@tanstack/react-query'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { useMutation } from '@tanstack/react-query'
-import styled from '@emotion/styled'
-import { checkEmailDuplicate } from '@/apis/auth'
+
 import type { SignupFormData } from '@/types/auth'
+
+import { checkEmailDuplicate } from '@/apis/auth'
 
 const signupSchema = z
   .object({

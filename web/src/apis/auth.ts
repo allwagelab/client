@@ -1,5 +1,7 @@
-import { axiosInstance } from './index'
 import { AxiosError } from 'axios'
+
+import { axiosInstance } from './index'
+
 import type { LoginRequest, LoginResponse, SignupRequest, SignupResponse } from '../types/auth'
 
 export const login = async (data: LoginRequest): Promise<LoginResponse> => {
@@ -53,7 +55,9 @@ export const verifyBusinessNumber = async (businessNumber: string): Promise<bool
 
 export const requestPhoneVerification = async (phoneNumber: string): Promise<boolean> => {
   try {
-    const response = await axiosInstance.post('/auth/signup/send/code', { hp: phoneNumber })
+    const response = await axiosInstance.post('/auth/signup/send/code', {
+      hp: phoneNumber,
+    })
     return response.data
   } catch {
     throw new Error('인증번호 전송 중 오류가 발생했습니다')
@@ -95,7 +99,9 @@ export const findId = async (phoneNumber: string): Promise<FindIdResponse> => {
 
 export const sendTempPassword = async (email: string): Promise<boolean> => {
   try {
-    const response = await axiosInstance.post('/auth/password/send/code', { email })
+    const response = await axiosInstance.post('/auth/password/send/code', {
+      email,
+    })
     return response.data.success
   } catch (error) {
     if (error instanceof AxiosError && error.response?.status === 401) {

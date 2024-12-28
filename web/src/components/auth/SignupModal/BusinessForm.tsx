@@ -1,10 +1,12 @@
 import styled from '@emotion/styled'
-import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
 import { useMutation } from '@tanstack/react-query'
-import type { BusinessInfoFormData } from '@/types/auth'
 import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+
+import type { BusinessInfoFormData } from '@/types/auth'
+
 import { verifyBusinessNumber, requestPhoneVerification, verifyPhoneNumber } from '@/apis/auth'
 import useTimer from '@/hooks/useTimer'
 

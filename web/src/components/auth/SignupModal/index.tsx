@@ -1,10 +1,13 @@
-import { useState, useEffect } from 'react'
 import styled from '@emotion/styled'
-import Modal from './Modal'
+import { useMutation } from '@tanstack/react-query'
+import { useState, useEffect } from 'react'
+
 import AccountForm from './AccountForm'
 import BusinessForm from './BusinessForm'
-import { useMutation } from '@tanstack/react-query'
+import Modal from './Modal'
+
 import type { BusinessInfoFormData, SignupFormData, SignupModalProps } from '@/types/auth'
+
 import { signup } from '@/apis/auth'
 
 type SignupStep = 'ACCOUNT' | 'BUSINESS' | 'SUCCESS'

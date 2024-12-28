@@ -1,8 +1,8 @@
 import { type RouteObject, Navigate } from 'react-router-dom'
 
-import { FindIdPage, FindPasswordPage, LoginPage } from '@/pages'
 import { LayoutComponent } from '@/components'
 import { PATH } from '@/data/path'
+import { FindIdPage, FindPasswordPage, LoginPage } from '@/pages'
 
 export const publicRoutes: RouteObject = {
   element: <LayoutComponent.Protected />,

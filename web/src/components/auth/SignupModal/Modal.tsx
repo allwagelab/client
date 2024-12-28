@@ -1,6 +1,6 @@
+import styled from '@emotion/styled'
 import { type ReactNode, useEffect } from 'react'
 import { createPortal } from 'react-dom'
-import styled from '@emotion/styled'
 
 interface ModalProps {
   isOpen: boolean

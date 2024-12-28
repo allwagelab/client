@@ -1,13 +1,14 @@
 import styled from '@emotion/styled'
-import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
-import { useState } from 'react'
 import { useMutation } from '@tanstack/react-query'
-import { requestPhoneVerification, verifyPhoneNumber, findId } from '@/apis/auth'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
-import useTimer from '@/hooks/useTimer'
+import { z } from 'zod'
+
+import { requestPhoneVerification, verifyPhoneNumber, findId } from '@/apis/auth'
 import SignupModal from '@/components/auth/SignupModal'
+import useTimer from '@/hooks/useTimer'
 
 const findIdSchema = z.object({
   phoneNumber: z
