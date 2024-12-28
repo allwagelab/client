@@ -97,21 +97,12 @@ export const findId = async (phoneNumber: string): Promise<FindIdResponse> => {
   }
 }
 
-export interface SendTempPasswordResponse {
-  success: boolean
-  message: string
-}
-
-export const sendTempPassword = async (email: string): Promise<SendTempPasswordResponse> => {
+export const sendTempPassword = async (email: string): Promise<boolean> => {
   try {
-    // const response = await axiosInstance.post<SendTempPasswordResponse>("/test", {
-    //   email,
-    // });
-    // return response.data;
-    console.log(email)
-    return { success: true, message: '임시 비밀번호가 발급되었습니다' }
+    const response = await axiosInstance.post('/auth/password/send/code', { email })
+    return response.data.success
   } catch (error) {
-    if (error instanceof AxiosError && error.response?.status === 404) {
+    if (error instanceof AxiosError && error.response?.status === 401) {
       throw new Error('등록되지 않은 이메일입니다')
     }
     throw new Error('임시 비밀번호 발급 중 오류가 발생했습니다')

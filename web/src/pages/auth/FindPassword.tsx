@@ -8,7 +8,7 @@ import { sendTempPassword } from '@/apis/auth'
 import { useLogin } from '@/hooks'
 
 const findPasswordSchema = z.object({
-  email: z.string().email('올바른 이메일 형식을 입력해주세요'),
+  email: z.string().min(1, '이메일을 입력해주세요').email('올바른 이메일 형식을 입력해주세요'),
   temporaryPassword: z.string().min(1, '임시 비밀번호를 입력해주세요'),
 })
 
@@ -22,6 +22,7 @@ function FindPasswordPage() {
     register,
     handleSubmit,
     watch,
+    trigger,
     setError,
     clearErrors,
     formState: { errors },
@@ -32,9 +33,9 @@ function FindPasswordPage() {
 
   const { mutate: sendTemporaryPassword, isPending: isSendingTemp } = useMutation({
     mutationFn: sendTempPassword,
-    onSuccess: (response) => {
+    onSuccess: () => {
       setShowTemporaryPasswordField(true)
-      setSuccessMessage(response.message)
+      setSuccessMessage('이메일로 임시 비밀번호를 발송했습니다. 이메일을 확인해주세요.')
     },
     onError: (error: Error) => {
       setError('email', {
@@ -52,31 +53,16 @@ function FindPasswordPage() {
         message: '임시 비밀번호가 올바르지 않습니다',
       })
     },
-    redirectTo: '/mypage/reset-password',
+    redirectTo: '/home',
+    // redirectTo: '/mypage/reset-password',
   })
 
-  const handleSendTemporary = () => {
-    const email = watch('email')
-    if (!email) {
-      setError('email', {
-        type: 'manual',
-        message: '이메일을 입력해주세요',
-      })
-      setSuccessMessage('')
-      return
+  const handleSendTemporary = async () => {
+    const isValid = await trigger('email')
+    if (isValid) {
+      const email = watch('email')
+      sendTemporaryPassword(email)
     }
-
-    const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i
-    if (!emailRegex.test(email)) {
-      setError('email', {
-        type: 'manual',
-        message: '올바른 이메일 형식이 아닙니다',
-      })
-      setSuccessMessage('')
-      return
-    }
-
-    sendTemporaryPassword(email)
   }
 
   const onSubmit = async (data: FindPasswordFormData) => {
