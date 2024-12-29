@@ -6,6 +6,11 @@ import { BrowserRouter } from 'react-router-dom'
 
 import Router from './router'
 
+if (process.env.NODE_ENV === 'development') {
+  const { worker } = await import('@/mocks')
+  worker.start()
+}
+
 const queryClient = new QueryClient()
 
 function App() {

@@ -17,14 +17,11 @@ export const login = async (data: LoginRequest): Promise<LoginResponse> => {
 }
 
 export const checkEmailDuplicate = async (email: string): Promise<boolean> => {
-  // const response = await axiosInstance.post<{ isDuplicate: boolean }>(
-  //   "",
-  //   { email }
-  // );
+  const response = await axiosInstance.post<{ isDuplicate: boolean }>('/auth/check-email', {
+    email,
+  })
 
-  // return response.data.isDuplicate;
-  console.log(email)
-  return false
+  return !response.data.isDuplicate
 }
 
 export const signup = async (data: SignupRequest): Promise<SignupResponse> => {
@@ -41,13 +38,10 @@ export const signup = async (data: SignupRequest): Promise<SignupResponse> => {
 
 export const verifyBusinessNumber = async (businessNumber: string): Promise<boolean> => {
   try {
-    // const response = await axiosInstance.post<{ isDuplicate: boolean }>(
-    //   "/auth/verify-business",
-    //   { businessNumber }
-    // );
-    // return !response.data.isDuplicate;
-    console.log(businessNumber)
-    return true
+    const response = await axiosInstance.post<{ isDuplicate: boolean }>('/auth/verify-business', {
+      businessNumber,
+    })
+    return !response.data.isDuplicate
   } catch {
     throw new Error('사업자 등록번호 확인 중 오류가 발생했습니다')
   }
@@ -66,10 +60,11 @@ export const requestPhoneVerification = async (phoneNumber: string): Promise<boo
 
 export const verifyPhoneNumber = async (phoneNumber: string, code: string): Promise<boolean> => {
   try {
-    // const response = await axiosInstance.post('/auth/signup/verify/code', { hp: phoneNumber, code })
-    // console.log(response)
-    console.log(phoneNumber, code)
-    return true
+    const response = await axiosInstance.post('/auth/signup/verify/code', {
+      hp: phoneNumber,
+      code,
+    })
+    return response.data
   } catch {
     throw new Error('인증번호 확인 중 오류가 발생했습니다')
   }
@@ -84,11 +79,10 @@ export interface FindIdResponse {
 
 export const findId = async (phoneNumber: string): Promise<FindIdResponse> => {
   try {
-    // const response = await axiosInstance.post<FindIdResponse>("/test", {
-    //   phoneNumber,
-    // });
-    console.log(phoneNumber)
-    return { success: true, data: { email: 'test@test.com' } }
+    const response = await axiosInstance.post<FindIdResponse>('/auth/find-id', {
+      phoneNumber,
+    })
+    return response.data
   } catch (error) {
     if (error instanceof AxiosError && error.response?.status === 404) {
       throw new Error('가입된 계정이 없습니다')
