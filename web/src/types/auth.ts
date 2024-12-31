@@ -52,7 +52,7 @@ export interface SignupRequest {
   sub: {
     name: string
     registration: string
-    staffCount: '5인 미만' | '5인 이상'
+    staffCount: 'UNDER_FIVE' | 'OVER_FIVE'
   }
 }
 

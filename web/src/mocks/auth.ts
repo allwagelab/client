@@ -1,25 +1,37 @@
 import { http, HttpResponse, type PathParams } from 'msw'
 
+import { PHONE_NUMBER_REGEX } from '@/lib/constants'
+
 const createURL = (url: string) => {
   const baseURL = import.meta.env.VITE_BASE_URL
   const fullURL = new URL(url, baseURL)
   return fullURL.href
 }
 
+const DB = {
+  BUSINESS_NUMBERS: ['1234567890'],
+  PHONE_NUMBERS: ['010-1234-5678'],
+}
+
 // 로그인 mock
-const login = http.post<PathParams, { email: string }>(
+const login = http.post<PathParams, { email: string; password: string }>(
   createURL('/auth/login/email'),
   async ({ request }) => {
-    const { email } = await request.json()
+    const { email, password } = await request.json()
+
+    if (email === 'test@test.com' && password === 'test1234!') {
+      return new HttpResponse(null, {
+        status: 401,
+      })
+    }
+
     return HttpResponse.json({
-      success: true,
       data: {
         id: 1,
-        email,
+        email: 'test1@test.com',
         name: '홍길동',
         level: 3,
         isCompany: true,
-        isJob: true,
         isCompanyInfo: true,
         accessToken: 'accessToken값',
       },
@@ -29,48 +41,74 @@ const login = http.post<PathParams, { email: string }>(
 
 // 이메일 중복 체크 mock
 const checkEmailDuplicate = http.post<PathParams, { email: string }>(
-  createURL('auth/check-email'),
+  createURL('/auth/check/email'),
   async ({ request }) => {
     const { email } = await request.json()
 
-    return HttpResponse.json({
-      success: true,
-      isDuplicate: email === 'test@test.com', // test@test.com은 이미 존재하는 이메일로 가정
+    // test@test.com은 이미 존재하는 이메일로 가정
+    if (email === 'test@test.com') {
+      return new HttpResponse(null, {
+        status: 401,
+      })
+    }
+
+    return new HttpResponse(null, {
+      status: 201,
     })
   },
 )
 
 // 회원가입 mock
-const signup = http.post(createURL('/auth/signup/email'), async () => {
-  return HttpResponse.json({
-    success: true,
-    data: {
-      name: '홍길동',
-      email: 'test1@test.com',
-    },
+const signup = http.post(createURL('/auth/signup/email'), async ({ request }) => {
+  const data = await request.json()
+  console.log('signup:mock', data)
+
+  return new HttpResponse(null, {
+    status: 201,
   })
 })
 
 // 사업자 등록번호 확인 mock
 const verifyBusinessNumber = http.post<PathParams, { businessNumber: string }>(
-  createURL('/auth/verify-business'),
+  createURL('/auth/check/registration'),
   async ({ request }) => {
     const { businessNumber } = await request.json()
-    const DB = ['000-00-00000']
 
-    return HttpResponse.json({
-      isDuplicate: DB.includes(businessNumber),
+    if (DB.BUSINESS_NUMBERS.includes(businessNumber)) {
+      return new HttpResponse(null, {
+        status: 401,
+      })
+    }
+
+    return new HttpResponse(null, {
+      status: 201,
     })
   },
 )
 
 // 휴대폰 인증번호 요청 mock
-const requestPhoneVerification = http.post(createURL('/auth/signup/send/code'), async () => {
-  return HttpResponse.json({
-    success: true,
-    message: '인증번호가 발송되었습니다.',
-  })
-})
+const requestPhoneVerification = http.post<PathParams, { hp: string }>(
+  createURL('/auth/signup/send/code'),
+  async ({ request }) => {
+    const { hp } = await request.json()
+
+    if (DB.PHONE_NUMBERS.includes(hp)) {
+      return new HttpResponse(null, {
+        status: 401,
+      })
+    }
+
+    if (!PHONE_NUMBER_REGEX.test(hp)) {
+      return new HttpResponse(null, {
+        status: 400,
+      })
+    }
+
+    return new HttpResponse(null, {
+      status: 201,
+    })
+  },
+)
 
 // 휴대폰 인증번호 확인 mock
 const verifyPhoneNumber = http.post<PathParams, { code: string }>(
@@ -79,23 +117,38 @@ const verifyPhoneNumber = http.post<PathParams, { code: string }>(
     const { code } = await request.json()
     // 1234는 올바른 인증번호로 가정
     if (code === '1234') {
-      return HttpResponse.json({
-        success: true,
-        message: '인증이 완료되었습니다',
+      return new HttpResponse(null, {
+        status: 201,
       })
     }
 
-    return new HttpResponse(null, { status: 401, statusText: 'Unauthorized' })
+    return new HttpResponse(null, { status: 401 })
   },
 )
 
 // 휴대폰 인증번호 요청 mock (아이디 찾기)
-const requestPhoneVerificationFindId = http.post(createURL('/auth/email/send/code'), async () => {
-  return HttpResponse.json({
-    success: true,
-    message: '인증번호가 발송되었습니다.',
-  })
-})
+const requestPhoneVerificationFindId = http.post<PathParams, { hp: string }>(
+  createURL('/auth/email/send/code'),
+  async ({ request }) => {
+    const { hp } = await request.json()
+
+    if (!DB.PHONE_NUMBERS.includes(hp)) {
+      return new HttpResponse(null, {
+        status: 401,
+      })
+    }
+
+    if (!PHONE_NUMBER_REGEX.test(hp)) {
+      return new HttpResponse(null, {
+        status: 400,
+      })
+    }
+
+    return new HttpResponse(null, {
+      status: 201,
+    })
+  },
+)
 
 // 휴대폰 인증번호 확인 mock (아이디 찾기)
 const verifyPhoneNumberFindId = http.post<PathParams, { code: string }>(
@@ -104,13 +157,12 @@ const verifyPhoneNumberFindId = http.post<PathParams, { code: string }>(
     const { code } = await request.json()
     // 1234는 올바른 인증번호로 가정
     if (code === '1234') {
-      return HttpResponse.json({
-        success: true,
-        message: '인증이 완료되었습니다',
+      return new HttpResponse(null, {
+        status: 201,
       })
     }
 
-    return new HttpResponse(null, { status: 401, statusText: 'Unauthorized' })
+    return new HttpResponse(null, { status: 401 })
   },
 )
 
@@ -143,15 +195,13 @@ const sendTempPassword = http.post<PathParams, { email: string }>(
     const { email } = await request.json()
 
     if (email === 'test@test.com') {
-      return HttpResponse.json({
-        success: true,
-        message: '임시 비밀번호가 발송되었습니다.',
+      return new HttpResponse(null, {
+        status: 201,
       })
     }
 
     return new HttpResponse(null, {
       status: 401,
-      statusText: 'Unauthorized',
     })
   },
 )

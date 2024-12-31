@@ -1,8 +1,9 @@
-import { useAuthStore } from '@/stores/auth'
 import { useMutation } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
 import { useShallow } from 'zustand/shallow'
+
 import { login } from '@/apis/auth'
+import { useAuthStore } from '@/stores/auth'
 
 interface UseLoginProps {
   onError?: (error: Error) => void

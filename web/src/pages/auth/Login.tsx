@@ -7,10 +7,14 @@ import { z } from 'zod'
 
 import SignupModal from '@/components/auth/SignupModal'
 import { useLogin } from '@/hooks'
+import { PASSWORD_REGEX } from '@/lib/constants'
 
 const loginSchema = z.object({
   email: z.string().email('올바른 이메일 형식을 입력해주세요'),
-  password: z.string().min(8, '비밀번호는 최소 8자 이상이어야 합니다'),
+  password: z
+    .string()
+    .min(8, '비밀번호는 최소 8자 이상이어야 합니다')
+    .regex(PASSWORD_REGEX, '영문, 숫자, 특수문자를 모두 포함해야 합니다'),
 })
 
 type LoginFormData = z.infer<typeof loginSchema>

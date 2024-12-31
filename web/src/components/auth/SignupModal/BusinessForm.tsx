@@ -68,17 +68,9 @@ function BusinessForm({ onSubmit, onBack }: BusinessFormProps) {
 
   const { mutate: verifyBusiness, isPending: isVerifyingBusiness } = useMutation({
     mutationFn: verifyBusinessNumber,
-    onSuccess: (isValid) => {
-      if (isValid) {
-        clearErrors('businessNumber')
-        setIsBusinessNumberVerified(true)
-      } else {
-        setError('businessNumber', {
-          type: 'manual',
-          message: '이미 등록된 사업자 등록번호입니다',
-        })
-        setIsBusinessNumberVerified(false)
-      }
+    onSuccess: () => {
+      clearErrors('businessNumber')
+      setIsBusinessNumberVerified(true)
     },
     onError: (error: Error) => {
       setError('businessNumber', {
@@ -105,23 +97,11 @@ function BusinessForm({ onSubmit, onBack }: BusinessFormProps) {
   })
 
   const { mutate: verifyPhone, isPending: isVerifyingPhone } = useMutation({
-    mutationFn: ({
-      phoneNumber,
-      code,
-    }: {
-      phoneNumber: string
-      code: string
-    }) => verifyPhoneNumber(phoneNumber, code),
-    onSuccess: (isValid) => {
-      if (isValid) {
-        setIsPhoneVerified(true)
-        clearErrors('verificationCode')
-      } else {
-        setError('verificationCode', {
-          type: 'manual',
-          message: '잘못된 인증번호입니다',
-        })
-      }
+    mutationFn: ({ phoneNumber, code }: { phoneNumber: string; code: string }) =>
+      verifyPhoneNumber(phoneNumber, code),
+    onSuccess: () => {
+      setIsPhoneVerified(true)
+      clearErrors('verificationCode')
     },
     onError: (error: Error) => {
       setError('verificationCode', {
@@ -146,6 +126,7 @@ function BusinessForm({ onSubmit, onBack }: BusinessFormProps) {
     if (isValid) {
       const phoneNumber = watch('phoneNumber')
       sendVerification(phoneNumber)
+      setIsPhoneVerified(false)
     }
   }
 
@@ -231,7 +212,7 @@ function BusinessForm({ onSubmit, onBack }: BusinessFormProps) {
           <VerifyButton
             type="button"
             onClick={handleBusinessNumberVerify}
-            disabled={isVerifyingBusiness}
+            disabled={isVerifyingBusiness || isBusinessNumberVerified}
           >
             {isVerifyingBusiness ? '확인 중...' : '중복 확인'}
           </VerifyButton>
@@ -268,7 +249,11 @@ function BusinessForm({ onSubmit, onBack }: BusinessFormProps) {
           <Label>인증번호</Label>
           <InputWithButton>
             <Input type="text" placeholder="인증번호 입력" {...register('verificationCode')} />
-            <VerifyButton type="button" onClick={handleVerifyCode} disabled={isVerifyingPhone}>
+            <VerifyButton
+              type="button"
+              onClick={handleVerifyCode}
+              disabled={isVerifyingPhone || isPhoneVerified}
+            >
               {isVerifyingPhone ? '확인 중...' : '인증 확인'}
             </VerifyButton>
           </InputWithButton>

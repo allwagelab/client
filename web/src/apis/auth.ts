@@ -16,12 +16,17 @@ export const login = async (data: LoginRequest): Promise<LoginResponse> => {
   }
 }
 
-export const checkEmailDuplicate = async (email: string): Promise<boolean> => {
-  const response = await axiosInstance.post<{ isDuplicate: boolean }>('/auth/check-email', {
-    email,
-  })
-
-  return !response.data.isDuplicate
+export const checkEmailDuplicate = async (email: string) => {
+  try {
+    await axiosInstance.post<boolean>('/auth/check/email', {
+      email,
+    })
+  } catch (error) {
+    if (error instanceof AxiosError && error.response?.status === 401) {
+      throw new Error('이미 사용 중인 이메일입니다.')
+    }
+    throw new Error('이메일 중복 확인 중 오류가 발생했습니다.')
+  }
 }
 
 export const signup = async (data: SignupRequest): Promise<SignupResponse> => {
@@ -29,57 +34,105 @@ export const signup = async (data: SignupRequest): Promise<SignupResponse> => {
     const response = await axiosInstance.post<SignupResponse>('/auth/signup/email', data)
     return response.data
   } catch (error) {
-    if (error instanceof AxiosError && error.response?.status === 400) {
-      throw new Error(error.response.data.message || '회원가입에 실패했습니다')
+    if (error instanceof AxiosError && error.response?.status === 401) {
+      throw new Error('회원가입에 실패했습니다.')
     }
-    throw new Error('회원가입 중 오류가 발생했습니다')
+    throw new Error('회원가입 중 오류가 발생했습니다.')
   }
 }
 
-export const verifyBusinessNumber = async (businessNumber: string): Promise<boolean> => {
+export const verifyBusinessNumber = async (businessNumber: string) => {
   try {
-    const response = await axiosInstance.post<{ isDuplicate: boolean }>('/auth/verify-business', {
-      businessNumber,
+    await axiosInstance.post('/auth/check/registration', {
+      businessNumber: businessNumber.replace(/[-]/g, ''),
     })
-    return !response.data.isDuplicate
-  } catch {
-    throw new Error('사업자 등록번호 확인 중 오류가 발생했습니다')
+  } catch (error) {
+    if (error instanceof AxiosError && error.response) {
+      if (error.response.status === 400) {
+        throw new Error('잘못된 형식의 사업자 등록 번호입니다.')
+      }
+      if (error.response.status === 401) {
+        throw new Error('이미 등록된 사업자 등록 번호입니다.')
+      }
+      if (error.response.status === 404) {
+        throw new Error('유효하지 않은 사업자 등록 번호입니다.')
+      }
+    }
+    throw new Error('사업자 등록 번호 확인 중 오류가 발생했습니다.')
   }
 }
 
-export const requestPhoneVerification = async (phoneNumber: string): Promise<boolean> => {
+export const requestPhoneVerification = async (phoneNumber: string) => {
   try {
-    const response = await axiosInstance.post('/auth/signup/send/code', {
+    await axiosInstance.post('/auth/signup/send/code', {
       hp: phoneNumber,
     })
-    return response.data
-  } catch {
-    throw new Error('인증번호 전송 중 오류가 발생했습니다')
+  } catch (error) {
+    if (error instanceof AxiosError && error.response) {
+      if (error.response.status === 400) {
+        throw new Error('잘못된 형식의 휴대폰 번호입니다.')
+      }
+      if (error.response.status === 401) {
+        throw new Error('이미 존재하는 휴대폰 번호입니다.')
+      }
+    }
+    throw new Error('휴대폰 인증 요청 중 오류가 발생했습니다.')
   }
 }
 
-export const verifyPhoneNumber = async (phoneNumber: string, code: string): Promise<boolean> => {
+export const verifyPhoneNumber = async (phoneNumber: string, code: string) => {
   try {
-    const response = await axiosInstance.post('/auth/signup/verify/code', {
+    await axiosInstance.post('/auth/signup/verify/code', {
       hp: phoneNumber,
       code,
     })
-    return response.data
-  } catch {
-    throw new Error('인증번호 확인 중 오류가 발생했습니다')
+  } catch (error) {
+    if (error instanceof AxiosError && error.response) {
+      if (error.response.status === 401) {
+        throw new Error('인증번호를 확인해 주세요.')
+      }
+    }
+    throw new Error('휴대폰 인증번호 확인 중 오류가 발생했습니다')
   }
 }
 
-export interface FindIdResponse {
-  success: boolean
-  data: {
-    email: string
-  }
-}
-
-export const findId = async (phoneNumber: string): Promise<FindIdResponse> => {
+export const requestPhoneVerificationFindId = async (phoneNumber: string) => {
   try {
-    const response = await axiosInstance.post<FindIdResponse>('/auth/find-id', {
+    await axiosInstance.post('/auth/email/send/code', {
+      hp: phoneNumber,
+    })
+  } catch (error) {
+    if (error instanceof AxiosError && error.response) {
+      if (error.response.status === 400) {
+        throw new Error('잘못된 형식의 휴대폰 번호입니다.')
+      }
+      if (error.response.status === 401) {
+        throw new Error('존재하지 않는 휴대폰 번호입니다.')
+      }
+    }
+    throw new Error('휴대폰 인증 요청 중 오류가 발생했습니다.')
+  }
+}
+
+export const verifyPhoneNumberFindId = async (phoneNumber: string, code: string) => {
+  try {
+    await axiosInstance.post('/auth/email/verify/code', {
+      hp: phoneNumber,
+      code,
+    })
+  } catch (error) {
+    if (error instanceof AxiosError && error.response) {
+      if (error.response.status === 401) {
+        throw new Error('인증번호를 확인해 주세요.')
+      }
+    }
+    throw new Error('휴대폰 인증번호 확인 중 오류가 발생했습니다')
+  }
+}
+
+export const findId = async (phoneNumber: string) => {
+  try {
+    const response = await axiosInstance.post('/auth/find-id', {
       phoneNumber,
     })
     return response.data
@@ -91,16 +144,15 @@ export const findId = async (phoneNumber: string): Promise<FindIdResponse> => {
   }
 }
 
-export const sendTempPassword = async (email: string): Promise<boolean> => {
+export const sendTempPassword = async (email: string) => {
   try {
-    const response = await axiosInstance.post('/auth/password/send/code', {
+    await axiosInstance.post('/auth/password/send/code', {
       email,
     })
-    return response.data.success
   } catch (error) {
     if (error instanceof AxiosError && error.response?.status === 401) {
       throw new Error('등록되지 않은 이메일입니다')
     }
-    throw new Error('임시 비밀번호 발급 중 오류가 발생했습니다')
+    throw new Error('임시 비밀번호 발급 중 오류가 발생했습니다.')
   }
 }

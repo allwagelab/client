@@ -48,22 +48,14 @@ function AccountForm({ onSubmit, defaultValues }: AccountFormProps) {
 
   const { mutate: checkEmail, isPending: isCheckingEmail } = useMutation({
     mutationFn: checkEmailDuplicate,
-    onSuccess: (isDuplicate) => {
-      if (isDuplicate) {
-        setError('email', {
-          type: 'manual',
-          message: '이미 사용 중인 이메일입니다',
-        })
-        setIsEmailVerified(false)
-      } else {
-        clearErrors('email')
-        setIsEmailVerified(true)
-      }
+    onSuccess: () => {
+      clearErrors('email')
+      setIsEmailVerified(true)
     },
-    onError: () => {
+    onError: (error) => {
       setError('email', {
         type: 'manual',
-        message: '이메일 중복 확인 중 오류가 발생했습니다',
+        message: error.message,
       })
       setIsEmailVerified(false)
     },
@@ -102,7 +94,11 @@ function AccountForm({ onSubmit, defaultValues }: AccountFormProps) {
               setIsEmailVerified(false)
             }}
           />
-          <CheckButton type="button" onClick={handleEmailCheck} disabled={isCheckingEmail}>
+          <CheckButton
+            type="button"
+            onClick={handleEmailCheck}
+            disabled={isCheckingEmail || isEmailVerified}
+          >
             {isCheckingEmail ? '확인 중...' : '중복 확인'}
           </CheckButton>
         </EmailInputWrapper>

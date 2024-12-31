@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import { z } from 'zod'
 
-import { requestPhoneVerification, verifyPhoneNumber, findId } from '@/apis/auth'
+import { requestPhoneVerificationFindId, verifyPhoneNumberFindId, findId } from '@/apis/auth'
 import SignupModal from '@/components/auth/SignupModal'
 import useTimer from '@/hooks/useTimer'
 import { PHONE_NUMBER_REGEX } from '@/lib/constants'
@@ -65,7 +65,7 @@ function FindIdPage() {
   })
 
   const { mutate: sendVerification, isPending: isSendingVerification } = useMutation({
-    mutationFn: requestPhoneVerification,
+    mutationFn: requestPhoneVerificationFindId,
     onSuccess: () => {
       setShowVerificationField(true)
       clearErrors('verificationCode')
@@ -80,23 +80,11 @@ function FindIdPage() {
   })
 
   const { mutate: verifyPhone, isPending: isVerifyingPhone } = useMutation({
-    mutationFn: ({
-      phoneNumber,
-      code,
-    }: {
-      phoneNumber: string
-      code: string
-    }) => verifyPhoneNumber(phoneNumber, code),
-    onSuccess: (isValid) => {
-      if (isValid) {
-        setIsPhoneVerified(true)
-        clearErrors('verificationCode')
-      } else {
-        setError('verificationCode', {
-          type: 'manual',
-          message: '잘못된 인증번호입니다',
-        })
-      }
+    mutationFn: ({ phoneNumber, code }: { phoneNumber: string; code: string }) =>
+      verifyPhoneNumberFindId(phoneNumber, code),
+    onSuccess: () => {
+      setIsPhoneVerified(true)
+      clearErrors('verificationCode')
     },
     onError: (error: Error) => {
       setError('verificationCode', {
@@ -106,7 +94,7 @@ function FindIdPage() {
     },
   })
 
-  const { mutate: findAccount /* , isPending: isFinding */ } = useMutation({
+  const { mutate: findAccount, isPending: isFinding } = useMutation({
     mutationFn: findId,
     onSuccess: (response) => {
       setFoundData({ email: response.data.email })
@@ -223,7 +211,11 @@ function FindIdPage() {
               onClick={handlePhoneVerification}
               disabled={isSendingVerification}
             >
-              {isSendingVerification ? '전송 중...' : '인증 요청'}
+              {isSendingVerification
+                ? '전송 중...'
+                : showVerificationField
+                  ? '재전송'
+                  : '인증 요청'}
             </VerifyButton>
           </InputWithButton>
           {errors.phoneNumber && <ErrorMessage>{errors.phoneNumber.message}</ErrorMessage>}
@@ -238,7 +230,11 @@ function FindIdPage() {
                 placeholder="인증번호를 입력해주세요"
                 {...register('verificationCode')}
               />
-              <VerifyButton type="button" onClick={handleVerifyCode} disabled={isVerifyingPhone}>
+              <VerifyButton
+                type="button"
+                onClick={handleVerifyCode}
+                disabled={isVerifyingPhone || isPhoneVerified}
+              >
                 {isVerifyingPhone ? '확인 중...' : '인증 확인'}
               </VerifyButton>
             </InputWithButton>
@@ -251,7 +247,7 @@ function FindIdPage() {
         )}
 
         <FindButton type="submit" disabled={!isPhoneVerified}>
-          아이디 찾기
+          {isFinding ? '찾는 중...' : '아이디 찾기'}
         </FindButton>
       </Form>
     </Container>

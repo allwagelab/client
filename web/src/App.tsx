@@ -6,7 +6,7 @@ import { BrowserRouter } from 'react-router-dom'
 
 import Router from './router'
 
-if (process.env.NODE_ENV === 'development') {
+if (import.meta.env.MODE === 'mock') {
   const { worker } = await import('@/mocks')
   worker.start()
 }
