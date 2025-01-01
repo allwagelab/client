@@ -1,3 +1,4 @@
+import { css } from '@emotion/react'
 import styled from '@emotion/styled'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
@@ -45,8 +46,8 @@ function LoginPage() {
 
   return (
     <Container>
-      <Title>로그인</Title>
       <Form onSubmit={handleSubmit(onSubmit)}>
+        <Title>로그인</Title>
         <InputGroup>
           <Label>이메일</Label>
           <Input type="email" placeholder="example@email.com" {...register('email')} />
@@ -86,6 +87,7 @@ function LoginPage() {
       </ActionGroup>
 
       <SignupModal isOpen={isSignupModalOpen} onClose={() => setIsSignupModalOpen(false)} />
+      <CopyRightText>Copyright 2025 (주) 올웨이지. All rights reserved</CopyRightText>
     </Container>
   )
 }
@@ -97,44 +99,53 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
-  padding: 20px;
 `
 
 const Title = styled.h1`
-  font-size: 24px;
-  margin-bottom: 32px;
+  ${({ theme }) => css`
+    ${theme.typography.title.t1_sb}
+    color: ${theme.colors.baseBlack};
+    padding-bottom: 2.5rem;
+  `}
 `
 
 const Form = styled.form`
   width: 100%;
-  max-width: 400px;
+  max-width: 428px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
 `
 
 const InputGroup = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 0.5rem;
+  padding-bottom: 1.5rem;
 `
 
 const Label = styled.label`
-  font-size: 14px;
-  font-weight: 500;
+  ${({ theme }) => css`
+    ${theme.typography.body.b4_rg}
+    color: ${theme.colors.gray80};
+  `}
 `
 
 const Input = styled.input`
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 16px;
+  ${({ theme }) => css`
+    padding: 1rem;
+    border: 1px solid ${theme.colors.gray30};
+    border-radius: 4px;
+    font-size: 16px;
 
-  &:focus {
-    outline: none;
-    border-color: #1a73e8;
-  }
+    &:focus {
+      outline: none;
+      border-color: ${theme.colors.blue60};
+    }
+
+    &::placeholder {
+      color: ${theme.colors.gray70};
+    }
+  `}
 `
 
 const LoginButton = styled.button`
@@ -145,7 +156,6 @@ const LoginButton = styled.button`
   border-radius: 4px;
   font-size: 16px;
   cursor: pointer;
-  margin-top: 16px;
 
   &:disabled {
     background-color: #ccc;
@@ -163,30 +173,59 @@ const ErrorMessage = styled.span`
 `
 
 const CheckboxGroup = styled.div`
-  margin-top: 8px;
+  padding-bottom: 3.75rem;
 `
 
 const CheckboxLabel = styled.label`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 14px;
-  color: #666;
-  cursor: pointer;
+  ${({ theme }) => css`
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    ${theme.typography.body.b2_rg}
+    color: ${theme.colors.gray100};
+    cursor: pointer;
+  `}
 `
 
 const Checkbox = styled.input`
-  cursor: pointer;
+  ${({ theme }) => css`
+    appearance: none;
+    width: 1.25rem;
+    height: 1.25rem;
+    border: 1px solid ${theme.colors.gray30};
+    cursor: pointer;
+    position: relative;
+
+    &:checked {
+      background-color: ${theme.colors.blue60};
+
+      &::after {
+        content: '';
+        position: absolute;
+        left: 6px;
+        top: 2px;
+        width: 5px;
+        height: 10px;
+        border: solid white;
+        border-width: 0 2px 2px 0;
+        transform: rotate(45deg);
+      }
+    }
+
+    &:hover {
+      border-color: ${theme.colors.gray30};
+    }
+  `}
 `
 
 const ActionGroup = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
-  margin-top: 24px;
+  gap: 1rem;
+  margin-top: 1rem;
   width: 100%;
-  max-width: 400px;
+  max-width: 428px;
 `
 
 const SignupButton = styled.button`
@@ -208,23 +247,35 @@ const SignupButton = styled.button`
 const Divider = styled.div`
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 20px;
 `
 
 const DividerLine = styled.span`
-  color: #ddd;
+  ${({ theme }) => css`
+    color: ${theme.colors.gray90};
+  `}
 `
 
 const FindAccountButton = styled.button`
-  background: none;
-  border: none;
-  color: #666;
-  font-size: 14px;
-  cursor: pointer;
-  padding: 0;
+  ${({ theme }) => css`
+    background: none;
+    border: none;
+    color: ${theme.colors.gray90};
+    ${theme.typography.body.b4_rg}
+    cursor: pointer;
+    padding: 1rem;
 
-  &:hover {
-    color: #1a73e8;
-    text-decoration: underline;
-  }
+    &:hover {
+      color: ${theme.colors.blue60};
+      text-decoration: underline;
+    }
+  `}
+`
+
+const CopyRightText = styled.span`
+  ${({ theme }) => css`
+    margin-top: 3rem;
+    ${theme.typography.body.b4_rg}
+    color: ${theme.colors.gray70};
+  `}
 `

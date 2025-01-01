@@ -176,8 +176,8 @@ importers:
         specifier: workspace:*
         version: link:../packages/constants
       '@allwagelab/design':
-        specifier: ^0.0.8
-        version: 0.0.8(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1)
+        specifier: ^1.0.0
+        version: 1.0.0(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1)
       '@allwagelab/utils':
         specifier: workspace:*
         version: link:../packages/utils
@@ -274,8 +274,8 @@ packages:
     peerDependencies:
       react: ^18 || ^19
 
-  '@allwagelab/design@0.0.8':
-    resolution: {integrity: sha512-R8sFAyAmAIDNUaxIajKT3iUnJqZVfXAIKeRG7x0drH/wLRrLQObyk2FkqA02CT1HKfIDrr2GXjLphlwOU+9g1w==}
+  '@allwagelab/design@1.0.0':
+    resolution: {integrity: sha512-9I+ZEQAJRZcuDSa3u2IbNYCd+02lPm4tr8yPSGiiyGwiFqZzY4dIXjnY9U0UR6FvkNvLILKHCYHA8m/r23ly8Q==}
     peerDependencies:
       '@emotion/react': ^11.0
       '@emotion/styled': ^11.0
@@ -2505,7 +2505,7 @@ snapshots:
       '@allwagelab/typescript-config': 0.0.1
       react: 18.3.1
 
-  '@allwagelab/design@0.0.8(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1)':
+  '@allwagelab/design@1.0.0(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@emotion/react': 11.14.0(@types/react@18.3.18)(react@18.3.1)
       '@emotion/styled': 11.14.0(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@types/react@18.3.18)(react@18.3.1)

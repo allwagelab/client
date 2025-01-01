@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@allwagelab/constants": "workspace:*",
-    "@allwagelab/design": "^0.0.8",
+    "@allwagelab/design": "^1.0.0",
     "@allwagelab/utils": "workspace:*",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
