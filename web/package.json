@@ -13,6 +13,7 @@
   "dependencies": {
     "@allwagelab/constants": "workspace:*",
     "@allwagelab/design": "^1.0.0",
+    "@allwagelab/react": "^0.0.3",
     "@allwagelab/utils": "workspace:*",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
