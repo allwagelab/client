@@ -32,6 +32,9 @@ importers:
       '@allwagelab/design':
         specifier: ^0.0.2
         version: 0.0.2(react@18.3.1)
+      '@allwagelab/react':
+        specifier: ^0.0.4
+        version: 0.0.4(@allwagelab/design@0.0.2(react@18.3.1))(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1)
       '@allwagelab/utils':
         specifier: workspace:*
         version: link:../../packages/utils
@@ -178,6 +181,9 @@ importers:
       '@allwagelab/design':
         specifier: ^1.0.0
         version: 1.0.0(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1)
+      '@allwagelab/react':
+        specifier: ^0.0.4
+        version: 0.0.4(@allwagelab/design@1.0.0(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1))(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1)
       '@allwagelab/utils':
         specifier: workspace:*
         version: link:../packages/utils
@@ -283,6 +289,14 @@ packages:
 
   '@allwagelab/esbuild-config@0.0.2':
     resolution: {integrity: sha512-eiGklY3izCw5wX4MpZTiAmIvfbacfhfX4+HzaFC5hP07SZ27zP6yv/G5M3EgUfO1+Gy/IRXaPTkbnHUW1V19AQ==}
+
+  '@allwagelab/react@0.0.4':
+    resolution: {integrity: sha512-aK9aDduPevelWcpBYnFg2RKoRl/JRirT1/nqEhRRLmfGq1woQ8BbWBRThYqeqciYnMSKJPYcNRKf9JzfSIPxLQ==}
+    peerDependencies:
+      '@allwagelab/design': ^0.0.8
+      '@emotion/react': ^11.0
+      '@emotion/styled': ^11.0
+      react: ^18.0
 
   '@allwagelab/typescript-config@0.0.1':
     resolution: {integrity: sha512-2E7gE/3aI1oFOPUv/w8fyZ+7vWBnjxH6tw/+L+xjl2O36uwiPnNBi+3QR7I2tBK3n3lIv6VwMOJS18oslmTcyA==}
@@ -2514,6 +2528,20 @@ snapshots:
   '@allwagelab/esbuild-config@0.0.2':
     dependencies:
       esbuild: 0.24.2
+
+  '@allwagelab/react@0.0.4(@allwagelab/design@0.0.2(react@18.3.1))(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1)':
+    dependencies:
+      '@allwagelab/design': 0.0.2(react@18.3.1)
+      '@emotion/react': 11.14.0(@types/react@18.3.18)(react@18.3.1)
+      '@emotion/styled': 11.14.0(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@types/react@18.3.18)(react@18.3.1)
+      react: 18.3.1
+
+  '@allwagelab/react@0.0.4(@allwagelab/design@1.0.0(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1))(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1)':
+    dependencies:
+      '@allwagelab/design': 1.0.0(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1)
+      '@emotion/react': 11.14.0(@types/react@18.3.18)(react@18.3.1)
+      '@emotion/styled': 11.14.0(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@types/react@18.3.18)(react@18.3.1)
+      react: 18.3.1
 
   '@allwagelab/typescript-config@0.0.1': {}
 

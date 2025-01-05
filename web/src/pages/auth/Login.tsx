@@ -1,3 +1,4 @@
+import { Button, Checkbox } from '@allwagelab/react'
 import { css } from '@emotion/react'
 import styled from '@emotion/styled'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -24,6 +25,7 @@ function LoginPage() {
   const navigate = useNavigate()
   const [loginError, setLoginError] = useState<string>('')
   const [isSignupModalOpen, setIsSignupModalOpen] = useState(false)
+  const [isAutoLoginEnabled, setIsAutoLoginEnabled] = useState(false)
 
   const { login, isLoggingIn } = useLogin({
     onError: (error) => setLoginError(error.message),
@@ -48,6 +50,7 @@ function LoginPage() {
     <Container>
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Title>로그인</Title>
+
         <InputGroup>
           <Label>이메일</Label>
           <Input type="email" placeholder="example@email.com" {...register('email')} />
@@ -61,22 +64,23 @@ function LoginPage() {
         </InputGroup>
 
         <CheckboxGroup>
-          <CheckboxLabel>
-            <Checkbox type="checkbox" />
-            로그인 상태 유지
-          </CheckboxLabel>
+          <Checkbox
+            label="로그인 상태 유지"
+            checked={isAutoLoginEnabled}
+            onChange={(e) => setIsAutoLoginEnabled(e.target.checked)}
+          />
         </CheckboxGroup>
 
-        <LoginButton type="submit" disabled={isLoggingIn}>
-          {isLoggingIn ? '로그인 중...' : '로그인'}
-        </LoginButton>
+        <Button full type="submit" loading={isLoggingIn} disabled={isLoggingIn}>
+          로그인
+        </Button>
         {loginError && <ErrorMessage>{loginError}</ErrorMessage>}
       </Form>
 
       <ActionGroup>
-        <SignupButton type="button" onClick={() => setIsSignupModalOpen(true)}>
+        <Button full type="button" onClick={() => setIsSignupModalOpen(true)} variant="outline">
           회원가입
-        </SignupButton>
+        </Button>
         <Divider>
           <FindAccountButton onClick={() => navigate('/find-id')}>아이디 찾기</FindAccountButton>
           <DividerLine>|</DividerLine>
@@ -148,25 +152,6 @@ const Input = styled.input`
   `}
 `
 
-const LoginButton = styled.button`
-  padding: 12px;
-  background-color: #1a73e8;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  font-size: 16px;
-  cursor: pointer;
-
-  &:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-  }
-
-  &:not(:disabled):hover {
-    background-color: #1557b0;
-  }
-`
-
 const ErrorMessage = styled.span`
   color: #d93025;
   font-size: 14px;
@@ -174,48 +159,6 @@ const ErrorMessage = styled.span`
 
 const CheckboxGroup = styled.div`
   padding-bottom: 3.75rem;
-`
-
-const CheckboxLabel = styled.label`
-  ${({ theme }) => css`
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    ${theme.typography.body.b2_rg}
-    color: ${theme.colors.gray100};
-    cursor: pointer;
-  `}
-`
-
-const Checkbox = styled.input`
-  ${({ theme }) => css`
-    appearance: none;
-    width: 1.25rem;
-    height: 1.25rem;
-    border: 1px solid ${theme.colors.gray30};
-    cursor: pointer;
-    position: relative;
-
-    &:checked {
-      background-color: ${theme.colors.blue60};
-
-      &::after {
-        content: '';
-        position: absolute;
-        left: 6px;
-        top: 2px;
-        width: 5px;
-        height: 10px;
-        border: solid white;
-        border-width: 0 2px 2px 0;
-        transform: rotate(45deg);
-      }
-    }
-
-    &:hover {
-      border-color: ${theme.colors.gray30};
-    }
-  `}
 `
 
 const ActionGroup = styled.div`
@@ -226,22 +169,6 @@ const ActionGroup = styled.div`
   margin-top: 1rem;
   width: 100%;
   max-width: 428px;
-`
-
-const SignupButton = styled.button`
-  width: 100%;
-  padding: 12px;
-  background-color: white;
-  color: #1a73e8;
-  border: 1px solid #1a73e8;
-  border-radius: 4px;
-  font-size: 16px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-
-  &:hover {
-    background-color: #f8f9fa;
-  }
 `
 
 const Divider = styled.div`
@@ -262,6 +189,7 @@ const FindAccountButton = styled.button`
     border: none;
     color: ${theme.colors.gray90};
     ${theme.typography.body.b4_rg}
+    font-weight: 700;
     cursor: pointer;
     padding: 1rem;
 

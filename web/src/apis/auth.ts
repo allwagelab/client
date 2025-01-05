@@ -139,7 +139,7 @@ export const sendTempPassword = async (email: string) => {
     })
   } catch (error) {
     if (error instanceof AxiosError && error.response?.status === 401) {
-      throw new Error('등록되지 않은 이메일입니다')
+      throw new Error('가입된 정보가 없습니다. 이메일을 한번 더 확인해주세요.')
     }
     throw new Error('임시 비밀번호 발급 중 오류가 발생했습니다.')
   }

@@ -9,7 +9,7 @@ const createURL = (url: string) => {
 }
 
 const DB = {
-  BUSINESS_NUMBERS: ['1234567890'],
+  BUSINESS_NUMBERS: ['123-45-67890'],
   PHONE_NUMBERS: ['010-1234-5678'],
 }
 

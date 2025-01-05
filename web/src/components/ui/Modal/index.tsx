@@ -1,3 +1,4 @@
+import { css } from '@emotion/react'
 import styled from '@emotion/styled'
 import { type ReactNode, useEffect } from 'react'
 import { createPortal } from 'react-dom'
@@ -63,12 +64,13 @@ const Overlay = styled.div`
 
 const Content = styled.div`
   background: white;
-  padding: 24px;
-  border-radius: 8px;
-  width: 90%;
-  max-width: 500px;
-  max-height: 90vh;
+  padding: 64px;
+  border-radius: 18px;
+  min-width: 580px;
+  min-height: 800px;
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
 `
 
 const Header = styled.div`
@@ -78,7 +80,11 @@ const Header = styled.div`
   margin-bottom: 24px;
 `
 
-const Title = styled.h2`
+const Title = styled.h1`
+  ${({ theme }) => css`
+    ${theme.typography.title.t1_sb}
+    color: ${theme.colors.baseBlack};
+  `}
   margin: 0;
   font-size: 24px;
   font-weight: 600;
