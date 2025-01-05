@@ -157,34 +157,14 @@ const verifyPhoneNumberFindId = http.post<PathParams, { code: string }>(
     const { code } = await request.json()
     // 1234는 올바른 인증번호로 가정
     if (code === '1234') {
-      return new HttpResponse(null, {
-        status: 201,
-      })
-    }
-
-    return new HttpResponse(null, { status: 401 })
-  },
-)
-
-// 아이디 찾기 mock
-const findId = http.post<PathParams, { phoneNumber: string }>(
-  createURL('/auth/find-id'),
-  async ({ request }) => {
-    const { phoneNumber } = await request.json()
-
-    if (phoneNumber === '010-1234-5678') {
       return HttpResponse.json({
-        success: true,
         data: {
-          email: 'test@test.com',
+          email: 'test1@test.com',
         },
       })
     }
 
-    return new HttpResponse(null, {
-      status: 404,
-      statusText: '가입된 계정이 없습니다.',
-    })
+    return new HttpResponse(null, { status: 401 })
   },
 )
 
@@ -215,6 +195,5 @@ export const handlers = [
   verifyPhoneNumber,
   requestPhoneVerificationFindId,
   verifyPhoneNumberFindId,
-  findId,
   sendTempPassword,
 ]

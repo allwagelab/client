@@ -44,7 +44,7 @@ export const signup = async (data: SignupRequest): Promise<SignupResponse> => {
 export const verifyBusinessNumber = async (businessNumber: string) => {
   try {
     await axiosInstance.post('/auth/check/registration', {
-      businessNumber: businessNumber.replace(/[-]/g, ''),
+      businessNumber: businessNumber,
     })
   } catch (error) {
     if (error instanceof AxiosError && error.response) {
@@ -116,10 +116,12 @@ export const requestPhoneVerificationFindId = async (phoneNumber: string) => {
 
 export const verifyPhoneNumberFindId = async (phoneNumber: string, code: string) => {
   try {
-    await axiosInstance.post('/auth/email/verify/code', {
+    const response = await axiosInstance.post('/auth/email/verify/code', {
       hp: phoneNumber,
       code,
     })
+
+    return response.data.data.email
   } catch (error) {
     if (error instanceof AxiosError && error.response) {
       if (error.response.status === 401) {
@@ -127,20 +129,6 @@ export const verifyPhoneNumberFindId = async (phoneNumber: string, code: string)
       }
     }
     throw new Error('휴대폰 인증번호 확인 중 오류가 발생했습니다')
-  }
-}
-
-export const findId = async (phoneNumber: string) => {
-  try {
-    const response = await axiosInstance.post('/auth/find-id', {
-      phoneNumber,
-    })
-    return response.data
-  } catch (error) {
-    if (error instanceof AxiosError && error.response?.status === 404) {
-      throw new Error('가입된 계정이 없습니다')
-    }
-    throw new Error('아이디 찾기 중 오류가 발생했습니다')
   }
 }
 

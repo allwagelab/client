@@ -42,7 +42,7 @@ function SignupModal({ isOpen, onClose }: SignupModalProps) {
       hp: businessData.phoneNumber,
       sub: {
         name: businessData.businessName,
-        registration: businessData.businessNumber.replace(/-/g, ''),
+        registration: businessData.businessNumber,
         staffCount: businessData.employeeCount === 'under5' ? 'UNDER_FIVE' : 'OVER_FIVE',
       },
     })

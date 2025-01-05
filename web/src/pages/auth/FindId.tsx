@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import { z } from 'zod'
 
-import { requestPhoneVerificationFindId, verifyPhoneNumberFindId, findId } from '@/apis/auth'
+import { requestPhoneVerificationFindId, verifyPhoneNumberFindId } from '@/apis/auth'
 import SignupModal from '@/components/auth/SignupModal'
 import useTimer from '@/hooks/useTimer'
 import { PHONE_NUMBER_REGEX } from '@/lib/constants'
@@ -72,35 +72,6 @@ function FindIdPage() {
       startTimer()
     },
     onError: (error: Error) => {
-      setError('phoneNumber', {
-        type: 'manual',
-        message: error.message,
-      })
-    },
-  })
-
-  const { mutate: verifyPhone, isPending: isVerifyingPhone } = useMutation({
-    mutationFn: ({ phoneNumber, code }: { phoneNumber: string; code: string }) =>
-      verifyPhoneNumberFindId(phoneNumber, code),
-    onSuccess: () => {
-      setIsPhoneVerified(true)
-      clearErrors('verificationCode')
-    },
-    onError: (error: Error) => {
-      setError('verificationCode', {
-        type: 'manual',
-        message: error.message,
-      })
-    },
-  })
-
-  const { mutate: findAccount, isPending: isFinding } = useMutation({
-    mutationFn: findId,
-    onSuccess: (response) => {
-      setFoundData({ email: response.data.email })
-      setCurrentStep('FOUND')
-    },
-    onError: (error) => {
       if (error.message === '가입된 계정이 없습니다') {
         setCurrentStep('NOT_FOUND')
       } else {
@@ -109,6 +80,22 @@ function FindIdPage() {
           message: error.message,
         })
       }
+    },
+  })
+
+  const { mutate: verifyPhone, isPending: isVerifyingPhone } = useMutation({
+    mutationFn: ({ phoneNumber, code }: { phoneNumber: string; code: string }) =>
+      verifyPhoneNumberFindId(phoneNumber, code),
+    onSuccess: (email: string) => {
+      setIsPhoneVerified(true)
+      clearErrors('verificationCode')
+      setFoundData({ email })
+    },
+    onError: (error: Error) => {
+      setError('verificationCode', {
+        type: 'manual',
+        message: error.message,
+      })
     },
   })
 
@@ -144,7 +131,7 @@ function FindIdPage() {
     clearErrors('phoneNumber')
   }
 
-  const onSubmit = async (data: FindIdFormData) => {
+  const onSubmit = async () => {
     if (!isPhoneVerified) {
       setError('phoneNumber', {
         type: 'manual',
@@ -153,7 +140,7 @@ function FindIdPage() {
       return
     }
 
-    findAccount(data.phoneNumber)
+    setCurrentStep('FOUND')
   }
 
   if (currentStep === 'FOUND' && foundData) {
@@ -247,7 +234,7 @@ function FindIdPage() {
         )}
 
         <FindButton type="submit" disabled={!isPhoneVerified}>
-          {isFinding ? '찾는 중...' : '아이디 찾기'}
+          아이디 찾기
         </FindButton>
       </Form>
     </Container>
