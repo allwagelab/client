@@ -25,9 +25,16 @@ function LoginPage() {
   const navigate = useNavigate()
   const [loginError, setLoginError] = useState<string>('')
   const [isSignupModalOpen, setIsSignupModalOpen] = useState(false)
-  const [isAutoLoginEnabled, setIsAutoLoginEnabled] = useState(false)
+  const [isAutoLogin, setIsAutoLogin] = useState(localStorage.getItem('autoLogin') === 'Y')
 
   const { login, isLoggingIn } = useLogin({
+    onSuccess: () => {
+      if (isAutoLogin) {
+        localStorage.setItem('autoLogin', 'Y')
+      } else {
+        localStorage.removeItem('autoLogin')
+      }
+    },
     onError: (error) => setLoginError(error.message),
     redirectTo: '/home',
   })
@@ -66,8 +73,8 @@ function LoginPage() {
         <CheckboxGroup>
           <Checkbox
             label="로그인 상태 유지"
-            checked={isAutoLoginEnabled}
-            onChange={(e) => setIsAutoLoginEnabled(e.target.checked)}
+            checked={isAutoLogin}
+            onChange={(e) => setIsAutoLogin(e.target.checked)}
           />
         </CheckboxGroup>
 

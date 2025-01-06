@@ -44,7 +44,7 @@ export const signup = async (data: SignupRequest): Promise<SignupResponse> => {
 export const verifyBusinessNumber = async (businessNumber: string) => {
   try {
     await axiosInstance.post('/auth/check/registration', {
-      businessNumber: businessNumber,
+      registration: businessNumber,
     })
   } catch (error) {
     if (error instanceof AxiosError && error.response) {

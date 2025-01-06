@@ -69,12 +69,12 @@ const signup = http.post(createURL('/auth/signup/email'), async ({ request }) =>
 })
 
 // 사업자 등록번호 확인 mock
-const verifyBusinessNumber = http.post<PathParams, { businessNumber: string }>(
+const verifyBusinessNumber = http.post<PathParams, { registration: string }>(
   createURL('/auth/check/registration'),
   async ({ request }) => {
-    const { businessNumber } = await request.json()
+    const { registration } = await request.json()
 
-    if (DB.BUSINESS_NUMBERS.includes(businessNumber)) {
+    if (DB.BUSINESS_NUMBERS.includes(registration)) {
       return new HttpResponse(null, {
         status: 401,
       })
