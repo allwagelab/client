@@ -1,9 +1,9 @@
+import { css } from '@emotion/react'
 import { Outlet, Navigate } from 'react-router-dom'
 import { useShallow } from 'zustand/shallow'
-import { css } from '@emotion/react'
 
-import { useAuthStore } from '@/stores/auth'
 import { UiComponent } from '@/components'
+import { useAuthStore } from '@/stores/auth'
 
 function Private() {
   const { auth } = useAuthStore(

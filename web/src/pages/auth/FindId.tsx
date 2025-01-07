@@ -1,4 +1,6 @@
+import { PHONE_NUMBER_REGEX } from '@allwagelab/constants'
 import { Button } from '@allwagelab/react'
+import { formatPhoneNumber } from '@allwagelab/utils'
 import { css } from '@emotion/react'
 import styled from '@emotion/styled'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -11,8 +13,6 @@ import { z } from 'zod'
 import { requestPhoneVerificationFindId, verifyPhoneNumberFindId } from '@/apis/auth'
 import SignupModal from '@/components/auth/SignupModal'
 import useTimer from '@/hooks/useTimer'
-import { PHONE_NUMBER_REGEX } from '@/lib/constants'
-import { formatPhoneNumber } from '@/lib/utils'
 
 const findIdSchema = z.object({
   phoneNumber: z

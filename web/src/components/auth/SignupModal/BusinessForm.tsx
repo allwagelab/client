@@ -1,4 +1,6 @@
+import { BUSINESS_NUMBER_REGEX, PHONE_NUMBER_REGEX } from '@allwagelab/constants'
 import { Button } from '@allwagelab/react'
+import { formatBusinessNumber, formatPhoneNumber } from '@allwagelab/utils'
 import styled from '@emotion/styled'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation } from '@tanstack/react-query'
@@ -10,8 +12,6 @@ import type { BusinessInfoFormData } from '@/types/auth'
 
 import { verifyBusinessNumber, requestPhoneVerification, verifyPhoneNumber } from '@/apis/auth'
 import useTimer from '@/hooks/useTimer'
-import { BUSINESS_NUMBER_REGEX, PHONE_NUMBER_REGEX } from '@/lib/constants'
-import { formatBusinessNumber, formatPhoneNumber } from '@/lib/utils'
 import {
   Form,
   Input,

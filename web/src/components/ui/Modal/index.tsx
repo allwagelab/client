@@ -1,7 +1,10 @@
 import { css } from '@emotion/react'
 import styled from '@emotion/styled'
-import { type ReactNode, useEffect } from 'react'
 import { createPortal } from 'react-dom'
+
+import type { ReactNode } from 'react'
+
+import { useKeyEscape } from '@/hooks'
 
 interface ModalProps {
   isOpen: boolean
@@ -11,23 +14,7 @@ interface ModalProps {
 }
 
 function Modal({ isOpen, onClose, children, title }: ModalProps) {
-  useEffect(() => {
-    const handleEsc = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        onClose()
-      }
-    }
-
-    if (isOpen) {
-      document.addEventListener('keydown', handleEsc)
-      document.body.style.overflow = 'hidden'
-    }
-
-    return () => {
-      document.removeEventListener('keydown', handleEsc)
-      document.body.style.overflow = 'unset'
-    }
-  }, [isOpen, onClose])
+  useKeyEscape({ isOpen, onClose })
 
   if (!isOpen) {
     return null

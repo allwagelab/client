@@ -32,9 +32,6 @@ importers:
       '@allwagelab/design':
         specifier: ^0.0.2
         version: 0.0.2(react@18.3.1)
-      '@allwagelab/react':
-        specifier: ^0.0.4
-        version: 0.0.4(@allwagelab/design@0.0.2(react@18.3.1))(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1)
       '@allwagelab/utils':
         specifier: workspace:*
         version: link:../../packages/utils
@@ -2528,13 +2525,6 @@ snapshots:
   '@allwagelab/esbuild-config@0.0.2':
     dependencies:
       esbuild: 0.24.2
-
-  '@allwagelab/react@0.0.4(@allwagelab/design@0.0.2(react@18.3.1))(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1)':
-    dependencies:
-      '@allwagelab/design': 0.0.2(react@18.3.1)
-      '@emotion/react': 11.14.0(@types/react@18.3.18)(react@18.3.1)
-      '@emotion/styled': 11.14.0(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@types/react@18.3.18)(react@18.3.1)
-      react: 18.3.1
 
   '@allwagelab/react@0.0.4(@allwagelab/design@1.0.0(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1))(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1)':
     dependencies:

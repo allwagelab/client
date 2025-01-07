@@ -7,7 +7,7 @@ import { axiosPrivateInstance } from '@/apis'
 import { useAuthStore } from '@/stores/auth'
 
 export const useAxiosPrivate = () => {
-  const refresh = useRefreshToken()
+  const renewAccessToken = useRefreshToken()
   const auth = useAuthStore(useShallow((state) => state.auth))
 
   useEffect(() => {
@@ -27,7 +27,7 @@ export const useAxiosPrivate = () => {
         const prevRequest = error?.config
         if (error?.response?.status === 401 && !prevRequest?.sent) {
           prevRequest.sent = true
-          const newAccessToken = await refresh()
+          const newAccessToken = await renewAccessToken()
           console.log(newAccessToken)
           // prevRequest.headers.Authorization = `Bearer ${newAccessToken}`
           // return axiosPrivateInstance(prevRequest)
@@ -40,7 +40,7 @@ export const useAxiosPrivate = () => {
       axiosPrivateInstance.interceptors.request.eject(requestIntercept)
       axiosPrivateInstance.interceptors.response.eject(responseIntercept)
     }
-  }, [auth, refresh])
+  }, [auth, renewAccessToken])
 
   return axiosPrivateInstance
 }

@@ -1,3 +1,4 @@
+import { PASSWORD_REGEX } from '@allwagelab/constants'
 import { Button, Checkbox } from '@allwagelab/react'
 import { css } from '@emotion/react'
 import styled from '@emotion/styled'
@@ -9,7 +10,6 @@ import { z } from 'zod'
 
 import SignupModal from '@/components/auth/SignupModal'
 import { useLogin } from '@/hooks'
-import { PASSWORD_REGEX } from '@/lib/constants'
 
 const loginSchema = z.object({
   email: z.string().email('올바른 이메일 형식을 입력해주세요'),

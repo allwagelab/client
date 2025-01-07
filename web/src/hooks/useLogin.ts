@@ -23,13 +23,13 @@ export const useLogin = ({ onSuccess, onError, redirectTo = '/' }: UseLoginProps
     mutationFn: login,
     onSuccess: (response) => {
       const { accessToken } = response.data
-
       setAuth({ accessToken })
-      navigate(redirectTo)
 
       if (onSuccess) {
         onSuccess()
       }
+
+      navigate(redirectTo)
     },
     onError: (error: Error) => {
       if (onError) {

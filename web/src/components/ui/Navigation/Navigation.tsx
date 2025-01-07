@@ -1,6 +1,6 @@
 import { useNavigate, useLocation } from 'react-router-dom'
 
-import { useAxiosPrivate } from '@/hooks/useAxiosPrivate'
+import { useAxiosPrivate } from '@/hooks'
 
 const NAV_LIST = [
   {
