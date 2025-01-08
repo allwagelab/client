@@ -1,7 +1,10 @@
 const PATH = {
-  login: "/login",
-  home: "/home/*",
-  schedule: "/schedule/*",
-} as const;
+  login: '/login',
+  signup: '/signup',
+  findId: '/find-id',
+  findPassword: '/find-password',
+  home: '/home/*',
+  schedule: '/schedule/*',
+} as const
 
-export { PATH };
+export { PATH }

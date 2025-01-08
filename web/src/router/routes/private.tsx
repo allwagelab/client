@@ -1,10 +1,10 @@
-import type { RouteObject } from "react-router-dom";
+import HomeRoutes from 'home/HomeRoutes'
+import ScheduleRoutes from 'schedule/ScheduleRoutes'
 
-import HomeRoutes from "home/HomeRoutes";
-import ScheduleRoutes from "schedule/ScheduleRoutes";
+import type { RouteObject } from 'react-router-dom'
 
-import { LayoutComponent } from "@/components";
-import { PATH } from "@/data/path";
+import { LayoutComponent } from '@/components'
+import { PATH } from '@/data/path'
 
 export const privateRoutes: RouteObject = {
   element: <LayoutComponent.Private />,
@@ -22,4 +22,4 @@ export const privateRoutes: RouteObject = {
       ],
     },
   ],
-};
+}
