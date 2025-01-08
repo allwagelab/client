@@ -1,13 +1,14 @@
-import { useShallow } from 'zustand/shallow'
 import { css, useTheme } from '@emotion/react'
 import styled from '@emotion/styled'
+import { useShallow } from 'zustand/shallow'
+
+import { typographyStyle } from '@allwagelab/design'
 
 import { useAuthStore } from '@/stores/auth'
-import { typographyStyle } from '@allwagelab/design'
 
 function LoginPage() {
   const { setAuth } = useAuthStore(
-    useShallow((state) => ({
+    useShallow(state => ({
       setAuth: state.setAuth,
     })),
   )

@@ -1,8 +1,8 @@
-import { type RouteObject, Navigate } from "react-router-dom";
+import { type RouteObject, Navigate } from 'react-router-dom'
 
-import { LoginPage } from "@/pages";
-import { LayoutComponent } from "@/components";
-import { PATH } from "@/data/path";
+import { LayoutComponent } from '@/components'
+import { PATH } from '@/data/path'
+import { LoginPage } from '@/pages'
 
 export const publicRoutes: RouteObject = {
   element: <LayoutComponent.Protected />,
@@ -14,10 +14,10 @@ export const publicRoutes: RouteObject = {
           element: <LoginPage />,
         },
         {
-          path: "/",
+          path: '/',
           element: <Navigate to={PATH.login} replace />,
         },
       ],
     },
   ],
-};
+}
