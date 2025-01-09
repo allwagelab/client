@@ -1,9 +1,5 @@
-<<<<<<< HEAD
-import { Checkbox } from '@allwagelab/react'
-=======
 import { PASSWORD_REGEX } from '@allwagelab/constants'
 import { Button, Checkbox } from '@allwagelab/react'
->>>>>>> develop
 import { css } from '@emotion/react'
 import styled from '@emotion/styled'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -30,8 +26,6 @@ function LoginPage() {
   const [loginError, setLoginError] = useState<string>('')
   const [isSignupModalOpen, setIsSignupModalOpen] = useState(false)
   const [isAutoLogin, setIsAutoLogin] = useState(localStorage.getItem('autoLogin') === 'Y')
-
-  const [isAutoLoginEnabled, setIsAutoLoginEnabled] = useState(false)
 
   const { login, isLoggingIn } = useLogin({
     onSuccess: () => {
@@ -79,13 +73,8 @@ function LoginPage() {
         <CheckboxGroup>
           <Checkbox
             label="로그인 상태 유지"
-<<<<<<< HEAD
-            checked={isAutoLoginEnabled}
-            onChange={(e) => setIsAutoLoginEnabled(e.target.checked)}
-=======
             checked={isAutoLogin}
             onChange={(e) => setIsAutoLogin(e.target.checked)}
->>>>>>> develop
           />
         </CheckboxGroup>
 
@@ -179,51 +168,6 @@ const CheckboxGroup = styled.div`
   padding-bottom: 3.75rem;
 `
 
-<<<<<<< HEAD
-// const CheckboxLabel = styled.label`
-//   ${({ theme }) => css`
-//     display: flex;
-//     align-items: center;
-//     gap: 0.5rem;
-//     ${theme.typography.body.b2_rg}
-//     color: ${theme.colors.gray100};
-//     cursor: pointer;
-//   `}
-// `
-
-// const Checkbox = styled.input`
-//   ${({ theme }) => css`
-//     appearance: none;
-//     width: 1.25rem;
-//     height: 1.25rem;
-//     border: 1px solid ${theme.colors.gray30};
-//     cursor: pointer;
-//     position: relative;
-
-//     &:checked {
-//       background-color: ${theme.colors.blue60};
-
-//       &::after {
-//         content: '';
-//         position: absolute;
-//         left: 6px;
-//         top: 2px;
-//         width: 5px;
-//         height: 10px;
-//         border: solid white;
-//         border-width: 0 2px 2px 0;
-//         transform: rotate(45deg);
-//       }
-//     }
-
-//     &:hover {
-//       border-color: ${theme.colors.gray30};
-//     }
-//   `}
-// `
-
-=======
->>>>>>> develop
 const ActionGroup = styled.div`
   display: flex;
   flex-direction: column;
