@@ -1,6 +1,10 @@
+import { css } from '@emotion/react'
 import styled from '@emotion/styled'
-import { type ReactNode, useEffect } from 'react'
 import { createPortal } from 'react-dom'
+
+import type { ReactNode } from 'react'
+
+import { useKeyEscape } from '@/hooks'
 
 interface ModalProps {
   isOpen: boolean
@@ -10,23 +14,7 @@ interface ModalProps {
 }
 
 function Modal({ isOpen, onClose, children, title }: ModalProps) {
-  useEffect(() => {
-    const handleEsc = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        onClose()
-      }
-    }
-
-    if (isOpen) {
-      document.addEventListener('keydown', handleEsc)
-      document.body.style.overflow = 'hidden'
-    }
-
-    return () => {
-      document.removeEventListener('keydown', handleEsc)
-      document.body.style.overflow = 'unset'
-    }
-  }, [isOpen, onClose])
+  useKeyEscape({ isOpen, onClose })
 
   if (!isOpen) {
     return null
@@ -63,12 +51,13 @@ const Overlay = styled.div`
 
 const Content = styled.div`
   background: white;
-  padding: 24px;
-  border-radius: 8px;
-  width: 90%;
-  max-width: 500px;
-  max-height: 90vh;
+  padding: 64px;
+  border-radius: 18px;
+  min-width: 580px;
+  min-height: 800px;
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
 `
 
 const Header = styled.div`
@@ -78,7 +67,11 @@ const Header = styled.div`
   margin-bottom: 24px;
 `
 
-const Title = styled.h2`
+const Title = styled.h1`
+  ${({ theme }) => css`
+    ${theme.typography.title.t1_sb}
+    color: ${theme.colors.baseBlack};
+  `}
   margin: 0;
   font-size: 24px;
   font-weight: 600;

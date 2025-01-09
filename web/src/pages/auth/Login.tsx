@@ -1,4 +1,9 @@
+<<<<<<< HEAD
 import { Checkbox } from '@allwagelab/react'
+=======
+import { PASSWORD_REGEX } from '@allwagelab/constants'
+import { Button, Checkbox } from '@allwagelab/react'
+>>>>>>> develop
 import { css } from '@emotion/react'
 import styled from '@emotion/styled'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -9,7 +14,6 @@ import { z } from 'zod'
 
 import SignupModal from '@/components/auth/SignupModal'
 import { useLogin } from '@/hooks'
-import { PASSWORD_REGEX } from '@/lib/constants'
 
 const loginSchema = z.object({
   email: z.string().email('올바른 이메일 형식을 입력해주세요'),
@@ -25,10 +29,18 @@ function LoginPage() {
   const navigate = useNavigate()
   const [loginError, setLoginError] = useState<string>('')
   const [isSignupModalOpen, setIsSignupModalOpen] = useState(false)
+  const [isAutoLogin, setIsAutoLogin] = useState(localStorage.getItem('autoLogin') === 'Y')
 
   const [isAutoLoginEnabled, setIsAutoLoginEnabled] = useState(false)
 
   const { login, isLoggingIn } = useLogin({
+    onSuccess: () => {
+      if (isAutoLogin) {
+        localStorage.setItem('autoLogin', 'Y')
+      } else {
+        localStorage.removeItem('autoLogin')
+      }
+    },
     onError: (error) => setLoginError(error.message),
     redirectTo: '/home',
   })
@@ -51,6 +63,7 @@ function LoginPage() {
     <Container>
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Title>로그인</Title>
+
         <InputGroup>
           <Label>이메일</Label>
           <Input type="email" placeholder="example@email.com" {...register('email')} />
@@ -66,21 +79,26 @@ function LoginPage() {
         <CheckboxGroup>
           <Checkbox
             label="로그인 상태 유지"
+<<<<<<< HEAD
             checked={isAutoLoginEnabled}
             onChange={(e) => setIsAutoLoginEnabled(e.target.checked)}
+=======
+            checked={isAutoLogin}
+            onChange={(e) => setIsAutoLogin(e.target.checked)}
+>>>>>>> develop
           />
         </CheckboxGroup>
 
-        <LoginButton type="submit" disabled={isLoggingIn}>
-          {isLoggingIn ? '로그인 중...' : '로그인'}
-        </LoginButton>
+        <Button full type="submit" loading={isLoggingIn} disabled={isLoggingIn}>
+          로그인
+        </Button>
         {loginError && <ErrorMessage>{loginError}</ErrorMessage>}
       </Form>
 
       <ActionGroup>
-        <SignupButton type="button" onClick={() => setIsSignupModalOpen(true)}>
+        <Button full type="button" onClick={() => setIsSignupModalOpen(true)} variant="outline">
           회원가입
-        </SignupButton>
+        </Button>
         <Divider>
           <FindAccountButton onClick={() => navigate('/find-id')}>아이디 찾기</FindAccountButton>
           <DividerLine>|</DividerLine>
@@ -152,25 +170,6 @@ const Input = styled.input`
   `}
 `
 
-const LoginButton = styled.button`
-  padding: 12px;
-  background-color: #1a73e8;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  font-size: 16px;
-  cursor: pointer;
-
-  &:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-  }
-
-  &:not(:disabled):hover {
-    background-color: #1557b0;
-  }
-`
-
 const ErrorMessage = styled.span`
   color: #d93025;
   font-size: 14px;
@@ -180,6 +179,7 @@ const CheckboxGroup = styled.div`
   padding-bottom: 3.75rem;
 `
 
+<<<<<<< HEAD
 // const CheckboxLabel = styled.label`
 //   ${({ theme }) => css`
 //     display: flex;
@@ -222,6 +222,8 @@ const CheckboxGroup = styled.div`
 //   `}
 // `
 
+=======
+>>>>>>> develop
 const ActionGroup = styled.div`
   display: flex;
   flex-direction: column;
@@ -230,22 +232,6 @@ const ActionGroup = styled.div`
   margin-top: 1rem;
   width: 100%;
   max-width: 428px;
-`
-
-const SignupButton = styled.button`
-  width: 100%;
-  padding: 12px;
-  background-color: white;
-  color: #1a73e8;
-  border: 1px solid #1a73e8;
-  border-radius: 4px;
-  font-size: 16px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-
-  &:hover {
-    background-color: #f8f9fa;
-  }
 `
 
 const Divider = styled.div`
@@ -266,6 +252,7 @@ const FindAccountButton = styled.button`
     border: none;
     color: ${theme.colors.gray90};
     ${theme.typography.body.b4_rg}
+    font-weight: 700;
     cursor: pointer;
     padding: 1rem;
 

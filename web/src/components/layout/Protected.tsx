@@ -48,7 +48,7 @@ const protectedLayout = css`
     grid-template-columns: 1fr 1fr;
   }
 
-  main > div:nth-child(2) {
+  main > div:nth-of-type(2) {
     background-color: #457dff;
     margin: 0.5rem 3rem 3.75rem;
     border-radius: 1rem;

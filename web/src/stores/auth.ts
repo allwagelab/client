@@ -22,6 +22,12 @@ export const useAuthStore = create<IAuthStore>()(
     }),
     {
       name: 'auth-storage',
+      onRehydrateStorage: () => (state) => {
+        if (localStorage.getItem('autoLogin') !== 'Y' && state) {
+          localStorage.removeItem('autoLogin')
+          state.setAuth(null)
+        }
+      },
     },
   ),
 )

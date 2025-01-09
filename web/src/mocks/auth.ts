@@ -1,6 +1,5 @@
+import { PHONE_NUMBER_REGEX } from '@allwagelab/constants'
 import { http, HttpResponse, type PathParams } from 'msw'
-
-import { PHONE_NUMBER_REGEX } from '@/lib/constants'
 
 const createURL = (url: string) => {
   const baseURL = import.meta.env.VITE_BASE_URL
@@ -9,7 +8,7 @@ const createURL = (url: string) => {
 }
 
 const DB = {
-  BUSINESS_NUMBERS: ['1234567890'],
+  BUSINESS_NUMBERS: ['123-45-67890'],
   PHONE_NUMBERS: ['010-1234-5678'],
 }
 
@@ -69,12 +68,12 @@ const signup = http.post(createURL('/auth/signup/email'), async ({ request }) =>
 })
 
 // 사업자 등록번호 확인 mock
-const verifyBusinessNumber = http.post<PathParams, { businessNumber: string }>(
+const verifyBusinessNumber = http.post<PathParams, { registration: string }>(
   createURL('/auth/check/registration'),
   async ({ request }) => {
-    const { businessNumber } = await request.json()
+    const { registration } = await request.json()
 
-    if (DB.BUSINESS_NUMBERS.includes(businessNumber)) {
+    if (DB.BUSINESS_NUMBERS.includes(registration)) {
       return new HttpResponse(null, {
         status: 401,
       })
@@ -157,34 +156,14 @@ const verifyPhoneNumberFindId = http.post<PathParams, { code: string }>(
     const { code } = await request.json()
     // 1234는 올바른 인증번호로 가정
     if (code === '1234') {
-      return new HttpResponse(null, {
-        status: 201,
-      })
-    }
-
-    return new HttpResponse(null, { status: 401 })
-  },
-)
-
-// 아이디 찾기 mock
-const findId = http.post<PathParams, { phoneNumber: string }>(
-  createURL('/auth/find-id'),
-  async ({ request }) => {
-    const { phoneNumber } = await request.json()
-
-    if (phoneNumber === '010-1234-5678') {
       return HttpResponse.json({
-        success: true,
         data: {
-          email: 'test@test.com',
+          email: 'test1@test.com',
         },
       })
     }
 
-    return new HttpResponse(null, {
-      status: 404,
-      statusText: '가입된 계정이 없습니다.',
-    })
+    return new HttpResponse(null, { status: 401 })
   },
 )
 
@@ -215,6 +194,5 @@ export const handlers = [
   verifyPhoneNumber,
   requestPhoneVerificationFindId,
   verifyPhoneNumberFindId,
-  findId,
   sendTempPassword,
 ]

@@ -7,4 +7,12 @@ const axiosInstance: AxiosInstance = axios.create({
   },
 })
 
-export { axiosInstance }
+const axiosPrivateInstance: AxiosInstance = axios.create({
+  baseURL: import.meta.env.VITE_BASE_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  withCredentials: true,
+})
+
+export { axiosInstance, axiosPrivateInstance }

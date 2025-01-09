@@ -6,11 +6,12 @@ import { login } from '@/apis/auth'
 import { useAuthStore } from '@/stores/auth'
 
 interface UseLoginProps {
+  onSuccess?: () => void
   onError?: (error: Error) => void
   redirectTo?: string
 }
 
-export const useLogin = ({ onError, redirectTo = '/' }: UseLoginProps = {}) => {
+export const useLogin = ({ onSuccess, onError, redirectTo = '/' }: UseLoginProps = {}) => {
   const navigate = useNavigate()
   const { setAuth } = useAuthStore(
     useShallow((state) => ({
@@ -22,8 +23,12 @@ export const useLogin = ({ onError, redirectTo = '/' }: UseLoginProps = {}) => {
     mutationFn: login,
     onSuccess: (response) => {
       const { accessToken } = response.data
-
       setAuth({ accessToken })
+
+      if (onSuccess) {
+        onSuccess()
+      }
+
       navigate(redirectTo)
     },
     onError: (error: Error) => {

@@ -1,3 +1,6 @@
+import { BUSINESS_NUMBER_REGEX, PHONE_NUMBER_REGEX } from '@allwagelab/constants'
+import { Button } from '@allwagelab/react'
+import { formatBusinessNumber, formatPhoneNumber } from '@allwagelab/utils'
 import styled from '@emotion/styled'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation } from '@tanstack/react-query'
@@ -9,21 +12,28 @@ import type { BusinessInfoFormData } from '@/types/auth'
 
 import { verifyBusinessNumber, requestPhoneVerification, verifyPhoneNumber } from '@/apis/auth'
 import useTimer from '@/hooks/useTimer'
-import { BUSINESS_NUMBER_REGEX, PHONE_NUMBER_REGEX } from '@/lib/constants'
-import { formatBusinessNumber, formatPhoneNumber } from '@/lib/utils'
+import {
+  Form,
+  Input,
+  InputSection,
+  InputGroup,
+  Label,
+  ErrorMessage,
+  SuccessMessage,
+} from '@/styles'
 
 const businessInfoSchema = z.object({
   businessName: z.string().min(1, '사업장 이름을 입력해주세요'),
   businessNumber: z
     .string()
-    .min(1, '사업장 등록 번호를 입력해주세요')
-    .regex(BUSINESS_NUMBER_REGEX, '올바른 사업자 등록번호 형식이 아닙니다'),
+    .min(1, '사업장 등록 번호를 입력해주세요.')
+    .regex(BUSINESS_NUMBER_REGEX, '올바른 사업자 등록번호 형식이 아닙니다.'),
   phoneNumber: z
     .string()
-    .min(1, '휴대폰 번호를 입력해주세요')
+    .min(1, '휴대폰 번호를 입력해주세요.')
     .regex(PHONE_NUMBER_REGEX, '올바른 휴대폰 번호 형식이 아닙니다. (예: 010-0000-0000)'),
   employeeCount: z.enum(['under5', 'over5'], {
-    required_error: '직원 수를 선택해주세요',
+    required_error: '직원 수를 선택해주세요.',
   }),
 })
 
@@ -37,6 +47,8 @@ function BusinessForm({ onSubmit, onBack }: BusinessFormProps) {
   const [isPhoneVerified, setIsPhoneVerified] = useState(false)
   const [showVerificationField, setShowVerificationField] = useState(false)
   const [submitError, setSubmitError] = useState<string>('')
+  const [isBusinessNumberEmpty, setIsBusinessNumberEmpty] = useState(true)
+  const [isPhoneNumberEmpty, setIsPhoneNumberEmpty] = useState(true)
 
   const {
     register,
@@ -149,6 +161,7 @@ function BusinessForm({ onSubmit, onBack }: BusinessFormProps) {
     const value = e.target.value
     e.target.value = formatBusinessNumber(value)
     register('businessNumber').onChange(e)
+    setIsBusinessNumberEmpty(value === '')
     setIsBusinessNumberVerified(false)
     clearErrors('businessNumber')
   }
@@ -157,6 +170,7 @@ function BusinessForm({ onSubmit, onBack }: BusinessFormProps) {
     const value = e.target.value
     e.target.value = formatPhoneNumber(value)
     register('phoneNumber').onChange(e)
+    setIsPhoneNumberEmpty(value === '')
     setIsPhoneVerified(false)
     setShowVerificationField(false)
     clearErrors('phoneNumber')
@@ -194,191 +208,120 @@ function BusinessForm({ onSubmit, onBack }: BusinessFormProps) {
 
   return (
     <Form onSubmit={handleSubmit(onFormSubmit)}>
-      <InputGroup>
-        <Label>사업장 이름</Label>
-        <Input type="text" placeholder="올웨이지 시청점" {...register('businessName')} />
-        {errors.businessName && <ErrorMessage>{errors.businessName.message}</ErrorMessage>}
-      </InputGroup>
-
-      <InputGroup>
-        <Label>사업자 등록 번호</Label>
-        <InputWithButton>
-          <Input
-            type="text"
-            placeholder="000-00-00000"
-            {...register('businessNumber')}
-            onChange={handleBusinessNumberChange}
-          />
-          <VerifyButton
-            type="button"
-            onClick={handleBusinessNumberVerify}
-            disabled={isVerifyingBusiness || isBusinessNumberVerified}
-          >
-            {isVerifyingBusiness ? '확인 중...' : '중복 확인'}
-          </VerifyButton>
-        </InputWithButton>
-        {errors.businessNumber && <ErrorMessage>{errors.businessNumber.message}</ErrorMessage>}
-        {isBusinessNumberVerified && <SuccessMessage>등록 가능한 사업자 번호입니다</SuccessMessage>}
-      </InputGroup>
-
-      <InputGroup>
-        <Label>휴대폰 번호</Label>
-        <InputWithButton>
-          <Input
-            type="tel"
-            placeholder="010-0000-0000"
-            {...register('phoneNumber')}
-            onChange={handlePhoneNumberChange}
-          />
-          <VerifyButton
-            type="button"
-            onClick={handlePhoneVerification}
-            disabled={isSendingVerification}
-          >
-            {isSendingVerification ? '전송 중...' : showVerificationField ? '재전송' : '인증 요청'}
-          </VerifyButton>
-        </InputWithButton>
-        {errors.phoneNumber && <ErrorMessage>{errors.phoneNumber.message}</ErrorMessage>}
-        {isRunning && (
-          <SuccessMessage>인증번호를 발송했습니다. 최대 3분이 소요될 수 있습니다.</SuccessMessage>
-        )}
-      </InputGroup>
-
-      {showVerificationField && (
+      <InputSection>
         <InputGroup>
-          <Label>인증번호</Label>
-          <InputWithButton>
-            <Input type="text" placeholder="인증번호 입력" {...register('verificationCode')} />
-            <VerifyButton
-              type="button"
-              onClick={handleVerifyCode}
-              disabled={isVerifyingPhone || isPhoneVerified}
-            >
-              {isVerifyingPhone ? '확인 중...' : '인증 확인'}
-            </VerifyButton>
-          </InputWithButton>
-          {isRunning && <TimerText>{formatTime()}</TimerText>}
-          {errors.verificationCode && (
-            <ErrorMessage>{errors.verificationCode.message}</ErrorMessage>
-          )}
-          {isPhoneVerified && <SuccessMessage>휴대폰 인증이 완료되었습니다</SuccessMessage>}
+          <Label>사업장 이름</Label>
+          <Input type="text" placeholder="올웨이지 시청점" {...register('businessName')} />
+          {errors.businessName && <ErrorMessage>{errors.businessName.message}</ErrorMessage>}
         </InputGroup>
-      )}
 
-      <InputGroup>
-        <Label>직원 수</Label>
-        <RadioGroup>
-          <RadioLabel>
-            <RadioInput type="radio" value="under5" defaultChecked {...register('employeeCount')} />
-            5인 미만
-          </RadioLabel>
-          <RadioLabel>
-            <RadioInput type="radio" value="over5" {...register('employeeCount')} />
-            5인 이상
-          </RadioLabel>
-        </RadioGroup>
-        {errors.employeeCount && <ErrorMessage>{errors.employeeCount.message}</ErrorMessage>}
-      </InputGroup>
+        <InputGroup>
+          <Label>사업자 등록 번호</Label>
+          <InputWithButton>
+            <Input
+              type="text"
+              placeholder="000-00-00000"
+              {...register('businessNumber')}
+              onChange={handleBusinessNumberChange}
+            />
+            <Button
+              type="button"
+              onClick={handleBusinessNumberVerify}
+              disabled={isBusinessNumberEmpty || isBusinessNumberVerified}
+              loading={isVerifyingBusiness}
+            >
+              중복 확인
+            </Button>
+          </InputWithButton>
+          {errors.businessNumber && <ErrorMessage>{errors.businessNumber.message}</ErrorMessage>}
+          {isBusinessNumberVerified && (
+            <SuccessMessage>등록 가능한 사업자 번호입니다</SuccessMessage>
+          )}
+        </InputGroup>
+
+        <InputGroup>
+          <Label>휴대폰 번호</Label>
+          <InputWithButton>
+            <Input
+              type="tel"
+              placeholder="010-0000-0000"
+              {...register('phoneNumber')}
+              onChange={handlePhoneNumberChange}
+            />
+            <Button
+              type="button"
+              onClick={handlePhoneVerification}
+              disabled={isPhoneNumberEmpty || isSendingVerification}
+            >
+              {showVerificationField ? '재전송' : '인증 요청'}
+            </Button>
+          </InputWithButton>
+          {errors.phoneNumber && <ErrorMessage>{errors.phoneNumber.message}</ErrorMessage>}
+          {isRunning && (
+            <SuccessMessage>인증번호를 발송했습니다. 최대 3분이 소요될 수 있습니다.</SuccessMessage>
+          )}
+        </InputGroup>
+
+        {showVerificationField && (
+          <InputGroup>
+            <Label>인증번호</Label>
+            <InputWithButton>
+              <Input type="text" placeholder="인증번호 입력" {...register('verificationCode')} />
+              <Button
+                type="button"
+                onClick={handleVerifyCode}
+                disabled={isPhoneVerified}
+                loading={isVerifyingPhone}
+              >
+                인증 확인
+              </Button>
+            </InputWithButton>
+            {isRunning && <TimerText>{formatTime()}</TimerText>}
+            {errors.verificationCode && (
+              <ErrorMessage>{errors.verificationCode.message}</ErrorMessage>
+            )}
+            {isPhoneVerified && <SuccessMessage>휴대폰 인증이 완료되었습니다</SuccessMessage>}
+          </InputGroup>
+        )}
+
+        <InputGroup>
+          <Label>직원 수</Label>
+          <RadioGroup>
+            <RadioLabel>
+              <RadioInput
+                type="radio"
+                value="under5"
+                defaultChecked
+                {...register('employeeCount')}
+              />
+              5인 미만
+            </RadioLabel>
+            <RadioLabel>
+              <RadioInput type="radio" value="over5" {...register('employeeCount')} />
+              5인 이상
+            </RadioLabel>
+          </RadioGroup>
+          {errors.employeeCount && <ErrorMessage>{errors.employeeCount.message}</ErrorMessage>}
+        </InputGroup>
+      </InputSection>
 
       <ButtonGroup>
-        <BackButton type="button" onClick={onBack}>
+        <Button full type="button" variant="outline" onClick={onBack}>
           이전
-        </BackButton>
-        <SubmitButton type="submit">회원가입</SubmitButton>
+        </Button>
+        <Button full type="submit">
+          회원가입 완료
+        </Button>
       </ButtonGroup>
       {submitError && <ErrorMessage>{submitError}</ErrorMessage>}
     </Form>
   )
 }
 
-const ButtonGroup = styled.div`
-  display: flex;
-  gap: 12px;
-  margin-top: 16px;
-`
-
-const BackButton = styled.button`
-  flex: 1;
-  padding: 12px;
-  background-color: #fff;
-  color: #1a73e8;
-  border: 1px solid #1a73e8;
-  border-radius: 4px;
-  font-size: 16px;
-  cursor: pointer;
-
-  &:hover {
-    background-color: #f8f9fa;
-  }
-`
-
-const SubmitButton = styled.button`
-  flex: 2;
-  padding: 12px;
-  background-color: #1a73e8;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  font-size: 16px;
-  cursor: pointer;
-
-  &:hover {
-    background-color: #1557b0;
-  }
-`
-
-const Form = styled.form`
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-`
-
-const InputGroup = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-`
-
-const Label = styled.label`
-  font-size: 14px;
-  font-weight: 500;
-`
-
-const Input = styled.input`
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 16px;
-
-  &:focus {
-    outline: none;
-    border-color: #1a73e8;
-  }
-`
-
 const InputWithButton = styled.div`
-  display: flex;
+  display: grid;
+  grid-template-columns: auto 106px;
   gap: 8px;
-`
-
-const VerifyButton = styled.button`
-  padding: 0 16px;
-  background-color: #1a73e8;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  font-size: 14px;
-  cursor: pointer;
-  white-space: nowrap;
-
-  &:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-  }
-
-  &:not(:disabled):hover {
-    background-color: #1557b0;
-  }
 `
 
 const RadioGroup = styled.div`
@@ -397,19 +340,15 @@ const RadioInput = styled.input`
   cursor: pointer;
 `
 
-const ErrorMessage = styled.span`
-  color: #d93025;
-  font-size: 14px;
-`
-
-const SuccessMessage = styled.span`
-  color: #0f9d58;
-  font-size: 14px;
-`
-
 const TimerText = styled.span`
   color: #1c61ff;
   font-size: 14px;
+`
+
+const ButtonGroup = styled.div`
+  display: grid;
+  grid-template-columns: 132px auto;
+  gap: 12px;
 `
 
 export default BusinessForm

@@ -44,7 +44,7 @@ export const signup = async (data: SignupRequest): Promise<SignupResponse> => {
 export const verifyBusinessNumber = async (businessNumber: string) => {
   try {
     await axiosInstance.post('/auth/check/registration', {
-      businessNumber: businessNumber.replace(/[-]/g, ''),
+      registration: businessNumber,
     })
   } catch (error) {
     if (error instanceof AxiosError && error.response) {
@@ -116,10 +116,12 @@ export const requestPhoneVerificationFindId = async (phoneNumber: string) => {
 
 export const verifyPhoneNumberFindId = async (phoneNumber: string, code: string) => {
   try {
-    await axiosInstance.post('/auth/email/verify/code', {
+    const response = await axiosInstance.post('/auth/email/verify/code', {
       hp: phoneNumber,
       code,
     })
+
+    return response.data.data.email
   } catch (error) {
     if (error instanceof AxiosError && error.response) {
       if (error.response.status === 401) {
@@ -130,20 +132,6 @@ export const verifyPhoneNumberFindId = async (phoneNumber: string, code: string)
   }
 }
 
-export const findId = async (phoneNumber: string) => {
-  try {
-    const response = await axiosInstance.post('/auth/find-id', {
-      phoneNumber,
-    })
-    return response.data
-  } catch (error) {
-    if (error instanceof AxiosError && error.response?.status === 404) {
-      throw new Error('가입된 계정이 없습니다')
-    }
-    throw new Error('아이디 찾기 중 오류가 발생했습니다')
-  }
-}
-
 export const sendTempPassword = async (email: string) => {
   try {
     await axiosInstance.post('/auth/password/send/code', {
@@ -151,7 +139,7 @@ export const sendTempPassword = async (email: string) => {
     })
   } catch (error) {
     if (error instanceof AxiosError && error.response?.status === 401) {
-      throw new Error('등록되지 않은 이메일입니다')
+      throw new Error('가입된 정보가 없습니다. 이메일을 한번 더 확인해주세요.')
     }
     throw new Error('임시 비밀번호 발급 중 오류가 발생했습니다.')
   }

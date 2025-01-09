@@ -1,3 +1,7 @@
+import { PHONE_NUMBER_REGEX } from '@allwagelab/constants'
+import { Button } from '@allwagelab/react'
+import { formatPhoneNumber } from '@allwagelab/utils'
+import { css } from '@emotion/react'
 import styled from '@emotion/styled'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation } from '@tanstack/react-query'
@@ -6,11 +10,9 @@ import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import { z } from 'zod'
 
-import { requestPhoneVerificationFindId, verifyPhoneNumberFindId, findId } from '@/apis/auth'
+import { requestPhoneVerificationFindId, verifyPhoneNumberFindId } from '@/apis/auth'
 import SignupModal from '@/components/auth/SignupModal'
 import useTimer from '@/hooks/useTimer'
-import { PHONE_NUMBER_REGEX } from '@/lib/constants'
-import { formatPhoneNumber } from '@/lib/utils'
 
 const findIdSchema = z.object({
   phoneNumber: z
@@ -31,8 +33,9 @@ interface FoundState {
 function FindIdPage() {
   const navigate = useNavigate()
   const [currentStep, setCurrentStep] = useState<FindIdStep>('FORM')
+  const [isRequestButtonActive, setIsRequestButtonActive] = useState(false)
+  const [isCodeSent, setIsCodeSent] = useState(false)
   const [isPhoneVerified, setIsPhoneVerified] = useState(false)
-  const [showVerificationField, setShowVerificationField] = useState(false)
   const [foundData, setFoundData] = useState<FoundState | null>(null)
   const [isSignupModalOpen, setIsSignupModalOpen] = useState(false)
 
@@ -67,40 +70,11 @@ function FindIdPage() {
   const { mutate: sendVerification, isPending: isSendingVerification } = useMutation({
     mutationFn: requestPhoneVerificationFindId,
     onSuccess: () => {
-      setShowVerificationField(true)
+      setIsCodeSent(true)
       clearErrors('verificationCode')
       startTimer()
     },
     onError: (error: Error) => {
-      setError('phoneNumber', {
-        type: 'manual',
-        message: error.message,
-      })
-    },
-  })
-
-  const { mutate: verifyPhone, isPending: isVerifyingPhone } = useMutation({
-    mutationFn: ({ phoneNumber, code }: { phoneNumber: string; code: string }) =>
-      verifyPhoneNumberFindId(phoneNumber, code),
-    onSuccess: () => {
-      setIsPhoneVerified(true)
-      clearErrors('verificationCode')
-    },
-    onError: (error: Error) => {
-      setError('verificationCode', {
-        type: 'manual',
-        message: error.message,
-      })
-    },
-  })
-
-  const { mutate: findAccount, isPending: isFinding } = useMutation({
-    mutationFn: findId,
-    onSuccess: (response) => {
-      setFoundData({ email: response.data.email })
-      setCurrentStep('FOUND')
-    },
-    onError: (error) => {
       if (error.message === '가입된 계정이 없습니다') {
         setCurrentStep('NOT_FOUND')
       } else {
@@ -109,6 +83,22 @@ function FindIdPage() {
           message: error.message,
         })
       }
+    },
+  })
+
+  const { mutate: verifyPhone, isPending: isVerifyingPhone } = useMutation({
+    mutationFn: ({ phoneNumber, code }: { phoneNumber: string; code: string }) =>
+      verifyPhoneNumberFindId(phoneNumber, code),
+    onSuccess: (email: string) => {
+      setIsPhoneVerified(true)
+      clearErrors('verificationCode')
+      setFoundData({ email })
+    },
+    onError: (error: Error) => {
+      setError('verificationCode', {
+        type: 'manual',
+        message: error.message,
+      })
     },
   })
 
@@ -138,13 +128,20 @@ function FindIdPage() {
   const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
     e.target.value = formatPhoneNumber(value)
+
+    if (value === '') {
+      setIsRequestButtonActive(false)
+    } else {
+      setIsRequestButtonActive(true)
+    }
+
     register('phoneNumber').onChange(e)
     setIsPhoneVerified(false)
-    setShowVerificationField(false)
+    setIsCodeSent(false)
     clearErrors('phoneNumber')
   }
 
-  const onSubmit = async (data: FindIdFormData) => {
+  const onSubmit = async () => {
     if (!isPhoneVerified) {
       setError('phoneNumber', {
         type: 'manual',
@@ -153,19 +150,25 @@ function FindIdPage() {
       return
     }
 
-    findAccount(data.phoneNumber)
+    setCurrentStep('FOUND')
   }
 
   if (currentStep === 'FOUND' && foundData) {
     return (
       <Container>
-        <Title>가입된 이메일 확인</Title>
-        <SubTitle>입력하신 휴대폰 번호로 인증된 이메일은 다음과 같습니다.</SubTitle>
-        <EmailBox>{foundData.email}</EmailBox>
-        <ButtonGroup>
-          <SignupButton onClick={() => navigate('/login')}>로그인 하기</SignupButton>
-          <RetryButton onClick={() => navigate('/find-password')}>비밀번호 찾기</RetryButton>
-        </ButtonGroup>
+        <Form>
+          <Title>가입된 이메일 확인</Title>
+          <SubTitle>입력하신 휴대폰 번호로 인증된 이메일은 다음과 같습니다.</SubTitle>
+          <EmailBox>{foundData.email}</EmailBox>
+          <ButtonGroup>
+            <Button type="button" variant="outline" onClick={() => navigate('/find-password')}>
+              비밀번호 찾기
+            </Button>
+            <Button type="button" onClick={() => navigate('/login')}>
+              로그인 하기
+            </Button>
+          </ButtonGroup>
+        </Form>
       </Container>
     )
   }
@@ -180,12 +183,13 @@ function FindIdPage() {
           회원가입 후 서비스를 이용해 주세요.
         </SubTitle>
         <ButtonGroup>
-          <SignupButton type="button" onClick={() => setIsSignupModalOpen(true)}>
+          <Button type="button" onClick={() => setIsSignupModalOpen(true)}>
             회원가입
-          </SignupButton>
-          <RetryButton onClick={() => setCurrentStep('FORM')}>다시 찾기</RetryButton>
+          </Button>
+          <Button type="button" onClick={() => setCurrentStep('FORM')}>
+            다시 찾기
+          </Button>
         </ButtonGroup>
-
         <SignupModal isOpen={isSignupModalOpen} onClose={() => setIsSignupModalOpen(false)} />
       </Container>
     )
@@ -193,10 +197,10 @@ function FindIdPage() {
 
   return (
     <Container>
-      <Title>아이디를 잊으셨나요?</Title>
-      <SubTitle>가입된 이메일 확인을 위해 휴대폰번호를 입력해 주세요.</SubTitle>
-
       <Form onSubmit={handleSubmit(onSubmit)}>
+        <Title>아이디를 잊으셨나요?</Title>
+        <SubTitle>가입된 이메일 확인을 위해 휴대폰번호를 입력해 주세요.</SubTitle>
+
         <InputGroup>
           <Label>휴대폰 번호</Label>
           <InputWithButton>
@@ -206,49 +210,46 @@ function FindIdPage() {
               {...register('phoneNumber')}
               onChange={handlePhoneNumberChange}
             />
-            <VerifyButton
+
+            <Button
               type="button"
+              loading={isSendingVerification}
               onClick={handlePhoneVerification}
-              disabled={isSendingVerification}
+              disabled={!isRequestButtonActive}
             >
-              {isSendingVerification
-                ? '전송 중...'
-                : showVerificationField
-                  ? '재전송'
-                  : '인증 요청'}
-            </VerifyButton>
+              {isCodeSent ? '재전송' : '인증 요청'}
+            </Button>
           </InputWithButton>
           {errors.phoneNumber && <ErrorMessage>{errors.phoneNumber.message}</ErrorMessage>}
         </InputGroup>
 
-        {showVerificationField && (
-          <InputGroup>
-            <Label>인증 번호</Label>
-            <InputWithButton>
-              <Input
-                type="text"
-                placeholder="인증번호를 입력해주세요"
-                {...register('verificationCode')}
-              />
-              <VerifyButton
-                type="button"
-                onClick={handleVerifyCode}
-                disabled={isVerifyingPhone || isPhoneVerified}
-              >
-                {isVerifyingPhone ? '확인 중...' : '인증 확인'}
-              </VerifyButton>
-            </InputWithButton>
-            {isRunning && <TimerText>{formatTime()}</TimerText>}
-            {errors.verificationCode && (
-              <ErrorMessage>{errors.verificationCode.message}</ErrorMessage>
-            )}
-            {isPhoneVerified && <SuccessMessage>휴대폰 인증이 완료되었습니다</SuccessMessage>}
-          </InputGroup>
-        )}
+        <InputGroup>
+          <Label>인증 번호</Label>
+          <InputWithButton>
+            <Input
+              type="text"
+              placeholder="인증번호를 입력해주세요"
+              {...register('verificationCode')}
+            />
+            <Button
+              type="button"
+              loading={isVerifyingPhone}
+              onClick={handleVerifyCode}
+              disabled={isPhoneVerified || !isCodeSent}
+            >
+              인증 확인
+            </Button>
+          </InputWithButton>
+          {isRunning && <TimerText>{formatTime()}</TimerText>}
+          {errors.verificationCode && (
+            <ErrorMessage>{errors.verificationCode.message}</ErrorMessage>
+          )}
+          {isPhoneVerified && <SuccessMessage>휴대폰 인증이 완료되었습니다</SuccessMessage>}
+        </InputGroup>
 
-        <FindButton type="submit" disabled={!isPhoneVerified}>
-          {isFinding ? '찾는 중...' : '아이디 찾기'}
-        </FindButton>
+        <ButtonGroup>
+          <Button type="submit">가입된 아이디 찾기</Button>
+        </ButtonGroup>
       </Form>
     </Container>
   )
@@ -261,20 +262,24 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
-  padding: 20px;
 `
 
 const Title = styled.h1`
-  font-size: 24px;
-  margin-bottom: 12px;
+  ${({ theme }) => css`
+    ${theme.typography.title.t1_sb}
+    color: ${theme.colors.baseBlack};
+  `}
 `
 
 const SubTitle = styled.p`
   font-size: 16px;
   color: #666;
-  margin-bottom: 32px;
-  text-align: center;
+  margin-top: 0.5rem;
+  margin-bottom: 2.5rem;
+  ${({ theme }) => css`
+    ${theme.typography.body.b2_rg}
+    color: ${theme.colors.baseBlack};
+  `}
 `
 
 const Form = styled.form`
@@ -282,18 +287,20 @@ const Form = styled.form`
   max-width: 400px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
 `
 
 const InputGroup = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 0.5rem;
+  margin-bottom: 1.75rem;
 `
 
 const Label = styled.label`
-  font-size: 14px;
-  font-weight: 500;
+  ${({ theme }) => css`
+    ${theme.typography.body.b4_rg}
+    color: ${theme.colors.gray80};
+  `}
 `
 
 const InputWithButton = styled.div`
@@ -311,47 +318,6 @@ const Input = styled.input`
   &:focus {
     outline: none;
     border-color: #1a73e8;
-  }
-`
-
-const VerifyButton = styled.button`
-  padding: 0 16px;
-  background-color: #1a73e8;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  font-size: 14px;
-  cursor: pointer;
-  white-space: nowrap;
-
-  &:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-  }
-
-  &:hover:not(:disabled) {
-    background-color: #1557b0;
-  }
-`
-
-const FindButton = styled.button`
-  width: 100%;
-  padding: 12px;
-  background-color: #1a73e8;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  font-size: 16px;
-  cursor: pointer;
-  margin-top: 16px;
-
-  &:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-  }
-
-  &:hover:not(:disabled) {
-    background-color: #1557b0;
   }
 `
 
@@ -376,37 +342,7 @@ const ButtonGroup = styled.div`
   gap: 12px;
   width: 100%;
   max-width: 400px;
-  margin-top: 32px;
-`
-
-const SignupButton = styled.button`
-  width: 100%;
-  padding: 12px;
-  background-color: #1a73e8;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  font-size: 16px;
-  cursor: pointer;
-
-  &:hover {
-    background-color: #1557b0;
-  }
-`
-
-const RetryButton = styled.button`
-  width: 100%;
-  padding: 12px;
-  background-color: white;
-  color: #1a73e8;
-  border: 1px solid #1a73e8;
-  border-radius: 4px;
-  font-size: 16px;
-  cursor: pointer;
-
-  &:hover {
-    background-color: #f8f9fa;
-  }
+  margin-top: 6rem;
 `
 
 const EmailBox = styled.div`
@@ -418,4 +354,7 @@ const EmailBox = styled.div`
   text-align: center;
   font-size: 16px;
   margin: 24px 0;
+  ${({ theme }) => css`
+    background-color: ${theme.colors.blue10};
+  `}
 `
