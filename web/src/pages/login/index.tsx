@@ -16,7 +16,6 @@ function LoginPage() {
   const requestLogin = () => {
     setAuth({
       accessToken: 'foo',
-      refreshToken: 'bar',
     })
   }
 

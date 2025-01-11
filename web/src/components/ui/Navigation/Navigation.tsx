@@ -1,9 +1,6 @@
 import { useNavigate, useLocation } from 'react-router-dom'
-<<<<<<< HEAD
-=======
 
 import { useAxiosPrivate } from '@/hooks'
->>>>>>> develop
 
 const NAV_LIST = [
   {
@@ -19,16 +16,11 @@ const NAV_LIST = [
 function Navigation() {
   const navigate = useNavigate()
   const { pathname } = useLocation()
-<<<<<<< HEAD
-=======
   const axiosPrivate = useAxiosPrivate()
->>>>>>> develop
 
   const onClickNavItem = (path: string) => {
     navigate(path)
   }
-<<<<<<< HEAD
-=======
 
   const onClick = async () => {
     try {
@@ -38,16 +30,11 @@ function Navigation() {
       console.error(error)
     }
   }
->>>>>>> develop
 
   return (
     <aside>
       <ul>
-<<<<<<< HEAD
         {NAV_LIST.map(item => {
-=======
-        {NAV_LIST.map((item) => {
->>>>>>> develop
           const { name, path } = item
           return (
             // biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>

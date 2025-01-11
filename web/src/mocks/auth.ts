@@ -1,5 +1,6 @@
-import { PHONE_NUMBER_REGEX } from '@allwagelab/constants'
 import { http, HttpResponse, type PathParams } from 'msw'
+
+import { PHONE_NUMBER_REGEX } from '@allwagelab/constants'
 
 const createURL = (url: string) => {
   const baseURL = import.meta.env.VITE_BASE_URL

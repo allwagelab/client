@@ -1,14 +1,8 @@
-<<<<<<< HEAD
 import { Outlet, Navigate } from 'react-router-dom'
 
-import { useShallow } from 'zustand/shallow'
-
-=======
 import { css } from '@emotion/react'
-import { Outlet, Navigate } from 'react-router-dom'
 import { useShallow } from 'zustand/shallow'
 
->>>>>>> develop
 import { useAuthStore } from '@/stores/auth'
 
 function Protected() {
@@ -19,9 +13,6 @@ function Protected() {
   )
 
   if (!auth?.accessToken) {
-<<<<<<< HEAD
-    return <Outlet />
-=======
     return (
       <div css={protectedLayout}>
         <header>All wage</header>
@@ -31,15 +22,12 @@ function Protected() {
         </main>
       </div>
     )
->>>>>>> develop
   }
 
   return <Navigate to={'/home'} />
 }
 
 export default Protected
-<<<<<<< HEAD
-=======
 
 const protectedLayout = css`
   display: flex;
@@ -67,4 +55,3 @@ const protectedLayout = css`
     border-radius: 1rem;
   }
 `
->>>>>>> develop

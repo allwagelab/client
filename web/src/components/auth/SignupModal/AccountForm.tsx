@@ -1,13 +1,13 @@
-import { PASSWORD_REGEX } from '@allwagelab/constants'
-import { Button } from '@allwagelab/react'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+
 import styled from '@emotion/styled'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation } from '@tanstack/react-query'
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
-import type { SignupFormData } from '@/types/auth'
+import { PASSWORD_REGEX } from '@allwagelab/constants'
+import { Button } from '@allwagelab/react'
 
 import { checkEmailDuplicate } from '@/apis/auth'
 import {
@@ -19,11 +19,12 @@ import {
   Label,
   SuccessMessage,
 } from '@/styles'
+import type { SignupFormData } from '@/types/auth'
 
 const signupSchema = z
   .object({
     email: z.string().min(1, '이메일을 입력해주세요').email('올바른 이메일 형식을 입력해주세요'),
-    password: z.string().refine((pwd) => {
+    password: z.string().refine(pwd => {
       if (pwd.length < 1 || PASSWORD_REGEX.test(pwd)) {
         return true
       }
@@ -31,7 +32,7 @@ const signupSchema = z
     }, '비밀번호는 영문, 숫자 특수문자 조합 8자 이상 입력해주세요.'),
     passwordConfirm: z.string(),
   })
-  .refine((data) => data.password === data.passwordConfirm, {
+  .refine(data => data.password === data.passwordConfirm, {
     message: '비밀번호가 일치하지 않습니다',
     path: ['passwordConfirm'],
   })
@@ -65,7 +66,7 @@ function AccountForm({ onSubmit, defaultValues }: AccountFormProps) {
       clearErrors('email')
       setIsEmailVerified(true)
     },
-    onError: (error) => {
+    onError: error => {
       setError('email', {
         type: 'manual',
         message: error.message,

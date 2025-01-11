@@ -2,11 +2,7 @@ import { type RouteObject, Navigate } from 'react-router-dom'
 
 import { LayoutComponent } from '@/components'
 import { PATH } from '@/data/path'
-<<<<<<< HEAD
-import { LoginPage } from '@/pages'
-=======
 import { FindIdPage, FindPasswordPage, LoginPage } from '@/pages'
->>>>>>> develop
 
 export const publicRoutes: RouteObject = {
   element: <LayoutComponent.Protected />,
@@ -18,8 +14,6 @@ export const publicRoutes: RouteObject = {
           element: <LoginPage />,
         },
         {
-<<<<<<< HEAD
-=======
           path: PATH.findId,
           element: <FindIdPage />,
         },
@@ -28,7 +22,6 @@ export const publicRoutes: RouteObject = {
           element: <FindPasswordPage />,
         },
         {
->>>>>>> develop
           path: '/',
           element: <Navigate to={PATH.login} replace />,
         },

@@ -1,8 +1,5 @@
 export interface IToken {
   accessToken: string
-<<<<<<< HEAD
-  refreshToken: string
-=======
 }
 
 export interface SignupFormData {
@@ -64,5 +61,4 @@ export interface SignupResponse {
   data: {
     email: string
   }
->>>>>>> develop
 }

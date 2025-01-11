@@ -1,5 +1,6 @@
-import { useMutation } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
+
+import { useMutation } from '@tanstack/react-query'
 import { useShallow } from 'zustand/shallow'
 
 import { login } from '@/apis/auth'
@@ -14,14 +15,14 @@ interface UseLoginProps {
 export const useLogin = ({ onSuccess, onError, redirectTo = '/' }: UseLoginProps = {}) => {
   const navigate = useNavigate()
   const { setAuth } = useAuthStore(
-    useShallow((state) => ({
+    useShallow(state => ({
       setAuth: state.setAuth,
     })),
   )
 
   const { mutate: loginMutate, isPending } = useMutation({
     mutationFn: login,
-    onSuccess: (response) => {
+    onSuccess: response => {
       const { accessToken } = response.data
       setAuth({ accessToken })
 
