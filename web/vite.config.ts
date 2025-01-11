@@ -1,7 +1,7 @@
 import federation from '@originjs/vite-plugin-federation'
 import react from '@vitejs/plugin-react'
 import * as path from 'node:path'
-import { defineConfig } from 'vite'
+import { defineConfig } from 'vitest/config'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -27,6 +27,18 @@ export default defineConfig({
   preview: {
     port: 3000,
   },
+  build: {
+    modulePreload: false,
+    target: 'esnext',
+    minify: false,
+    cssCodeSplit: false,
+  },
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: ['./src/setupTests.ts'],
+    include: ['**/?(*.)test.ts?(x)'],
+  },
   resolve: {
     alias: [
       {
@@ -34,11 +46,5 @@ export default defineConfig({
         replacement: path.resolve(__dirname, 'src'),
       },
     ],
-  },
-  build: {
-    modulePreload: false,
-    target: 'esnext',
-    minify: false,
-    cssCodeSplit: false,
   },
 })

@@ -37,7 +37,6 @@ function Navigation() {
         {NAV_LIST.map(item => {
           const { name, path } = item
           return (
-            // biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
             <li
               key={path}
               className={pathname === path ? 'active' : ''}
