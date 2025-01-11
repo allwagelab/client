@@ -1,4 +1,9 @@
 import { useNavigate, useLocation } from 'react-router-dom'
+<<<<<<< HEAD
+=======
+
+import { useAxiosPrivate } from '@/hooks'
+>>>>>>> develop
 
 const NAV_LIST = [
   {
@@ -14,15 +19,35 @@ const NAV_LIST = [
 function Navigation() {
   const navigate = useNavigate()
   const { pathname } = useLocation()
+<<<<<<< HEAD
+=======
+  const axiosPrivate = useAxiosPrivate()
+>>>>>>> develop
 
   const onClickNavItem = (path: string) => {
     navigate(path)
   }
+<<<<<<< HEAD
+=======
+
+  const onClick = async () => {
+    try {
+      const response = await axiosPrivate.get('/company/info')
+      console.log(response)
+    } catch (error) {
+      console.error(error)
+    }
+  }
+>>>>>>> develop
 
   return (
     <aside>
       <ul>
+<<<<<<< HEAD
         {NAV_LIST.map(item => {
+=======
+        {NAV_LIST.map((item) => {
+>>>>>>> develop
           const { name, path } = item
           return (
             // biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
@@ -36,6 +61,9 @@ function Navigation() {
           )
         })}
       </ul>
+      <button type="button" onClick={onClick}>
+        api request(/w Auth)
+      </button>
     </aside>
   )
 }

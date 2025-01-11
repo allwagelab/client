@@ -1,7 +1,14 @@
+<<<<<<< HEAD
 import type { RouteObject } from 'react-router-dom'
 
 import HomeRoutes from 'home/HomeRoutes'
 import ScheduleRoutes from 'schedule/ScheduleRoutes'
+=======
+import HomeRoutes from 'home/HomeRoutes'
+import ScheduleRoutes from 'schedule/ScheduleRoutes'
+
+import type { RouteObject } from 'react-router-dom'
+>>>>>>> develop
 
 import { LayoutComponent } from '@/components'
 import { PATH } from '@/data/path'
