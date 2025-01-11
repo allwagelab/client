@@ -4,7 +4,7 @@ import { LayoutComponent } from '@/components'
 import { PATH } from '@/data/path'
 import { FindIdPage, FindPasswordPage, LoginPage } from '@/pages'
 
-export const publicRoutes: RouteObject = {
+export const protectedRoutes: RouteObject = {
   element: <LayoutComponent.Protected />,
   children: [
     {

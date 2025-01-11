@@ -1,4 +1,3 @@
-import { Suspense } from 'react'
 import { BrowserRouter } from 'react-router-dom'
 
 import { ThemeProvider } from '@emotion/react'
@@ -17,16 +16,14 @@ const queryClient = new QueryClient()
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <Suspense fallback={null}>
-        <BrowserRouter>
-          <ThemeProvider theme={theme}>
-            <GlobalStyles />
-            <Router />
-          </ThemeProvider>
-        </BrowserRouter>
-      </Suspense>
-    </QueryClientProvider>
+    <BrowserRouter>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider theme={theme}>
+          <GlobalStyles />
+          <Router />
+        </ThemeProvider>
+      </QueryClientProvider>
+    </BrowserRouter>
   )
 }
 
