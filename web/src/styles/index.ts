@@ -1,2 +1,2 @@
 export * from './common'
-export * from './modal'
+export * as Modal from './modal'

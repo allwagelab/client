@@ -12,15 +12,7 @@ import { formatBusinessNumber, formatPhoneNumber } from '@allwagelab/utils'
 
 import { verifyBusinessNumber, requestPhoneVerification, verifyPhoneNumber } from '@/apis/auth'
 import useTimer from '@/hooks/useTimer'
-import {
-  Form,
-  Input,
-  InputSection,
-  InputGroup,
-  Label,
-  ErrorMessage,
-  SuccessMessage,
-} from '@/styles'
+import { Label, ErrorMessage, SuccessMessage, Modal } from '@/styles'
 import type { BusinessInfoFormData } from '@/types/auth'
 
 const businessInfoSchema = z.object({
@@ -208,18 +200,18 @@ function BusinessForm({ onSubmit, onBack }: BusinessFormProps) {
   }
 
   return (
-    <Form onSubmit={handleSubmit(onFormSubmit)}>
-      <InputSection>
-        <InputGroup>
+    <Modal.Form onSubmit={handleSubmit(onFormSubmit)}>
+      <Modal.InputSection>
+        <Modal.InputGroup>
           <Label>사업장 이름</Label>
-          <Input type="text" placeholder="올웨이지 시청점" {...register('businessName')} />
+          <Modal.Input type="text" placeholder="올웨이지 시청점" {...register('businessName')} />
           {errors.businessName && <ErrorMessage>{errors.businessName.message}</ErrorMessage>}
-        </InputGroup>
+        </Modal.InputGroup>
 
-        <InputGroup>
+        <Modal.InputGroup>
           <Label>사업자 등록 번호</Label>
           <InputWithButton>
-            <Input
+            <Modal.Input
               type="text"
               placeholder="000-00-00000"
               {...register('businessNumber')}
@@ -238,12 +230,12 @@ function BusinessForm({ onSubmit, onBack }: BusinessFormProps) {
           {isBusinessNumberVerified && (
             <SuccessMessage>등록 가능한 사업자 번호입니다</SuccessMessage>
           )}
-        </InputGroup>
+        </Modal.InputGroup>
 
-        <InputGroup>
+        <Modal.InputGroup>
           <Label>휴대폰 번호</Label>
           <InputWithButton>
-            <Input
+            <Modal.Input
               type="tel"
               placeholder="010-0000-0000"
               {...register('phoneNumber')}
@@ -261,13 +253,17 @@ function BusinessForm({ onSubmit, onBack }: BusinessFormProps) {
           {isRunning && (
             <SuccessMessage>인증번호를 발송했습니다. 최대 3분이 소요될 수 있습니다.</SuccessMessage>
           )}
-        </InputGroup>
+        </Modal.InputGroup>
 
         {showVerificationField && (
-          <InputGroup>
+          <Modal.InputGroup>
             <Label>인증번호</Label>
             <InputWithButton>
-              <Input type="text" placeholder="인증번호 입력" {...register('verificationCode')} />
+              <Modal.Input
+                type="text"
+                placeholder="인증번호 입력"
+                {...register('verificationCode')}
+              />
               <Button
                 type="button"
                 onClick={handleVerifyCode}
@@ -282,10 +278,10 @@ function BusinessForm({ onSubmit, onBack }: BusinessFormProps) {
               <ErrorMessage>{errors.verificationCode.message}</ErrorMessage>
             )}
             {isPhoneVerified && <SuccessMessage>휴대폰 인증이 완료되었습니다</SuccessMessage>}
-          </InputGroup>
+          </Modal.InputGroup>
         )}
 
-        <InputGroup>
+        <Modal.InputGroup>
           <Label>직원 수</Label>
           <RadioGroup>
             <RadioLabel>
@@ -303,8 +299,8 @@ function BusinessForm({ onSubmit, onBack }: BusinessFormProps) {
             </RadioLabel>
           </RadioGroup>
           {errors.employeeCount && <ErrorMessage>{errors.employeeCount.message}</ErrorMessage>}
-        </InputGroup>
-      </InputSection>
+        </Modal.InputGroup>
+      </Modal.InputSection>
 
       <ButtonGroup>
         <Button full type="button" variant="outline" onClick={onBack}>
@@ -315,7 +311,7 @@ function BusinessForm({ onSubmit, onBack }: BusinessFormProps) {
         </Button>
       </ButtonGroup>
       {submitError && <ErrorMessage>{submitError}</ErrorMessage>}
-    </Form>
+    </Modal.Form>
   )
 }
 
@@ -323,6 +319,10 @@ const InputWithButton = styled.div`
   display: grid;
   grid-template-columns: auto 106px;
   gap: 8px;
+
+  button {
+    min-width: 90px;
+  }
 `
 
 const RadioGroup = styled.div`

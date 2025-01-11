@@ -159,6 +159,7 @@ const verifyPhoneNumberFindId = http.post<PathParams, { code: string }>(
     if (code === '1234') {
       return HttpResponse.json({
         data: {
+          name: '올웨이지 시청점',
           email: 'test1@test.com',
         },
       })

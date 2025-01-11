@@ -1,4 +1,4 @@
-import { Outlet, Navigate } from 'react-router-dom'
+import { Outlet, Navigate, Link } from 'react-router-dom'
 
 import { css } from '@emotion/react'
 import { useShallow } from 'zustand/shallow'
@@ -15,10 +15,16 @@ function Protected() {
   if (!auth?.accessToken) {
     return (
       <div css={protectedLayout}>
-        <header>All wage</header>
+        <header>
+          <Link to="/login">
+            <img src="/logo.svg" alt="Allwage Logo" />
+          </Link>
+        </header>
         <main>
           <Outlet />
-          <div>이미지</div>
+          <div>
+            <img src="/login_banner.png" alt="Login Page Banner" />
+          </div>
         </main>
       </div>
     )
@@ -33,9 +39,10 @@ const protectedLayout = css`
   display: flex;
   flex-direction: column;
   height: 100vh;
+  min-width: 1440px;
 
   header {
-    height: 80px;
+    min-height: 80px;
     width: 100%;
     display: flex;
     align-items: center;
@@ -49,9 +56,18 @@ const protectedLayout = css`
     grid-template-columns: 1fr 1fr;
   }
 
+  main > div:nth-of-type(1) {
+    margin: auto;
+  }
+
   main > div:nth-of-type(2) {
-    background-color: #457dff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     margin: 0.5rem 3rem 3.75rem;
-    border-radius: 1rem;
+
+    img {
+      height: 820px;
+    }
   }
 `
