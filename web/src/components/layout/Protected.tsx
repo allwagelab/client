@@ -1,12 +1,13 @@
-import { css } from '@emotion/react'
 import { Outlet, Navigate } from 'react-router-dom'
+
+import { css } from '@emotion/react'
 import { useShallow } from 'zustand/shallow'
 
 import { useAuthStore } from '@/stores/auth'
 
 function Protected() {
   const { auth } = useAuthStore(
-    useShallow((state) => ({
+    useShallow(state => ({
       auth: state.auth,
     })),
   )

@@ -1,16 +1,16 @@
-import { useReducer } from "react";
-import Cookies from "js-cookie";
+import { useReducer } from 'react'
+import { useNavigate } from 'react-router-dom'
 
-import viteLogo from "/vite.svg";
-import { useNavigate } from "react-router-dom";
+import viteLogo from '/vite.svg'
+import Cookies from 'js-cookie'
 
 const EntrancePage = () => {
-  const [showCookie, toggleCookie] = useReducer((show) => !show, false);
+  const [showCookie, toggleCookie] = useReducer(show => !show, false)
 
-  const getCookieString = () => Cookies.get("hi") ?? "안녕하세요";
+  const getCookieString = () => Cookies.get('hi') ?? '안녕하세요'
 
-  const navigate = useNavigate();
-  const goDashboardPage = () => navigate("/schedule/dashboard");
+  const navigate = useNavigate()
+  const goDashboardPage = () => navigate('/schedule/dashboard')
 
   return (
     <>
@@ -29,7 +29,7 @@ const EntrancePage = () => {
         정영웅 근무 조정하기
       </button>
     </>
-  );
-};
+  )
+}
 
-export default EntrancePage;
+export default EntrancePage

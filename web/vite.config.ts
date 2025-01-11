@@ -1,7 +1,6 @@
-import * as path from 'node:path'
-
 import federation from '@originjs/vite-plugin-federation'
 import react from '@vitejs/plugin-react'
+import * as path from 'node:path'
 import { defineConfig } from 'vite'
 
 // https://vitejs.dev/config/

@@ -1,14 +1,16 @@
-import { PHONE_NUMBER_REGEX } from '@allwagelab/constants'
-import { Button } from '@allwagelab/react'
-import { formatPhoneNumber } from '@allwagelab/utils'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { useNavigate } from 'react-router-dom'
+
 import { css } from '@emotion/react'
 import styled from '@emotion/styled'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation } from '@tanstack/react-query'
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { useNavigate } from 'react-router-dom'
 import { z } from 'zod'
+
+import { PHONE_NUMBER_REGEX } from '@allwagelab/constants'
+import { Button } from '@allwagelab/react'
+import { formatPhoneNumber } from '@allwagelab/utils'
 
 import { requestPhoneVerificationFindId, verifyPhoneNumberFindId } from '@/apis/auth'
 import SignupModal from '@/components/auth/SignupModal'

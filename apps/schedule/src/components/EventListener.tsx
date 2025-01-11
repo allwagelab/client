@@ -1,28 +1,26 @@
-import { type MessageData, isValidEventOrigin } from "@allwagelab/utils";
-import { useEffect } from "react";
+import { useEffect } from 'react'
+
+import { type MessageData, isValidEventOrigin } from '@allwagelab/utils'
 
 export const EventListener = () => {
   useEffect(() => {
-    const handleIncomingMessage = ({
-      origin,
-      data,
-    }: MessageEvent<MessageData>) => {
-      console.log("data:", data);
+    const handleIncomingMessage = ({ origin, data }: MessageEvent<MessageData>) => {
+      console.log('data:', data)
       if (!isValidEventOrigin(origin)) {
-        return;
+        return
       }
 
-      if (data.type === "routeChange") {
-        history.replaceState({}, "", data.route);
+      if (data.type === 'routeChange') {
+        history.replaceState({}, '', data.route)
       }
-    };
+    }
 
-    addEventListener("message", handleIncomingMessage);
+    addEventListener('message', handleIncomingMessage)
 
     return () => {
-      removeEventListener("message", handleIncomingMessage);
-    };
-  }, []);
+      removeEventListener('message', handleIncomingMessage)
+    }
+  }, [])
 
-  return null;
-};
+  return null
+}

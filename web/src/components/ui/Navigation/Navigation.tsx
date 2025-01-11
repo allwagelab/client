@@ -34,7 +34,7 @@ function Navigation() {
   return (
     <aside>
       <ul>
-        {NAV_LIST.map((item) => {
+        {NAV_LIST.map(item => {
           const { name, path } = item
           return (
             // biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>

@@ -1,14 +1,15 @@
-import { useMutation } from '@tanstack/react-query'
 import { useState, useEffect } from 'react'
+
+import { useMutation } from '@tanstack/react-query'
+
+import { signup } from '@/apis/auth'
+import type { BusinessInfoFormData, SignupFormData, SignupModalProps } from '@/types/auth'
 
 import AccountForm from './AccountForm'
 import BusinessForm from './BusinessForm'
 import SuccessView from './SuccessView'
+
 import Modal from '../../ui/Modal'
-
-import type { BusinessInfoFormData, SignupFormData, SignupModalProps } from '@/types/auth'
-
-import { signup } from '@/apis/auth'
 
 type SignupStep = 'ACCOUNT' | 'BUSINESS' | 'SUCCESS'
 

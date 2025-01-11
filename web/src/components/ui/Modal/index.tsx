@@ -1,8 +1,8 @@
-import { css } from '@emotion/react'
-import styled from '@emotion/styled'
+import type { ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 
-import type { ReactNode } from 'react'
+import { css } from '@emotion/react'
+import styled from '@emotion/styled'
 
 import { useKeyEscape } from '@/hooks'
 
@@ -22,7 +22,7 @@ function Modal({ isOpen, onClose, children, title }: ModalProps) {
 
   return createPortal(
     <Overlay onClick={onClose}>
-      <Content onClick={(e) => e.stopPropagation()}>
+      <Content onClick={e => e.stopPropagation()}>
         <Header>
           <Title>{title}</Title>
           <CloseButton onClick={onClose}>×</CloseButton>

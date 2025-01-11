@@ -1,12 +1,14 @@
-import { PASSWORD_REGEX } from '@allwagelab/constants'
-import { Button, Checkbox } from '@allwagelab/react'
-import { css } from '@emotion/react'
-import styled from '@emotion/styled'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
+
+import { css } from '@emotion/react'
+import styled from '@emotion/styled'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
+
+import { PASSWORD_REGEX } from '@allwagelab/constants'
+import { Button, Checkbox } from '@allwagelab/react'
 
 import SignupModal from '@/components/auth/SignupModal'
 import { useLogin } from '@/hooks'
@@ -35,7 +37,7 @@ function LoginPage() {
         localStorage.removeItem('autoLogin')
       }
     },
-    onError: (error) => setLoginError(error.message),
+    onError: error => setLoginError(error.message),
     redirectTo: '/home',
   })
 
@@ -74,7 +76,7 @@ function LoginPage() {
           <Checkbox
             label="로그인 상태 유지"
             checked={isAutoLogin}
-            onChange={(e) => setIsAutoLogin(e.target.checked)}
+            onChange={e => setIsAutoLogin(e.target.checked)}
           />
         </CheckboxGroup>
 

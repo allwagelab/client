@@ -28,7 +28,7 @@ const useTimer = ({ initialSeconds, onEnd }: UseTimerProps) => {
     }
 
     const interval = setInterval(() => {
-      setSeconds((prev) => {
+      setSeconds(prev => {
         if (prev <= 1) {
           clearInterval(interval)
           setIsRunning(false)

@@ -4,7 +4,7 @@ import { axiosPrivateInstance } from '@/apis'
 import { useAuthStore } from '@/stores/auth'
 
 export const useRefreshToken = () => {
-  const setAuth = useAuthStore(useShallow((state) => state.setAuth))
+  const setAuth = useAuthStore(useShallow(state => state.setAuth))
 
   const refresh = async () => {
     try {

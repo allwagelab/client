@@ -5,13 +5,15 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": [".next/**", "!.next/cache/**"]
+      "outputs": ["dist/**"]
     },
     "lint": {
-      "dependsOn": ["^lint"]
+      "dependsOn": ["^lint"],
+      "inputs": ["**/*.{js,ts,tsx}"]
     },
-    "format": {
-      "dependsOn": ["^format"]
+    "lint:fix": {
+      "dependsOn": ["^lint:fix"],
+      "inputs": ["**/*.{js,ts,tsx}"]
     },
     "dev": {
       "cache": false,
