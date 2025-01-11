@@ -5,7 +5,6 @@ import '@allwagelab/design/themes.css'
 
 import App from './App.tsx'
 
-// biome-ignore lint/style/noNonNullAssertion: <explanation>
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <App />
