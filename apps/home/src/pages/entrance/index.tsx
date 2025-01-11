@@ -1,9 +1,10 @@
-import viteLogo from "/vite.svg";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom'
+
+import viteLogo from '/vite.svg'
 
 const EntrancePage = () => {
-  const navigate = useNavigate();
-  const goDashboardPage = () => navigate("/home/dashboard");
+  const navigate = useNavigate()
+  const goDashboardPage = () => navigate('/home/dashboard')
 
   return (
     <>
@@ -20,7 +21,7 @@ const EntrancePage = () => {
         기입하러가기
       </button>
     </>
-  );
-};
+  )
+}
 
-export default EntrancePage;
+export default EntrancePage

@@ -11,7 +11,7 @@ interface IAuthStore {
 
 export const useAuthStore = create<IAuthStore>()(
   persist(
-    (set) => ({
+    set => ({
       auth: null,
       setAuth: (authData: IToken | null) => {
         set({ auth: authData })
@@ -22,7 +22,7 @@ export const useAuthStore = create<IAuthStore>()(
     }),
     {
       name: 'auth-storage',
-      onRehydrateStorage: () => (state) => {
+      onRehydrateStorage: () => state => {
         if (localStorage.getItem('autoLogin') !== 'Y' && state) {
           localStorage.removeItem('autoLogin')
           state.setAuth(null)

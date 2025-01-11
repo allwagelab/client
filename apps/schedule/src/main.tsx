@@ -1,12 +1,12 @@
-import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
-import App from "./App.tsx";
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
 
-import "@allwagelab/design/themes.css";
+import '@allwagelab/design/themes.css'
 
-// biome-ignore lint/style/noNonNullAssertion: <explanation>
-createRoot(document.getElementById("root")!).render(
+import App from './App.tsx'
+
+createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <App />
-  </StrictMode>
-);
+  </StrictMode>,
+)

@@ -1,5 +1,6 @@
-import { css } from '@emotion/react'
 import { Outlet, Navigate } from 'react-router-dom'
+
+import { css } from '@emotion/react'
 import { useShallow } from 'zustand/shallow'
 
 import { UiComponent } from '@/components'
@@ -7,7 +8,7 @@ import { useAuthStore } from '@/stores/auth'
 
 function Private() {
   const { auth } = useAuthStore(
-    useShallow((state) => ({
+    useShallow(state => ({
       auth: state.auth,
     })),
   )

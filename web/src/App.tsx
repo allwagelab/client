@@ -1,8 +1,10 @@
-import { theme, GlobalStyles } from '@allwagelab/design'
-import { ThemeProvider } from '@emotion/react'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Suspense } from 'react'
 import { BrowserRouter } from 'react-router-dom'
+
+import { ThemeProvider } from '@emotion/react'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+
+import { theme, GlobalStyles } from '@allwagelab/design'
 
 import Router from './router'
 

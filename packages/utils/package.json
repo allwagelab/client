@@ -6,8 +6,12 @@
     ".": "./src/index.ts"
   },
   "scripts": {
-    "lint": "biome lint ./src",
-    "format": "biome format ./src --write"
+    "lint:es": "eslint src",
+    "lint:es:fix": "eslint src --fix",
+    "lint:etc": "prettier src --check",
+    "lint:etc:fix": "prettier src --write",
+    "lint": "pnpm lint:es && pnpm lint:etc",
+    "lint:fix": "pnpm lint:es:fix && pnpm lint:etc:fix"
   },
   "devDependencies": {
     "@allwagelab/constants": "workspace:*",

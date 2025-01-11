@@ -1,5 +1,6 @@
-import { Routes, Route } from "react-router-dom";
-import { EntrancePage, DashboardPage } from "@/pages";
+import { Routes, Route } from 'react-router-dom'
+
+import { EntrancePage, DashboardPage } from '@/pages'
 
 function Router() {
   return (
@@ -8,7 +9,7 @@ function Router() {
       <Route path="/dashboard/*" element={<DashboardPage />} />
       <Route path="*" element={<>Other...</>} />
     </Routes>
-  );
+  )
 }
 
-export default Router;
+export default Router

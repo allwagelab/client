@@ -1,20 +1,25 @@
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react-swc";
-import federation from "@originjs/vite-plugin-federation";
-import * as path from "node:path";
+import federation from '@originjs/vite-plugin-federation'
+import react from '@vitejs/plugin-react'
+import * as path from 'node:path'
+import { defineConfig } from 'vite'
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
-    react(),
+    react({
+      jsxImportSource: '@emotion/react',
+      babel: {
+        plugins: ['@emotion/babel-plugin'],
+      },
+    }),
     federation({
-      name: "remote-app",
-      filename: "schedule.js",
+      name: 'remote-app',
+      filename: 'schedule.js',
       // Modules to expose
       exposes: {
-        "./ScheduleRoutes": "./src/router/index.tsx",
+        './ScheduleRoutes': './src/router/index.tsx',
       },
-      shared: ["react", "react-dom", "react-router-dom"],
+      shared: ['react', 'react-dom', 'react-router-dom'],
     }),
   ],
   server: {
@@ -26,15 +31,15 @@ export default defineConfig({
   resolve: {
     alias: [
       {
-        find: "@",
-        replacement: path.resolve(__dirname, "src"),
+        find: '@',
+        replacement: path.resolve(__dirname, 'src'),
       },
     ],
   },
   build: {
     modulePreload: false,
-    target: "esnext",
+    target: 'esnext',
     minify: false,
     cssCodeSplit: false,
   },
-});
+})
