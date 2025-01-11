@@ -1,23 +1,21 @@
 import { BrowserRouter } from 'react-router-dom'
 
 import { ThemeProvider } from '@emotion/react'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 import { theme, GlobalStyles } from '@allwagelab/design'
 
-import Router from './router'
+import { QueryClientProvider } from '@/providers'
+import Router from '@/router'
 
 if (import.meta.env.MODE === 'mock') {
   const { worker } = await import('@/mocks')
   worker.start()
 }
 
-const queryClient = new QueryClient()
-
 function App() {
   return (
     <BrowserRouter>
-      <QueryClientProvider client={queryClient}>
+      <QueryClientProvider>
         <ThemeProvider theme={theme}>
           <GlobalStyles />
           <Router />
