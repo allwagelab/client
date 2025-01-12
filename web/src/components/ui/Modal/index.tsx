@@ -25,7 +25,9 @@ function Modal({ isOpen, onClose, children, title }: ModalProps) {
       <Content onClick={e => e.stopPropagation()}>
         <Header>
           <Title>{title}</Title>
-          <CloseButton onClick={onClose}>×</CloseButton>
+          <CloseButton onClick={onClose}>
+            <img src="/icons/x.svg" alt="close" />
+          </CloseButton>
         </Header>
         {children}
       </Content>
@@ -47,6 +49,7 @@ const Overlay = styled.div`
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  overflow: auto;
 `
 
 const Content = styled.div`

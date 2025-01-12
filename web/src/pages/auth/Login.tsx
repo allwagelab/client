@@ -12,6 +12,16 @@ import { Button, Checkbox } from '@allwagelab/react'
 
 import SignupModal from '@/components/auth/SignupModal'
 import { useLogin } from '@/hooks'
+import {
+  Container,
+  ErrorMessage,
+  Form,
+  Input,
+  InputGroup,
+  Label,
+  Title,
+  TitleGroup,
+} from '@/styles'
 
 const loginSchema = z.object({
   email: z.string().email('올바른 이메일 형식을 입력해주세요'),
@@ -25,9 +35,18 @@ type LoginFormData = z.infer<typeof loginSchema>
 
 function LoginPage() {
   const navigate = useNavigate()
-  const [loginError, setLoginError] = useState<string>('')
   const [isSignupModalOpen, setIsSignupModalOpen] = useState(false)
   const [isAutoLogin, setIsAutoLogin] = useState(localStorage.getItem('autoLogin') === 'Y')
+
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors },
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+    mode: 'onBlur',
+  })
 
   const { login, isLoggingIn } = useLogin({
     onSuccess: () => {
@@ -37,29 +56,23 @@ function LoginPage() {
         localStorage.removeItem('autoLogin')
       }
     },
-    onError: error => setLoginError(error.message),
+    onError: error =>
+      setError('password', {
+        message: error.message,
+      }),
     redirectTo: '/home',
   })
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<LoginFormData>({
-    resolver: zodResolver(loginSchema),
-    mode: 'onBlur',
-  })
-
   const onSubmit = (data: LoginFormData) => {
-    setLoginError('') // 에러 메시지 초기화
     login(data)
   }
 
   return (
     <Container>
-      <Form onSubmit={handleSubmit(onSubmit)}>
+      <TitleGroup>
         <Title>로그인</Title>
-
+      </TitleGroup>
+      <Form onSubmit={handleSubmit(onSubmit)}>
         <InputGroup>
           <Label>이메일</Label>
           <Input type="email" placeholder="example@email.com" {...register('email')} />
@@ -83,7 +96,6 @@ function LoginPage() {
         <Button full type="submit" loading={isLoggingIn} disabled={isLoggingIn}>
           로그인
         </Button>
-        {loginError && <ErrorMessage>{loginError}</ErrorMessage>}
       </Form>
 
       <ActionGroup>
@@ -107,65 +119,6 @@ function LoginPage() {
 
 export default LoginPage
 
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-`
-
-const Title = styled.h1`
-  ${({ theme }) => css`
-    ${theme.typography.title.t1_sb}
-    color: ${theme.colors.baseBlack};
-    padding-bottom: 2.5rem;
-  `}
-`
-
-const Form = styled.form`
-  width: 100%;
-  max-width: 428px;
-  display: flex;
-  flex-direction: column;
-`
-
-const InputGroup = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  padding-bottom: 1.5rem;
-`
-
-const Label = styled.label`
-  ${({ theme }) => css`
-    ${theme.typography.body.b4_rg}
-    color: ${theme.colors.gray80};
-  `}
-`
-
-const Input = styled.input`
-  ${({ theme }) => css`
-    padding: 1rem;
-    border: 1px solid ${theme.colors.gray30};
-    border-radius: 4px;
-    font-size: 16px;
-
-    &:focus {
-      outline: none;
-      border-color: ${theme.colors.blue60};
-    }
-
-    &::placeholder {
-      color: ${theme.colors.gray70};
-    }
-  `}
-`
-
-const ErrorMessage = styled.span`
-  color: #d93025;
-  font-size: 14px;
-`
-
 const CheckboxGroup = styled.div`
   padding-bottom: 3.75rem;
 `
@@ -180,25 +133,12 @@ const ActionGroup = styled.div`
   max-width: 428px;
 `
 
-const Divider = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 20px;
-`
-
-const DividerLine = styled.span`
-  ${({ theme }) => css`
-    color: ${theme.colors.gray90};
-  `}
-`
-
 const FindAccountButton = styled.button`
   ${({ theme }) => css`
     background: none;
     border: none;
     color: ${theme.colors.gray90};
     ${theme.typography.body.b4_rg}
-    font-weight: 700;
     cursor: pointer;
     padding: 1rem;
 
@@ -214,5 +154,17 @@ const CopyRightText = styled.span`
     margin-top: 3rem;
     ${theme.typography.body.b4_rg}
     color: ${theme.colors.gray70};
+  `}
+`
+
+const Divider = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 20px;
+`
+
+const DividerLine = styled.span`
+  ${({ theme }) => css`
+    color: ${theme.colors.gray90};
   `}
 `
