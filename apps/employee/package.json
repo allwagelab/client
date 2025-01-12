@@ -1,11 +1,10 @@
 {
-  "name": "web",
+  "name": "employee",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "dev:mock": "vite --mode mock",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "lint:es": "eslint src",
@@ -28,9 +27,9 @@
     "@allwagelab/design": "^1.0.0",
     "@allwagelab/utils": "workspace:*",
     "@allwagelab/constants": "workspace:*",
-    "@emotion/babel-plugin": "^11.13.5",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
+    "@emotion/babel-plugin": "^11.13.5",
     "@hookform/resolvers": "^3.9.1",
     "@tanstack/react-query": "^5.62.8",
     "@vitejs/plugin-react": "^4.3.4",
@@ -57,14 +56,8 @@
     "@vitest/ui": "^2.1.8",
     "globals": "^15.12.0",
     "jsdom": "^26.0.0",
-    "msw": "^2.7.0",
     "typescript": "5.4.5",
     "vite": "^6.0.1",
     "vitest": "^2.1.8"
-  },
-  "msw": {
-    "workerDirectory": [
-      "public"
-    ]
   }
 }
