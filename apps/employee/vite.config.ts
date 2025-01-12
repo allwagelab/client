@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react'
 import * as path from 'node:path'
 import { defineConfig } from 'vitest/config'
 
-// https://vitejs.dev/config/
+// https://vite.dev/config/
 export default defineConfig({
   plugins: [
     react({
@@ -13,19 +13,20 @@ export default defineConfig({
       },
     }),
     federation({
-      name: 'host-app',
-      remotes: {
-        home: 'http://localhost:3001/assets/home.js',
-        schedule: 'http://localhost:3002/assets/schedule.js',
+      name: 'remote-app',
+      filename: 'employee.js',
+      // Modules to expose
+      exposes: {
+        './EmployeeRoutes': './src/router/index.tsx',
       },
       shared: ['react', 'react-dom', 'react-router-dom'],
     }),
   ],
   server: {
-    port: 3000,
+    port: 3003,
   },
   preview: {
-    port: 3000,
+    port: 3003,
   },
   build: {
     modulePreload: false,

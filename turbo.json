@@ -3,9 +3,18 @@
   "ui": "tui",
   "globalDependencies": ["**/.env.*local"],
   "tasks": {
+    "dev": {
+      "cache": false,
+      "persistent": true
+    },
     "build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**"]
+    },
+    "start": {
+      "dependsOn": ["build"],
+      "cache": false,
+      "persistent": true
     },
     "lint": {
       "dependsOn": ["^lint"],
@@ -15,14 +24,36 @@
       "dependsOn": ["^lint:fix"],
       "inputs": ["**/*.{js,ts,tsx}"]
     },
-    "dev": {
+    "test": {
+      "dependsOn": ["^build"],
       "cache": false,
-      "persistent": true
+      "inputs": ["src/**/*.{js,ts,tsx}", "test/**/*.{js,ts,tsx}"]
     },
-    "start": {
-      "dependsOn": ["build"],
+    "test:run": {
+      "dependsOn": ["^build"],
+      "cache": true,
+      "inputs": ["src/**/*.{js,ts,tsx}", "test/**/*.{js,ts,tsx}"],
+      "outputs": []
+    },
+    "test:coverage": {
+      "dependsOn": ["^build"],
+      "cache": true,
+      "inputs": ["src/**/*.{js,ts,tsx}", "test/**/*.{js,ts,tsx}"],
+      "outputs": ["coverage/**"]
+    },
+    "test:playwright": {
+      "dependsOn": ["^build"],
       "cache": false,
-      "persistent": true
+      "inputs": ["src/**/*.{js,ts,tsx}", "e2e/**/*.{js,ts,tsx}"]
+    },
+    "test:playwright:ui": {
+      "dependsOn": ["^build"],
+      "cache": false,
+      "inputs": ["src/**/*.{js,ts,tsx}", "e2e/**/*.{js,ts,tsx}"]
+    },
+    "test:all": {
+      "dependsOn": ["^build", "test:run", "test:playwright"],
+      "cache": false
     }
   }
 }

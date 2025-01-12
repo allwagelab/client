@@ -4,12 +4,18 @@
   "scripts": {
     "clean:branch": "git fetch --prune && git branch | grep -v '^*' | xargs git branch -D",
     "clean:cache": "turbo clean",
-    "build:all": "turbo build",
+    "prepare": "husky",
+    "preinstall": "corepack enable",
     "start": "turbo start",
     "lint": "turbo lint",
     "lint:fix": "turbo lint:fix",
-    "prepare": "husky",
-    "preinstall": "corepack enable"
+    "test": "turbo test",
+    "test:run": "turbo test:run",
+    "test:coverage": "turbo test:coverage",
+    "test:e2e": "turbo test:playwright",
+    "test:e2e:ui": "turbo test:playwright:ui",
+    "test:all": "turbo test:all",
+    "build:all": "turbo build"
   },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",
