@@ -12,7 +12,9 @@ const SuccessView = ({ name, onComplete }: SuccessViewProp) => {
   return (
     <SuccessContainer>
       <SuccessContent>
-        <SuccessIcon>✓</SuccessIcon>
+        <SuccessIcon>
+          <img src="/icons/check.svg" alt="complete" />
+        </SuccessIcon>
         <SuccessTitle>회원 가입 완료!</SuccessTitle>
         <SuccessMessage>{name}님, 환영해요</SuccessMessage>
       </SuccessContent>

@@ -16,11 +16,6 @@ export interface BusinessInfoFormData {
   employeeCount: 'under5' | 'over5'
 }
 
-export interface SignupModalProps {
-  isOpen: boolean
-  onClose: () => void
-}
-
 export interface LoginRequest {
   email: string
   password: string

@@ -8,7 +8,9 @@ export const useRefreshToken = () => {
 
   const refresh = async () => {
     try {
-      const response = await axiosPrivateInstance.post('/auth/refresh/token')
+      const response = await axiosPrivateInstance.post('/auth/refresh/token', null, {
+        withCredentials: true,
+      })
       const accessToken = response.data.accessToken
       setAuth({ accessToken })
 

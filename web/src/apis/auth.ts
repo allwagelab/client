@@ -6,11 +6,13 @@ import type { LoginRequest, LoginResponse, SignupRequest, SignupResponse } from 
 
 export const login = async (data: LoginRequest): Promise<LoginResponse> => {
   try {
-    const response = await axiosInstance.post<LoginResponse>('/auth/login/email', data)
+    const response = await axiosInstance.post<LoginResponse>('/auth/login/email', data, {
+      withCredentials: true,
+    })
     return response.data
   } catch (error) {
     if (error instanceof AxiosError && error.response?.status === 401) {
-      throw new Error('이메일 또는 비밀번호를 확인해 주세요')
+      throw new Error('이메일과 비밀번호가 일치하지 않습니다.')
     }
     throw new Error('로그인 중 오류가 발생했습니다')
   }
@@ -121,7 +123,7 @@ export const verifyPhoneNumberFindId = async (phoneNumber: string, code: string)
       code,
     })
 
-    return response.data.data.email
+    return response.data.data
   } catch (error) {
     if (error instanceof AxiosError && error.response) {
       if (error.response.status === 401) {

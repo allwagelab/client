@@ -1,19 +1,32 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 import { useMutation } from '@tanstack/react-query'
 
 import { signup } from '@/apis/auth'
-import type { BusinessInfoFormData, SignupFormData, SignupModalProps } from '@/types/auth'
+import Modal from '@/components/ui/Modal'
+import type { BusinessInfoFormData, SignupFormData } from '@/types/auth'
 
 import AccountForm from './AccountForm'
 import BusinessForm from './BusinessForm'
 import SuccessView from './SuccessView'
 
-import Modal from '../../ui/Modal'
+interface SignupModalProps {
+  isOpen: boolean
+  onClose: () => void
+  link?: string
+}
 
 type SignupStep = 'ACCOUNT' | 'BUSINESS' | 'SUCCESS'
 
-function SignupModal({ isOpen, onClose }: SignupModalProps) {
+const titles: Record<SignupStep, string> = {
+  ACCOUNT: '회원가입',
+  BUSINESS: '사업장 정보 입력',
+  SUCCESS: '',
+}
+
+function SignupModal({ isOpen, onClose, link }: SignupModalProps) {
+  const navigator = useNavigate()
   const [currentStep, setCurrentStep] = useState<SignupStep>('ACCOUNT')
   const [accountData, setAccountData] = useState<SignupFormData | null>(null)
   const [name, setName] = useState<string>('')
@@ -63,14 +76,22 @@ function SignupModal({ isOpen, onClose }: SignupModalProps) {
     }
   }, [isOpen])
 
+  const handleComplete = () => {
+    if (link) {
+      navigator(link)
+    } else {
+      onClose()
+    }
+  }
+
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={currentStep === 'SUCCESS' ? '' : '회원가입'}>
+    <Modal isOpen={isOpen} onClose={onClose} title={titles[currentStep]}>
       {currentStep === 'ACCOUNT' ? (
         <AccountForm onSubmit={handleAccountSubmit} defaultValues={accountData || undefined} />
       ) : currentStep === 'BUSINESS' ? (
         <BusinessForm onSubmit={handleBusinessSubmit} onBack={handleBack} />
       ) : (
-        <SuccessView name={name} onComplete={onClose} />
+        <SuccessView name={name} onComplete={handleComplete} />
       )}
     </Modal>
   )

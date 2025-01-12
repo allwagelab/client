@@ -10,15 +10,7 @@ import { PASSWORD_REGEX } from '@allwagelab/constants'
 import { Button } from '@allwagelab/react'
 
 import { checkEmailDuplicate } from '@/apis/auth'
-import {
-  ErrorMessage,
-  Form,
-  Input,
-  InputGroup,
-  InputSection,
-  Label,
-  SuccessMessage,
-} from '@/styles'
+import { ErrorMessage, SuccessMessage, Label, Modal } from '@/styles'
 import type { SignupFormData } from '@/types/auth'
 
 const signupSchema = z
@@ -95,9 +87,9 @@ function AccountForm({ onSubmit, defaultValues }: AccountFormProps) {
   }
 
   return (
-    <Form onSubmit={handleSubmit(handleFormSubmit)}>
-      <InputSection>
-        <InputGroup>
+    <Modal.Form onSubmit={handleSubmit(handleFormSubmit)}>
+      <Modal.InputSection>
+        <Modal.InputGroup>
           <Label>이메일</Label>
           <EmailInputWrapper>
             <EmailInput
@@ -121,28 +113,32 @@ function AccountForm({ onSubmit, defaultValues }: AccountFormProps) {
           </EmailInputWrapper>
           {errors.email && <ErrorMessage>{errors.email.message}</ErrorMessage>}
           {isEmailVerified && <SuccessMessage>사용 가능한 이메일입니다.</SuccessMessage>}
-        </InputGroup>
+        </Modal.InputGroup>
 
-        <InputGroup>
+        <Modal.InputGroup>
           <Label>비밀번호</Label>
-          <Input type="password" placeholder="비밀번호를 입력해 주세요" {...register('password')} />
+          <Modal.Input
+            type="password"
+            placeholder="비밀번호를 입력해 주세요"
+            {...register('password')}
+          />
           {errors.password && <ErrorMessage>{errors.password.message}</ErrorMessage>}
-        </InputGroup>
+        </Modal.InputGroup>
 
-        <InputGroup>
+        <Modal.InputGroup>
           <Label>비밀번호 확인</Label>
-          <Input
+          <Modal.Input
             type="password"
             placeholder="비밀번호를 다시 입력해 주세요"
             {...register('passwordConfirm')}
           />
           {errors.passwordConfirm && <ErrorMessage>{errors.passwordConfirm.message}</ErrorMessage>}
-        </InputGroup>
-      </InputSection>
+        </Modal.InputGroup>
+      </Modal.InputSection>
       <Button full type="submit">
         다음
       </Button>
-    </Form>
+    </Modal.Form>
   )
 }
 
@@ -151,7 +147,7 @@ const EmailInputWrapper = styled.div`
   gap: 8px;
 `
 
-const EmailInput = styled(Input)`
+const EmailInput = styled(Modal.Input)`
   flex: 1;
 `
 

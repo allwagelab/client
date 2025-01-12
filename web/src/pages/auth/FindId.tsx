@@ -15,6 +15,20 @@ import { formatPhoneNumber } from '@allwagelab/utils'
 import { requestPhoneVerificationFindId, verifyPhoneNumberFindId } from '@/apis/auth'
 import SignupModal from '@/components/auth/SignupModal'
 import useTimer from '@/hooks/useTimer'
+import {
+  ButtonGroup,
+  Container,
+  ErrorMessage,
+  Form,
+  Input,
+  InputGroup,
+  InputWithButton,
+  Label,
+  SubTitle,
+  SuccessMessage,
+  Title,
+  TitleGroup,
+} from '@/styles'
 
 const findIdSchema = z.object({
   phoneNumber: z
@@ -30,6 +44,7 @@ type FindIdStep = 'FORM' | 'NOT_FOUND' | 'FOUND'
 
 interface FoundState {
   email: string
+  name: string
 }
 
 function FindIdPage() {
@@ -77,7 +92,7 @@ function FindIdPage() {
       startTimer()
     },
     onError: (error: Error) => {
-      if (error.message === '가입된 계정이 없습니다') {
+      if (error.message === '존재하지 않는 휴대폰 번호입니다.') {
         setCurrentStep('NOT_FOUND')
       } else {
         setError('phoneNumber', {
@@ -91,10 +106,10 @@ function FindIdPage() {
   const { mutate: verifyPhone, isPending: isVerifyingPhone } = useMutation({
     mutationFn: ({ phoneNumber, code }: { phoneNumber: string; code: string }) =>
       verifyPhoneNumberFindId(phoneNumber, code),
-    onSuccess: (email: string) => {
+    onSuccess: ({ email, name }: FoundState) => {
       setIsPhoneVerified(true)
       clearErrors('verificationCode')
-      setFoundData({ email })
+      setFoundData({ email, name })
     },
     onError: (error: Error) => {
       setError('verificationCode', {
@@ -109,6 +124,7 @@ function FindIdPage() {
     if (isValid) {
       const phoneNumber = watch('phoneNumber')
       sendVerification(phoneNumber)
+      stopTimer()
     }
   }
 
@@ -158,19 +174,20 @@ function FindIdPage() {
   if (currentStep === 'FOUND' && foundData) {
     return (
       <Container>
-        <Form>
+        <TitleGroup>
           <Title>가입된 이메일 확인</Title>
           <SubTitle>입력하신 휴대폰 번호로 인증된 이메일은 다음과 같습니다.</SubTitle>
-          <EmailBox>{foundData.email}</EmailBox>
-          <ButtonGroup>
-            <Button type="button" variant="outline" onClick={() => navigate('/find-password')}>
-              비밀번호 찾기
-            </Button>
-            <Button type="button" onClick={() => navigate('/login')}>
-              로그인 하기
-            </Button>
-          </ButtonGroup>
-        </Form>
+        </TitleGroup>
+        <EmailBox>{foundData.email}</EmailBox>
+        <BusinessNameBox>{foundData.name}</BusinessNameBox>
+        <ButtonGroup>
+          <Button full type="button" variant="outline" onClick={() => navigate('/find-password')}>
+            비밀번호 찾기
+          </Button>
+          <Button full type="button" onClick={() => navigate('/login')}>
+            로그인 하기
+          </Button>
+        </ButtonGroup>
       </Container>
     )
   }
@@ -178,31 +195,38 @@ function FindIdPage() {
   if (currentStep === 'NOT_FOUND') {
     return (
       <Container>
-        <Title>가입된 계정이 없습니다</Title>
-        <SubTitle>
-          입력하신 휴대폰 번호로 가입된 계정이 없습니다.
-          <br />
-          회원가입 후 서비스를 이용해 주세요.
-        </SubTitle>
+        <TitleGroup>
+          <Title>가입된 계정이 없습니다</Title>
+          <SubTitle>
+            입력하신 휴대폰 번호로 가입된 계정이 없습니다.
+            <br />
+            회원가입 후 서비스를 이용해 주세요.
+          </SubTitle>
+        </TitleGroup>
         <ButtonGroup>
-          <Button type="button" onClick={() => setIsSignupModalOpen(true)}>
+          <Button type="button" variant="outline" onClick={() => setIsSignupModalOpen(true)}>
             회원가입
           </Button>
           <Button type="button" onClick={() => setCurrentStep('FORM')}>
             다시 찾기
           </Button>
         </ButtonGroup>
-        <SignupModal isOpen={isSignupModalOpen} onClose={() => setIsSignupModalOpen(false)} />
+        <SignupModal
+          isOpen={isSignupModalOpen}
+          onClose={() => setIsSignupModalOpen(false)}
+          link="/login"
+        />
       </Container>
     )
   }
 
   return (
     <Container>
-      <Form onSubmit={handleSubmit(onSubmit)}>
+      <TitleGroup>
         <Title>아이디를 잊으셨나요?</Title>
         <SubTitle>가입된 이메일 확인을 위해 휴대폰번호를 입력해 주세요.</SubTitle>
-
+      </TitleGroup>
+      <Form onSubmit={handleSubmit(onSubmit)}>
         <InputGroup>
           <Label>휴대폰 번호</Label>
           <InputWithButton>
@@ -242,7 +266,7 @@ function FindIdPage() {
               인증 확인
             </Button>
           </InputWithButton>
-          {isRunning && <TimerText>{formatTime()}</TimerText>}
+          {isRunning && <SuccessMessage>{formatTime()}</SuccessMessage>}
           {errors.verificationCode && (
             <ErrorMessage>{errors.verificationCode.message}</ErrorMessage>
           )}
@@ -250,7 +274,9 @@ function FindIdPage() {
         </InputGroup>
 
         <ButtonGroup>
-          <Button type="submit">가입된 아이디 찾기</Button>
+          <Button full type="submit">
+            가입된 아이디 찾기
+          </Button>
         </ButtonGroup>
       </Form>
     </Container>
@@ -259,94 +285,6 @@ function FindIdPage() {
 
 export default FindIdPage
 
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-`
-
-const Title = styled.h1`
-  ${({ theme }) => css`
-    ${theme.typography.title.t1_sb}
-    color: ${theme.colors.baseBlack};
-  `}
-`
-
-const SubTitle = styled.p`
-  font-size: 16px;
-  color: #666;
-  margin-top: 0.5rem;
-  margin-bottom: 2.5rem;
-  ${({ theme }) => css`
-    ${theme.typography.body.b2_rg}
-    color: ${theme.colors.baseBlack};
-  `}
-`
-
-const Form = styled.form`
-  width: 100%;
-  max-width: 400px;
-  display: flex;
-  flex-direction: column;
-`
-
-const InputGroup = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  margin-bottom: 1.75rem;
-`
-
-const Label = styled.label`
-  ${({ theme }) => css`
-    ${theme.typography.body.b4_rg}
-    color: ${theme.colors.gray80};
-  `}
-`
-
-const InputWithButton = styled.div`
-  display: flex;
-  gap: 8px;
-`
-
-const Input = styled.input`
-  flex: 1;
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 16px;
-
-  &:focus {
-    outline: none;
-    border-color: #1a73e8;
-  }
-`
-
-const TimerText = styled.span`
-  color: #1c61ff;
-  font-size: 14px;
-`
-
-const ErrorMessage = styled.span`
-  color: #d93025;
-  font-size: 14px;
-`
-
-const SuccessMessage = styled.span`
-  color: #0f9d58;
-  font-size: 14px;
-`
-
-const ButtonGroup = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  width: 100%;
-  max-width: 400px;
-  margin-top: 6rem;
-`
-
 const EmailBox = styled.div`
   width: 100%;
   max-width: 400px;
@@ -354,9 +292,18 @@ const EmailBox = styled.div`
   background-color: #f8f9fa;
   border-radius: 4px;
   text-align: center;
-  font-size: 16px;
-  margin: 24px 0;
+  margin-top: 65px;
   ${({ theme }) => css`
+    ${theme.typography.title.t5_rg}
     background-color: ${theme.colors.blue10};
+  `}
+`
+
+const BusinessNameBox = styled.div`
+  margin-top: 16px;
+  margin-y: auto;
+  ${({ theme }) => css`
+    ${theme.typography.body.b2_rg}
+    color: ${theme.colors.gray100};
   `}
 `

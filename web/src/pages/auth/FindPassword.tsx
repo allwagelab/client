@@ -1,8 +1,6 @@
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 
-import { css } from '@emotion/react'
-import styled from '@emotion/styled'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation } from '@tanstack/react-query'
 import { z } from 'zod'
@@ -11,7 +9,20 @@ import { Button } from '@allwagelab/react'
 
 import { sendTempPassword } from '@/apis/auth'
 import { useLogin } from '@/hooks'
-import { ErrorMessage, SuccessMessage } from '@/styles'
+import {
+  Container,
+  ErrorMessage,
+  Form,
+  Input,
+  InputGroup,
+  SubTitle,
+  SuccessMessage,
+  Title,
+  TitleGroup,
+  Label,
+  ButtonGroup,
+  InputWithButton,
+} from '@/styles'
 
 const findPasswordSchema = z.object({
   email: z.string().min(1, '이메일을 입력해주세요').email('올바른 이메일 형식을 입력해주세요'),
@@ -85,8 +96,10 @@ function FindPasswordPage() {
   return (
     <Container>
       <Form onSubmit={handleSubmit(onSubmit)}>
-        <Title>비밀번호를 잊으셨나요?</Title>
-        <SubTitle>가입된 이메일 확인을 위해 휴대전화번호를 입력해 주세요.</SubTitle>
+        <TitleGroup>
+          <Title>비밀번호를 잊으셨나요?</Title>
+          <SubTitle>가입된 이메일 확인을 위해 휴대전화번호를 입력해 주세요.</SubTitle>
+        </TitleGroup>
 
         <InputGroup>
           <Label>이메일</Label>
@@ -133,70 +146,3 @@ function FindPasswordPage() {
 }
 
 export default FindPasswordPage
-
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-`
-
-const Title = styled.h1`
-  ${({ theme }) => css`
-    ${theme.typography.title.t1_sb}
-    color: ${theme.colors.baseBlack};
-  `}
-`
-
-const SubTitle = styled.p`
-  font-size: 16px;
-  color: #666;
-  margin-top: 0.5rem;
-  margin-bottom: 2.5rem;
-  ${({ theme }) => css`
-    ${theme.typography.body.b2_rg}
-    color: ${theme.colors.baseBlack};
-  `}
-`
-
-const Form = styled.form`
-  width: 100%;
-  max-width: 400px;
-  display: flex;
-  flex-direction: column;
-`
-
-const InputGroup = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  margin-bottom: 1.75rem;
-`
-
-const Label = styled.label`
-  ${({ theme }) => css`
-    ${theme.typography.body.b4_rg}
-    color: ${theme.colors.gray80};
-  `}
-`
-
-const Input = styled.input`
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 16px;
-
-  &:focus {
-    outline: none;
-    border-color: #1a73e8;
-  }
-`
-
-const InputWithButton = styled.div`
-  display: flex;
-  gap: 8px;
-`
-
-const ButtonGroup = styled.div`
-  margin-top: 32px;
-`
