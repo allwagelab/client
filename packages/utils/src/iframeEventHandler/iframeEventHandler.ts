@@ -3,11 +3,13 @@ import { URLS } from '@allwagelab/constants'
 import type {
   ChildrenTitle,
   MessageData,
-  MessageDataToChildren,
   MessageDataToParent,
+  MessageDataToChildren,
 } from './iframeEventHandler.types'
 
-export const isValidEventOrigin = (origin: string) => {
+type ValueOf<T> = T[keyof T]
+
+export const isValidEventOrigin = (origin: ValueOf<typeof URLS>) => {
   return Object.values(URLS).includes(origin)
 }
 
