@@ -68,7 +68,6 @@ function FindPasswordPage() {
         message: '임시 비밀번호가 올바르지 않습니다',
       })
     },
-    redirectTo: '/home',
     // redirectTo: '/mypage/reset-password',
   })
 

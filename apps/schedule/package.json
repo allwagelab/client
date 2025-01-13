@@ -15,8 +15,12 @@
     "lint:fix": "pnpm lint:es:fix && pnpm lint:etc:fix"
   },
   "dependencies": {
-    "@allwagelab/design": "^0.0.2",
+    "@allwagelab/react": "^0.0.4",
+    "@allwagelab/design": "^1.0.0",
     "@allwagelab/utils": "workspace:*",
+    "@allwagelab/schemas": "workspace:*",
+    "@allwagelab/constants": "workspace:*",
+    "@allwagelab/message-bus": "workspace:*",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@vitejs/plugin-react": "^4.3.4",

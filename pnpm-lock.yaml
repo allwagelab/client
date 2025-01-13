@@ -58,9 +58,15 @@ importers:
       '@allwagelab/design':
         specifier: ^1.0.0
         version: 1.0.0(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1)
+      '@allwagelab/message-bus':
+        specifier: workspace:*
+        version: link:../../packages/message-bus
       '@allwagelab/react':
         specifier: ^0.0.4
         version: 0.0.4(@allwagelab/design@1.0.0(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1))(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1)
+      '@allwagelab/schemas':
+        specifier: workspace:*
+        version: link:../../packages/schemas
       '@allwagelab/utils':
         specifier: workspace:*
         version: link:../../packages/utils
@@ -158,9 +164,21 @@ importers:
 
   apps/home:
     dependencies:
+      '@allwagelab/constants':
+        specifier: workspace:*
+        version: link:../../packages/constants
       '@allwagelab/design':
-        specifier: ^0.0.2
-        version: 0.0.2(react@18.3.1)
+        specifier: ^1.0.0
+        version: 1.0.0(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1)
+      '@allwagelab/message-bus':
+        specifier: workspace:*
+        version: link:../../packages/message-bus
+      '@allwagelab/react':
+        specifier: ^0.0.4
+        version: 0.0.4(@allwagelab/design@1.0.0(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1))(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1)
+      '@allwagelab/schemas':
+        specifier: workspace:*
+        version: link:../../packages/schemas
       '@allwagelab/utils':
         specifier: workspace:*
         version: link:../../packages/utils
@@ -213,9 +231,21 @@ importers:
 
   apps/schedule:
     dependencies:
+      '@allwagelab/constants':
+        specifier: workspace:*
+        version: link:../../packages/constants
       '@allwagelab/design':
-        specifier: ^0.0.2
-        version: 0.0.2(react@18.3.1)
+        specifier: ^1.0.0
+        version: 1.0.0(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1)
+      '@allwagelab/message-bus':
+        specifier: workspace:*
+        version: link:../../packages/message-bus
+      '@allwagelab/react':
+        specifier: ^0.0.4
+        version: 0.0.4(@allwagelab/design@1.0.0(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1))(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1)
+      '@allwagelab/schemas':
+        specifier: workspace:*
+        version: link:../../packages/schemas
       '@allwagelab/utils':
         specifier: workspace:*
         version: link:../../packages/utils
@@ -272,6 +302,34 @@ importers:
         specifier: ^0.0.1
         version: 0.0.1
 
+  packages/message-bus:
+    dependencies:
+      '@allwagelab/schemas':
+        specifier: workspace:*
+        version: link:../schemas
+      '@allwagelab/utils':
+        specifier: workspace:*
+        version: link:../utils
+      '@emotion/react':
+        specifier: ^11.14.0
+        version: 11.14.0(@types/react@18.3.18)(react@18.3.1)
+      react:
+        specifier: ^18.3.1
+        version: 18.3.1
+    devDependencies:
+      '@allwagelab/typescript-config':
+        specifier: ^0.0.1
+        version: 0.0.1
+      '@types/react':
+        specifier: ^18.3.12
+        version: 18.3.18
+
+  packages/schemas:
+    devDependencies:
+      '@allwagelab/typescript-config':
+        specifier: ^0.0.1
+        version: 0.0.1
+
   packages/utils:
     devDependencies:
       '@allwagelab/constants':
@@ -280,6 +338,12 @@ importers:
       '@allwagelab/typescript-config':
         specifier: ^0.0.1
         version: 0.0.1
+      '@types/crypto-js':
+        specifier: ^4.2.2
+        version: 4.2.2
+      crypto-js:
+        specifier: ^4.2.0
+        version: 4.2.0
 
   web:
     dependencies:
@@ -289,9 +353,15 @@ importers:
       '@allwagelab/design':
         specifier: ^1.0.0
         version: 1.0.0(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1)
+      '@allwagelab/message-bus':
+        specifier: workspace:*
+        version: link:../packages/message-bus
       '@allwagelab/react':
         specifier: ^0.0.4
         version: 0.0.4(@allwagelab/design@1.0.0(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1))(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1)
+      '@allwagelab/schemas':
+        specifier: workspace:*
+        version: link:../packages/schemas
       '@allwagelab/utils':
         specifier: workspace:*
         version: link:../packages/utils
@@ -397,14 +467,6 @@ packages:
         integrity: sha512-12WGKBQzjUAI4ayyF4IAtfw2QR/IDoqk6jTddXDhtYTJF9ASmoE1zst7cVtP0aL/F1jUJL5r+JxKXKEgHNbEUQ==,
       }
 
-  '@allwagelab/design@0.0.2':
-    resolution:
-      {
-        integrity: sha512-HwoH0+KIKQOkZ9LA/KjHn4ytQ1yh9m3kTGYzMBUXp4XfxTYsmz6MaHsrkPhR6g9fU6qYOi6IkGZyGXU3lRlXBQ==,
-      }
-    peerDependencies:
-      react: ^18 || ^19
-
   '@allwagelab/design@1.0.0':
     resolution:
       {
@@ -414,12 +476,6 @@ packages:
       '@emotion/react': ^11.0
       '@emotion/styled': ^11.0
       react: ^18.0
-
-  '@allwagelab/esbuild-config@0.0.2':
-    resolution:
-      {
-        integrity: sha512-eiGklY3izCw5wX4MpZTiAmIvfbacfhfX4+HzaFC5hP07SZ27zP6yv/G5M3EgUfO1+Gy/IRXaPTkbnHUW1V19AQ==,
-      }
 
   '@allwagelab/react@0.0.4':
     resolution:
@@ -1713,6 +1769,12 @@ packages:
         integrity: sha512-4Kh9a6B2bQciAhf7FSuMRRkUWecJgJu9nPnx3yzpsfXX/c50REIqpHY4C82bXP90qrLtXtkDxTZosYO3UpOwlA==,
       }
 
+  '@types/crypto-js@4.2.2':
+    resolution:
+      {
+        integrity: sha512-sDOLlVbHhXpAUAL0YHDUUwDZf3iN4Bwi4W6a0W0b+QcAezUbRtH4FVb+9J4h+XFPW7l/gQ9F8qC7P+Ec4k8QVQ==,
+      }
+
   '@types/estree@1.0.6':
     resolution:
       {
@@ -2302,6 +2364,12 @@ packages:
         integrity: sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA==,
       }
     engines: { node: '>= 8' }
+
+  crypto-js@4.2.0:
+    resolution:
+      {
+        integrity: sha512-KALDyEYgpY+Rlob/iriUtjV6d5Eq+Y191A5g4UqLAi8CyGP9N1+FdVbkc1SxKc2r4YAYqG8JzO2KGL+AizD70Q==,
+      }
 
   css.escape@1.5.1:
     resolution:
@@ -5085,21 +5153,11 @@ packages:
 snapshots:
   '@adobe/css-tools@4.4.1': {}
 
-  '@allwagelab/design@0.0.2(react@18.3.1)':
-    dependencies:
-      '@allwagelab/esbuild-config': 0.0.2
-      '@allwagelab/typescript-config': 0.0.1
-      react: 18.3.1
-
   '@allwagelab/design@1.0.0(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@emotion/react': 11.14.0(@types/react@18.3.18)(react@18.3.1)
       '@emotion/styled': 11.14.0(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@types/react@18.3.18)(react@18.3.1)
       react: 18.3.1
-
-  '@allwagelab/esbuild-config@0.0.2':
-    dependencies:
-      esbuild: 0.24.2
 
   '@allwagelab/react@0.0.4(@allwagelab/design@1.0.0(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1))(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1)':
     dependencies:
@@ -5819,6 +5877,8 @@ snapshots:
 
   '@types/cookie@0.6.0': {}
 
+  '@types/crypto-js@4.2.2': {}
+
   '@types/estree@1.0.6': {}
 
   '@types/js-cookie@3.0.6': {}
@@ -6236,6 +6296,8 @@ snapshots:
       path-key: 3.1.1
       shebang-command: 2.0.0
       which: 2.0.2
+
+  crypto-js@4.2.0: {}
 
   css.escape@1.5.1: {}
 

@@ -1,10 +1,9 @@
-import { useShallow } from 'zustand/react/shallow'
+import { useAuth } from '@allwagelab/message-bus'
 
 import { axiosPrivateInstance } from '@/apis'
-import { useAuthStore } from '@/stores/auth'
 
 export const useRefreshToken = () => {
-  const setAuth = useAuthStore(useShallow(state => state.setAuth))
+  const auth = useAuth()
 
   const refresh = async () => {
     try {
@@ -12,12 +11,11 @@ export const useRefreshToken = () => {
         withCredentials: true,
       })
       const accessToken = response.data.accessToken
-      setAuth({ accessToken })
+      auth.refreshTokenHandler({ accessToken })
 
       return response.data.accessToken
     } catch {
-      setAuth(null)
-      throw new Error('refresh token error')
+      auth.authErrorHandler({ source: 'host' })
     }
   }
 

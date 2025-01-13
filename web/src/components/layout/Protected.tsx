@@ -1,18 +1,14 @@
 import { Outlet, Navigate, Link } from 'react-router-dom'
 
 import { css } from '@emotion/react'
-import { useShallow } from 'zustand/shallow'
 
-import { useAuthStore } from '@/stores/auth'
+import { URLS } from '@allwagelab/constants'
+import { useAuth } from '@allwagelab/message-bus'
 
 function Protected() {
-  const { auth } = useAuthStore(
-    useShallow(state => ({
-      auth: state.auth,
-    })),
-  )
+  const auth = useAuth()
 
-  if (!auth?.accessToken) {
+  if (!auth.isAuthenticated) {
     return (
       <div css={protectedLayout}>
         <header>
@@ -30,7 +26,7 @@ function Protected() {
     )
   }
 
-  return <Navigate to={'/home'} />
+  return <Navigate to={URLS.APP_HOME} />
 }
 
 export default Protected
