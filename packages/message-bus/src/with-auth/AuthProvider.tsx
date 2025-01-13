@@ -10,9 +10,9 @@ import { useMessageBus } from '../MessageBusContext'
 
 interface AuthContextType extends AuthState {
   loginHandler: ({ accessToken, autoLogin }: { accessToken: string; autoLogin?: boolean }) => void
-  logoutHandler: () => void
-  refreshTokenHandler: ({ accessToken }: { accessToken: string }) => void
-  authErrorHandler: ({ source }: { source?: string }) => void
+  logoutHandler: ({ showToast }?: { showToast?: boolean }) => void
+  refreshTokenHandler: ({ accessToken, source }: { accessToken: string; source?: string }) => void
+  authErrorHandler: ({ message, source }: { message?: string; source?: string }) => void
 }
 
 const AuthContext = createContext<AuthContextType | null>(null)
@@ -53,14 +53,20 @@ export function AuthProvider({ tokenKey, encodeToken, decodeToken, children }: A
     [saveToken],
   )
 
-  const logoutHandler = useCallback(() => {
-    removeToken()
-    setAuthState({
-      isAuthenticated: false,
-      accessToken: null,
-    })
-    showGlobalToast('성공적으로 로그아웃되었습니다', 'info')
-  }, [removeToken])
+  const logoutHandler = useCallback(
+    ({ showToast = true }: { showToast?: boolean } = {}) => {
+      removeToken()
+      setAuthState({
+        isAuthenticated: false,
+        accessToken: null,
+      })
+
+      if (showToast) {
+        showGlobalToast('성공적으로 로그아웃되었습니다', 'info')
+      }
+    },
+    [removeToken],
+  )
 
   const refreshTokenHandler = useCallback(
     ({ accessToken, source }: { accessToken: string; source?: string }) => {
@@ -84,15 +90,15 @@ export function AuthProvider({ tokenKey, encodeToken, decodeToken, children }: A
   )
 
   const authErrorHandler = useCallback(
-    ({ source }: { source?: string }) => {
-      if (source !== 'remote') {
-        showGlobalToast('로그인에 실패했습니다. 다시 시도해 주세요.', 'error')
-        messageBus.publishEvent('AUTH_ERROR', {
-          message: '로그인에 실패했습니다. 다시 시도해 주세요.',
-          source: 'host',
-        })
+    ({ message }: { message?: string }) => {
+      if (process.env.NODE_ENV === 'development') {
+        console.error(message) // 인증 에러 디버깅용
       }
-      logoutHandler()
+      showGlobalToast('인증이 만료되었습니다', 'error')
+
+      logoutHandler({
+        showToast: false,
+      })
     },
     [messageBus, logoutHandler],
   )

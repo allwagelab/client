@@ -4,7 +4,7 @@ const EntrancePage = () => {
   const auth = useRemoteAuth()
 
   const clickHo = () => {
-    auth.refreshToken({ accessToken: 'createhb21' })
+    auth.refreshTokenHandler({ accessToken: 'createhb21' })
   }
 
   return (

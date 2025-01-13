@@ -1,16 +1,16 @@
 /** @jsxImportSource react */
-import { createContext, useContext, useState, useEffect, type ReactNode } from 'react'
+import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react'
 
 import type { AuthState } from '@allwagelab/schemas'
 
 import { useMessageBus } from '../MessageBusContext'
 
 interface AuthContextType extends AuthState {
-  refreshToken: ({ accessToken }: { accessToken: string }) => void
-  authError: () => void
+  refreshTokenHandler: ({ accessToken }: { accessToken: string }) => void
+  authErrorHandler: ({ message }: { message?: string }) => void
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined)
+const AuthContext = createContext<AuthContextType | null>(null)
 
 interface AuthProviderProps {
   children: ReactNode
@@ -19,27 +19,31 @@ interface AuthProviderProps {
 
 export function RemoteAuthProvider({ children, initialState }: AuthProviderProps) {
   const messageBus = useMessageBus()
-
   const [authState, setAuthState] = useState<AuthState>(initialState)
 
-  const refreshToken = ({ accessToken }: { accessToken: string }) => {
-    setAuthState(prev => ({
-      ...prev,
-      accessToken,
-    }))
+  const refreshTokenHandler = useCallback(
+    ({ accessToken }: { accessToken: string }) => {
+      setAuthState(prev => ({
+        ...prev,
+        accessToken,
+      }))
 
-    messageBus?.publishEvent('AUTH_TOKEN_REFRESH', {
-      accessToken,
-      source: 'remote',
-    })
-  }
+      messageBus.publishEvent('AUTH_TOKEN_REFRESH', {
+        accessToken,
+        source: 'remote',
+      })
+    },
+    [messageBus],
+  )
 
-  const authError = () => {
-    messageBus?.publishEvent('AUTH_ERROR', {
-      message: '로그인에 실패했습니다. 다시 시도해 주세요.',
-      source: 'host',
-    })
-  }
+  const authErrorHandler = useCallback(
+    ({ message }: { message?: string }) => {
+      messageBus.publishEvent('AUTH_ERROR', {
+        message: message || '인증이 만료되었습니다',
+      })
+    },
+    [messageBus],
+  )
 
   useEffect(() => {
     const refreshTokenHandler = ({ accessToken }: { accessToken: string }) => {
@@ -49,24 +53,24 @@ export function RemoteAuthProvider({ children, initialState }: AuthProviderProps
       })
     }
 
-    messageBus?.subscribe('AUTH_TOKEN_REFRESH', refreshTokenHandler)
+    messageBus.subscribe('AUTH_TOKEN_REFRESH', refreshTokenHandler)
 
     return () => {
-      messageBus?.unsubscribe('AUTH_TOKEN_REFRESH', refreshTokenHandler)
+      messageBus.unsubscribe('AUTH_TOKEN_REFRESH', refreshTokenHandler)
     }
   }, [messageBus])
 
   return (
-    <AuthContext.Provider value={{ ...authState, refreshToken, authError }}>
+    <AuthContext.Provider value={{ ...authState, refreshTokenHandler, authErrorHandler }}>
       {children}
     </AuthContext.Provider>
   )
 }
 
-export function useRemoteAuth() {
+export const useRemoteAuth = () => {
   const context = useContext(AuthContext)
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider')
+  if (!context) {
+    throw new Error('useRemoteAuth must be used within RemoteAuthProvider')
   }
   return context
 }

@@ -7,9 +7,12 @@ export class MessageBus {
     this.handlers = new Map()
   }
 
-  publishEvent<T extends EventName>(eventName: T, data: EventMap[T]) {
+  publishEvent<T extends EventName>(
+    eventName: T,
+    data?: EventMap[T] extends void ? never : EventMap[T],
+  ) {
     const handlers = this.handlers.get(eventName)
-    handlers?.forEach(handler => handler(data))
+    handlers?.forEach(handler => handler(data as EventMap[T]))
   }
 
   subscribe<T extends EventName>(eventName: T, handler: EventHandler<T>) {
