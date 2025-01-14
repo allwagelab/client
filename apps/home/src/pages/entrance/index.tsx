@@ -1,9 +1,17 @@
-import viteLogo from "/vite.svg";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom'
+
+import viteLogo from '/vite.svg'
+
+import { showGlobalToast, useRemoteAuth } from '@allwagelab/message-bus'
 
 const EntrancePage = () => {
-  const navigate = useNavigate();
-  const goDashboardPage = () => navigate("/home/dashboard");
+  const auth = useRemoteAuth()
+  const navigate = useNavigate()
+  const goDashboardPage = () => navigate('/home/dashboard')
+
+  const handleToast = () => {
+    showGlobalToast('안녕하세요', 'success')
+  }
 
   return (
     <>
@@ -19,8 +27,13 @@ const EntrancePage = () => {
       <button type="button" onClick={goDashboardPage}>
         기입하러가기
       </button>
+      <button type="button" onClick={handleToast}>
+        토스트보여줘
+      </button>
+      <br />
+      <p>auth: {JSON.stringify(auth)}</p>
     </>
-  );
-};
+  )
+}
 
-export default EntrancePage;
+export default EntrancePage

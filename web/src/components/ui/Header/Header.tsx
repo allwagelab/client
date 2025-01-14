@@ -1,22 +1,16 @@
-import { useShallow } from "zustand/shallow";
-
-import { useAuthStore } from "@/stores/auth";
+import { useAuth } from '@allwagelab/message-bus'
 
 function Header() {
-  const { reset } = useAuthStore(
-    useShallow((state) => ({
-      reset: state.reset,
-    }))
-  );
+  const auth = useAuth()
 
   return (
     <header>
       Allwage Lab
-      <button type="button" onClick={reset}>
+      <button type="button" onClick={auth.logoutHandler}>
         logout
       </button>
     </header>
-  );
+  )
 }
 
-export default Header;
+export default Header

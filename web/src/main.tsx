@@ -1,13 +1,10 @@
-import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
-import App from "./App";
+import { Suspense } from 'react'
+import { createRoot } from 'react-dom/client'
 
-import "./index.css";
-import "@allwagelab/design/themes.css";
+import App from './App'
 
-// biome-ignore lint/style/noNonNullAssertion: <explanation>
-createRoot(document.getElementById("root")!).render(
-  <StrictMode>
+createRoot(document.getElementById('root')!).render(
+  <Suspense fallback={null}>
     <App />
-  </StrictMode>
-);
+  </Suspense>,
+)
