@@ -1,10 +1,4 @@
-const PATH = {
-  login: '/login',
-  signup: '/signup',
-  findId: '/find-id',
-  findPassword: '/find-password',
-  home: '/home/*',
-  schedule: '/schedule/*',
+export const HOST_APP_PROTECTED_URLS = {
+  FIND_ID: '/find-id',
+  FIND_PASSWORD: '/find-password',
 } as const
-
-export { PATH }

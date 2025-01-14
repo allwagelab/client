@@ -1,30 +1,33 @@
 import { useNavigate } from 'react-router-dom'
 
 import { useMutation } from '@tanstack/react-query'
-import { useShallow } from 'zustand/shallow'
+
+import { URLS } from '@allwagelab/constants'
+import { useAuth } from '@allwagelab/message-bus'
 
 import { login } from '@/apis/auth'
-import { useAuthStore } from '@/stores/auth'
 
 interface UseLoginProps {
   onSuccess?: () => void
   onError?: (error: Error) => void
+  autoLogin?: boolean
   redirectTo?: string
 }
 
-export const useLogin = ({ onSuccess, onError, redirectTo = '/' }: UseLoginProps = {}) => {
+export const useLogin = ({
+  onSuccess,
+  onError,
+  autoLogin = false,
+  redirectTo = URLS.APP_HOME,
+}: UseLoginProps = {}) => {
+  const auth = useAuth()
   const navigate = useNavigate()
-  const { setAuth } = useAuthStore(
-    useShallow(state => ({
-      setAuth: state.setAuth,
-    })),
-  )
 
   const { mutate: loginMutate, isPending } = useMutation({
     mutationFn: login,
     onSuccess: response => {
       const { accessToken } = response.data
-      setAuth({ accessToken })
+      auth.loginHandler({ accessToken, autoLogin })
 
       if (onSuccess) {
         onSuccess()

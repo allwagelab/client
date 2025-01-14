@@ -1,2 +1,2 @@
-export * from './URL'
-export * from './regex'
+export * from './URLS'
+export * from './REGEXES'

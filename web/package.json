@@ -27,7 +27,9 @@
     "@allwagelab/react": "^0.0.4",
     "@allwagelab/design": "^1.0.0",
     "@allwagelab/utils": "workspace:*",
+    "@allwagelab/schemas": "workspace:*",
     "@allwagelab/constants": "workspace:*",
+    "@allwagelab/message-bus": "workspace:*",
     "@emotion/babel-plugin": "^11.13.5",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
@@ -40,8 +42,7 @@
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.54.2",
     "react-router-dom": "^7.0.2",
-    "zod": "^3.24.1",
-    "zustand": "^5.0.2"
+    "zod": "^3.24.1"
   },
   "devDependencies": {
     "@originjs/vite-plugin-federation": "^1.3.6",

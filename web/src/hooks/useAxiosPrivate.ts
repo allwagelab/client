@@ -1,15 +1,14 @@
 import { useEffect } from 'react'
 
-import { useShallow } from 'zustand/react/shallow'
+import { useAuth } from '@allwagelab/message-bus'
 
 import { axiosPrivateInstance } from '@/apis'
-import { useAuthStore } from '@/stores/auth'
 
 import { useRefreshToken } from './useRefreshToken'
 
 export const useAxiosPrivate = () => {
+  const auth = useAuth()
   const renewAccessToken = useRefreshToken()
-  const auth = useAuthStore(useShallow(state => state.auth))
 
   useEffect(() => {
     const requestIntercept = axiosPrivateInstance.interceptors.request.use(
