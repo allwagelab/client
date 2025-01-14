@@ -8,13 +8,11 @@ export const useRefreshToken = () => {
 
   const refresh = async () => {
     try {
-      const response = await axiosPrivateInstance.post('/auth/refresh/token', null, {
-        withCredentials: true,
-      })
-      const accessToken = response.data.accessToken
+      const response = await axiosPrivateInstance.post('/auth/refresh/token')
+      const accessToken = response.data.data.accessToken
       setAuth({ accessToken })
 
-      return response.data.accessToken
+      return accessToken
     } catch {
       setAuth(null)
       throw new Error('refresh token error')
