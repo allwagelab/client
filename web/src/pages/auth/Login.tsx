@@ -49,18 +49,11 @@ function LoginPage() {
   })
 
   const { login, isLoggingIn } = useLogin({
-    onSuccess: () => {
-      if (isAutoLogin) {
-        localStorage.setItem('autoLogin', 'Y')
-      } else {
-        localStorage.removeItem('autoLogin')
-      }
-    },
+    autoLogin: isAutoLogin,
     onError: error =>
       setError('password', {
         message: error.message,
       }),
-    redirectTo: '/home',
   })
 
   const onSubmit = (data: LoginFormData) => {

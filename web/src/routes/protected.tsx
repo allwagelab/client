@@ -1,7 +1,9 @@
 import { type RouteObject, Navigate } from 'react-router-dom'
 
+import { URLS } from '@allwagelab/constants'
+
 import { LayoutComponent } from '@/components'
-import { PATH } from '@/data/path'
+import { HOST_APP_PROTECTED_URLS } from '@/data/path'
 import { FindIdPage, FindPasswordPage, LoginPage } from '@/pages'
 
 export const protectedRoutes: RouteObject = {
@@ -10,20 +12,20 @@ export const protectedRoutes: RouteObject = {
     {
       children: [
         {
-          path: PATH.login,
+          path: URLS.APP_LOGIN,
           element: <LoginPage />,
         },
         {
-          path: PATH.findId,
+          path: HOST_APP_PROTECTED_URLS.FIND_ID,
           element: <FindIdPage />,
         },
         {
-          path: PATH.findPassword,
+          path: HOST_APP_PROTECTED_URLS.FIND_PASSWORD,
           element: <FindPasswordPage />,
         },
         {
-          path: '/',
-          element: <Navigate to={PATH.login} replace />,
+          path: URLS.APP_START,
+          element: <Navigate to={URLS.APP_LOGIN} replace />,
         },
       ],
     },

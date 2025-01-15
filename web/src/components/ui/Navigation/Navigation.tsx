@@ -1,19 +1,27 @@
 import { useNavigate, useLocation } from 'react-router-dom'
 
+import { URLS } from '@allwagelab/constants'
+import { useAuth } from '@allwagelab/message-bus'
+
 import { useAxiosPrivate } from '@/hooks'
 
 const NAV_LIST = [
   {
     name: '홈',
-    path: '/home',
+    path: URLS.APP_HOME,
   },
   {
     name: '근무 관리',
-    path: '/schedule',
+    path: URLS.APP_SCHEDULE,
+  },
+  {
+    name: '직원 관리',
+    path: URLS.APP_EMPLOYEE,
   },
 ]
 
 function Navigation() {
+  const auth = useAuth()
   const navigate = useNavigate()
   const { pathname } = useLocation()
   const axiosPrivate = useAxiosPrivate()
@@ -47,9 +55,12 @@ function Navigation() {
           )
         })}
       </ul>
+      <br />
       <button type="button" onClick={onClick}>
         api request(/w Auth)
       </button>
+      <br />
+      <span>auth: {JSON.stringify(auth)}</span>
     </aside>
   )
 }

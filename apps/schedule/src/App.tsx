@@ -1,18 +1,16 @@
 import { BrowserRouter } from 'react-router-dom'
 
-import './App.css'
 import Router from './router'
 
-interface Props {
-  hello?: string
-}
-
-function App({ hello }: Props) {
-  console.log('hello:', hello)
+function App() {
+  const initialAuthState = {
+    accessToken: null,
+    isAuthenticated: false,
+  }
 
   return (
     <BrowserRouter>
-      <Router />
+      <Router auth={initialAuthState} />
     </BrowserRouter>
   )
 }

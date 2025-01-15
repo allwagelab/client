@@ -1,19 +1,16 @@
 import { Outlet, Navigate } from 'react-router-dom'
 
 import { css } from '@emotion/react'
-import { useShallow } from 'zustand/shallow'
+
+import { URLS } from '@allwagelab/constants'
+import { useAuth } from '@allwagelab/message-bus'
 
 import { UiComponent } from '@/components'
-import { useAuthStore } from '@/stores/auth'
 
 function Private() {
-  const { auth } = useAuthStore(
-    useShallow(state => ({
-      auth: state.auth,
-    })),
-  )
+  const auth = useAuth()
 
-  if (auth?.accessToken) {
+  if (auth.isAuthenticated) {
     return (
       <div css={privateLayout}>
         <UiComponent.Header />
@@ -25,7 +22,7 @@ function Private() {
     )
   }
 
-  return <Navigate to={'/'} />
+  return <Navigate to={URLS.APP_START} />
 }
 
 const privateLayout = css`

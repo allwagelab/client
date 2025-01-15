@@ -1,14 +1,16 @@
-import { URL } from '@allwagelab/constants'
+import { URLS } from '@allwagelab/constants'
 
 import type {
   ChildrenTitle,
   MessageData,
-  MessageDataToChildren,
   MessageDataToParent,
+  MessageDataToChildren,
 } from './iframeEventHandler.types'
 
-export const isValidEventOrigin = (origin: string) => {
-  return Object.values(URL).includes(origin)
+type ValueOf<T> = T[keyof T]
+
+export const isValidEventOrigin = (origin: ValueOf<typeof URLS>) => {
+  return Object.values(URLS).includes(origin)
 }
 
 const getChildIframe = (title: ChildrenTitle) => {
@@ -19,7 +21,7 @@ const getChildIframe = (title: ChildrenTitle) => {
 const postMessage = (data: MessageData) => {
   switch (data.type) {
     case 'routeChange':
-      parent.postMessage({ type: data.type, route: data.route }, URL.HOME)
+      parent.postMessage({ type: data.type, route: data.route }, URLS.APP_START)
       break
     case 'navigate':
       getChildIframe(data.title)?.postMessage(
