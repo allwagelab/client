@@ -93,7 +93,7 @@ export function AuthProvider({ tokenKey, encodeToken, decodeToken, children }: A
       if (process.env.NODE_ENV === 'development') {
         console.error(message) // 인증 에러 디버깅용
       }
-      showGlobalToast(MESSAGES.AUTH.EXPIRED, 'error')
+      showGlobalToast(MESSAGES.AUTH.TOKEN.EXPIRED, 'error')
 
       logoutHandler({
         showToast: false,

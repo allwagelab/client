@@ -55,6 +55,7 @@ const AUTH = {
     DONE: '성공적으로 로그인되었습니다.',
     UNAUTHORIZED: '이메일과 비밀번호가 일치하지 않습니다.',
     ERROR: '로그인 중 오류가 발생했습니다.',
+    RETRY: '다시 로그인해 주세요.',
   },
   SIGN_UP: {
     UNAUTHORIZED: '회원가입에 실패했습니다.',
@@ -63,7 +64,11 @@ const AUTH = {
   LOG_OUT: {
     DONE: '성공적으로 로그아웃되었습니다.',
   },
-  EXPIRED: '인증이 만료되었습니다.',
+  TOKEN: {
+    EXPIRED: '인증이 만료되었습니다.',
+    RENEW_FAIL: '토큰 갱신에 실패했습니다.',
+    FORBIDDEN: '접근 권한이 없습니다.',
+  },
 }
 
 export const MESSAGES = {
