@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation } from '@tanstack/react-query'
 import { z } from 'zod'
 
-import { PASSWORD_REGEX } from '@allwagelab/constants'
+import { MESSAGES, PASSWORD_REGEX } from '@allwagelab/constants'
 import { Button } from '@allwagelab/react'
 
 import { checkEmailDuplicate } from '@/apis/auth'
@@ -21,11 +21,11 @@ const signupSchema = z
         return true
       }
       return false
-    }, '비밀번호는 영문, 숫자 특수문자 조합 8자 이상 입력해주세요.'),
+    }, MESSAGES.AUTH.PASSWORD.INVALID_FORMAT),
     passwordConfirm: z.string(),
   })
   .refine(data => data.password === data.passwordConfirm, {
-    message: '비밀번호가 일치하지 않습니다',
+    message: MESSAGES.AUTH.PASSWORD.NOT_MATCHED,
     path: ['passwordConfirm'],
   })
 
@@ -79,7 +79,7 @@ function AccountForm({ onSubmit, defaultValues }: AccountFormProps) {
     if (!isEmailVerified) {
       setError('email', {
         type: 'manual',
-        message: '이메일 중복 확인이 필요합니다',
+        message: MESSAGES.AUTH.EMAIL.REQUIRED_DUPLICATION_CHECK,
       })
       return
     }
@@ -112,14 +112,14 @@ function AccountForm({ onSubmit, defaultValues }: AccountFormProps) {
             </Button>
           </EmailInputWrapper>
           {errors.email && <ErrorMessage>{errors.email.message}</ErrorMessage>}
-          {isEmailVerified && <SuccessMessage>사용 가능한 이메일입니다.</SuccessMessage>}
+          {isEmailVerified && <SuccessMessage>{MESSAGES.AUTH.EMAIL.AVAILABLE}</SuccessMessage>}
         </Modal.InputGroup>
 
         <Modal.InputGroup>
           <Label>비밀번호</Label>
           <Modal.Input
             type="password"
-            placeholder="비밀번호를 입력해 주세요"
+            placeholder={MESSAGES.AUTH.PASSWORD.EMPTY}
             {...register('password')}
           />
           {errors.password && <ErrorMessage>{errors.password.message}</ErrorMessage>}
@@ -129,7 +129,7 @@ function AccountForm({ onSubmit, defaultValues }: AccountFormProps) {
           <Label>비밀번호 확인</Label>
           <Modal.Input
             type="password"
-            placeholder="비밀번호를 다시 입력해 주세요"
+            placeholder={MESSAGES.AUTH.PASSWORD.REENTER}
             {...register('passwordConfirm')}
           />
           {errors.passwordConfirm && <ErrorMessage>{errors.passwordConfirm.message}</ErrorMessage>}
