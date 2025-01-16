@@ -1,14 +1,12 @@
 import { AxiosError } from 'axios'
 
-import { axiosInstance } from './index'
+import { axiosInstance, axiosCredentialsInstance } from './index'
 
 import type { LoginRequest, LoginResponse, SignupRequest, SignupResponse } from '../types/auth'
 
 export const login = async (data: LoginRequest): Promise<LoginResponse> => {
   try {
-    const response = await axiosInstance.post<LoginResponse>('/auth/login/email', data, {
-      withCredentials: true,
-    })
+    const response = await axiosCredentialsInstance.post<LoginResponse>('/auth/login/email', data)
     return response.data
   } catch (error) {
     if (error instanceof AxiosError && error.response?.status === 401) {
@@ -20,9 +18,7 @@ export const login = async (data: LoginRequest): Promise<LoginResponse> => {
 
 export const checkEmailDuplicate = async (email: string) => {
   try {
-    await axiosInstance.post<boolean>('/auth/check/email', {
-      email,
-    })
+    await axiosInstance.post<boolean>('/auth/check/email', { email })
   } catch (error) {
     if (error instanceof AxiosError && error.response?.status === 401) {
       throw new Error('이미 사용 중인 이메일입니다.')

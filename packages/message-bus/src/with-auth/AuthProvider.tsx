@@ -69,7 +69,7 @@ export function AuthProvider({ tokenKey, encodeToken, decodeToken, children }: A
   )
 
   const refreshTokenHandler = useCallback(
-    ({ accessToken, source }: { accessToken: string; source?: string }) => {
+    ({ accessToken }: { accessToken: string }) => {
       if (token) {
         saveToken(accessToken)
       }
@@ -79,12 +79,10 @@ export function AuthProvider({ tokenKey, encodeToken, decodeToken, children }: A
         accessToken,
       }))
 
-      if (source !== 'remote') {
-        messageBus.publishEvent('AUTH_TOKEN_REFRESH', {
-          accessToken,
-          source: 'host',
-        })
-      }
+      messageBus.publishEvent('AUTH_TOKEN_REFRESH', {
+        accessToken,
+        source: 'host',
+      })
     },
     [token, saveToken, messageBus],
   )
@@ -110,6 +108,13 @@ export function AuthProvider({ tokenKey, encodeToken, decodeToken, children }: A
   }, [])
 
   useEffect(() => {
+    const refreshTokenHandler = ({ accessToken }: { accessToken: string }) => {
+      setAuthState({
+        isAuthenticated: true,
+        accessToken,
+      })
+    }
+
     messageBus.subscribe('AUTH_ERROR', authErrorHandler)
     messageBus.subscribe('AUTH_TOKEN_REFRESH', refreshTokenHandler)
 
