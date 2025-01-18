@@ -7,7 +7,7 @@ import styled from '@emotion/styled'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 
-import { PASSWORD_REGEX } from '@allwagelab/constants'
+import { PASSWORD_REGEX, MESSAGES } from '@allwagelab/constants'
 import { Button, Checkbox } from '@allwagelab/react'
 
 import SignupModal from '@/components/auth/SignupModal'
@@ -24,11 +24,13 @@ import {
 } from '@/styles'
 
 const loginSchema = z.object({
-  email: z.string().email('올바른 이메일 형식을 입력해주세요'),
-  password: z
-    .string()
-    .min(8, '비밀번호는 최소 8자 이상이어야 합니다')
-    .regex(PASSWORD_REGEX, '영문, 숫자, 특수문자를 모두 포함해야 합니다'),
+  email: z.string().min(1, MESSAGES.AUTH.EMAIL.EMPTY).email(MESSAGES.AUTH.EMAIL.INVALID_FORMAT),
+  password: z.string().refine(pwd => {
+    if (pwd.length < 1 || PASSWORD_REGEX.test(pwd)) {
+      return true
+    }
+    return false
+  }, MESSAGES.AUTH.PASSWORD.INVALID_FORMAT),
 })
 
 type LoginFormData = z.infer<typeof loginSchema>
@@ -74,7 +76,11 @@ function LoginPage() {
 
         <InputGroup>
           <Label>비밀번호</Label>
-          <Input type="password" placeholder="비밀번호를 입력해 주세요" {...register('password')} />
+          <Input
+            type="password"
+            placeholder={MESSAGES.AUTH.PASSWORD.EMPTY}
+            {...register('password')}
+          />
           {errors.password && <ErrorMessage>{errors.password.message}</ErrorMessage>}
         </InputGroup>
 

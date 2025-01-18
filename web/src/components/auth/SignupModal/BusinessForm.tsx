@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation } from '@tanstack/react-query'
 import { z } from 'zod'
 
-import { BUSINESS_NUMBER_REGEX, PHONE_NUMBER_REGEX } from '@allwagelab/constants'
+import { BUSINESS_NUMBER_REGEX, MESSAGES, PHONE_NUMBER_REGEX } from '@allwagelab/constants'
 import { Button } from '@allwagelab/react'
 import { formatBusinessNumber, formatPhoneNumber } from '@allwagelab/utils'
 
@@ -16,17 +16,17 @@ import { Label, ErrorMessage, SuccessMessage, Modal } from '@/styles'
 import type { BusinessInfoFormData } from '@/types/auth'
 
 const businessInfoSchema = z.object({
-  businessName: z.string().min(1, '사업장 이름을 입력해주세요'),
+  businessName: z.string().min(1, MESSAGES.AUTH.BUSINESS.NAME.EMPTY),
   businessNumber: z
     .string()
-    .min(1, '사업장 등록 번호를 입력해주세요.')
-    .regex(BUSINESS_NUMBER_REGEX, '올바른 사업자 등록번호 형식이 아닙니다.'),
+    .min(1, MESSAGES.AUTH.BUSINESS.REGISTRATION_NUMBER.EMPTY)
+    .regex(BUSINESS_NUMBER_REGEX, MESSAGES.AUTH.BUSINESS.REGISTRATION_NUMBER.INVALID_FORMAT),
   phoneNumber: z
     .string()
-    .min(1, '휴대폰 번호를 입력해주세요.')
-    .regex(PHONE_NUMBER_REGEX, '올바른 휴대폰 번호 형식이 아닙니다. (예: 010-0000-0000)'),
+    .min(1, MESSAGES.AUTH.PHONE.EMPTY)
+    .regex(PHONE_NUMBER_REGEX, MESSAGES.AUTH.PHONE.INVALID_FORMAT),
   employeeCount: z.enum(['under5', 'over5'], {
-    required_error: '직원 수를 선택해주세요.',
+    required_error: MESSAGES.AUTH.BUSINESS.EMPLOYEE.NOT_SELECTED,
   }),
 })
 
@@ -35,7 +35,7 @@ interface BusinessFormProps {
   onBack: () => void
 }
 
-function BusinessForm({ onSubmit, onBack }: BusinessFormProps) {
+export default function BusinessForm({ onSubmit, onBack }: BusinessFormProps) {
   const [isBusinessNumberVerified, setIsBusinessNumberVerified] = useState(false)
   const [isPhoneVerified, setIsPhoneVerified] = useState(false)
   const [showVerificationField, setShowVerificationField] = useState(false)
@@ -66,7 +66,7 @@ function BusinessForm({ onSubmit, onBack }: BusinessFormProps) {
     onEnd: () => {
       setError('verificationCode', {
         type: 'manual',
-        message: '인증 시간이 만료되었습니다. 다시 시도해주세요.',
+        message: MESSAGES.AUTH.VERIFICATION_CODE.EXPIRED,
       })
     },
   })
@@ -139,7 +139,7 @@ function BusinessForm({ onSubmit, onBack }: BusinessFormProps) {
     const code = watch('verificationCode')
     if (!code) {
       setError('verificationCode', {
-        message: '인증번호를 입력해주세요',
+        message: MESSAGES.AUTH.VERIFICATION_CODE.EMPTY,
       })
 
       return
@@ -175,7 +175,7 @@ function BusinessForm({ onSubmit, onBack }: BusinessFormProps) {
     if (!isBusinessNumberVerified) {
       setError('businessNumber', {
         type: 'manual',
-        message: '사업자 등록번호 중복 확인이 필요합니다',
+        message: MESSAGES.AUTH.BUSINESS.REGISTRATION_NUMBER.REQUIRED_CHECK,
       })
       return
     }
@@ -183,7 +183,7 @@ function BusinessForm({ onSubmit, onBack }: BusinessFormProps) {
     if (!isPhoneVerified) {
       setError('phoneNumber', {
         type: 'manual',
-        message: '휴대폰 인증이 필요합니다',
+        message: MESSAGES.AUTH.PHONE.REQUIRED_CHECK,
       })
       return
     }
@@ -194,7 +194,7 @@ function BusinessForm({ onSubmit, onBack }: BusinessFormProps) {
       if (error instanceof Error) {
         setSubmitError(error.message)
       } else {
-        setSubmitError('회원가입 중 오류가 발생했습니다.')
+        setSubmitError(MESSAGES.AUTH.SIGN_UP.ERROR)
       }
     }
   }
@@ -228,7 +228,7 @@ function BusinessForm({ onSubmit, onBack }: BusinessFormProps) {
           </InputWithButton>
           {errors.businessNumber && <ErrorMessage>{errors.businessNumber.message}</ErrorMessage>}
           {isBusinessNumberVerified && (
-            <SuccessMessage>등록 가능한 사업자 번호입니다</SuccessMessage>
+            <SuccessMessage>{MESSAGES.AUTH.BUSINESS.REGISTRATION_NUMBER.AVAILABLE}</SuccessMessage>
           )}
         </Modal.InputGroup>
 
@@ -250,9 +250,7 @@ function BusinessForm({ onSubmit, onBack }: BusinessFormProps) {
             </Button>
           </InputWithButton>
           {errors.phoneNumber && <ErrorMessage>{errors.phoneNumber.message}</ErrorMessage>}
-          {isRunning && (
-            <SuccessMessage>인증번호를 발송했습니다. 최대 3분이 소요될 수 있습니다.</SuccessMessage>
-          )}
+          {isRunning && <SuccessMessage>{MESSAGES.AUTH.VERIFICATION_CODE.SENT}</SuccessMessage>}
         </Modal.InputGroup>
 
         {showVerificationField && (
@@ -277,7 +275,7 @@ function BusinessForm({ onSubmit, onBack }: BusinessFormProps) {
             {errors.verificationCode && (
               <ErrorMessage>{errors.verificationCode.message}</ErrorMessage>
             )}
-            {isPhoneVerified && <SuccessMessage>휴대폰 인증이 완료되었습니다</SuccessMessage>}
+            {isPhoneVerified && <SuccessMessage>{MESSAGES.AUTH.PHONE.VERIFIED}</SuccessMessage>}
           </Modal.InputGroup>
         )}
 
@@ -351,5 +349,3 @@ const ButtonGroup = styled.div`
   grid-template-columns: 132px auto;
   gap: 12px;
 `
-
-export default BusinessForm
