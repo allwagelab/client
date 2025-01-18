@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import { URLS } from '@allwagelab/constants'
 import { useAuth } from '@allwagelab/message-bus'
 
-import { useAxiosPrivate } from '@/hooks'
+import { axiosPrivateInstance } from '@/apis'
 
 const NAV_LIST = [
   {
@@ -24,7 +24,6 @@ function Navigation() {
   const auth = useAuth()
   const navigate = useNavigate()
   const { pathname } = useLocation()
-  const axiosPrivate = useAxiosPrivate()
 
   const onClickNavItem = (path: string) => {
     navigate(path)
@@ -32,8 +31,18 @@ function Navigation() {
 
   const onClick = async () => {
     try {
-      const response = await axiosPrivate.get('/company/info')
-      console.log(response)
+      // const companyInfo = await axiosPrivateInstance.get('/company/info')
+      // const employee = await axiosPrivateInstance.get(
+      //   '/employee?isWorking=true&date=true&orderBy=name',
+      // )
+      // console.log(`employee: ${JSON.stringify(employee)}`)
+      // console.log(`companyInfo: ${JSON.stringify(companyInfo)}`)
+
+      const result = await Promise.race([
+        axiosPrivateInstance.get('/company/info'),
+        axiosPrivateInstance.get('/employee?isWorking=true&date=true&orderBy=name'),
+      ])
+      console.log(`result: ${JSON.stringify(result)}`)
     } catch (error) {
       console.error(error)
     }
