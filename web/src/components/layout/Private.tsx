@@ -26,29 +26,6 @@ function Private() {
 }
 
 const privateLayout = css`
-  header {
-    position: fixed;
-    height: 60px;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background-color: cadetblue;
-    padding: 0 2rem;
-  }
-
-  aside {
-    position: fixed;
-    top: 60px;
-    left: 0;
-    height: 100%;
-    width: 20%;
-    color: black;
-    background-color: antiquewhite;
-    font-size: 18px;
-    font-weight: 700;
-  }
-
   aside ul {
     display: flex;
     flex-direction: column;
