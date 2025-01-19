@@ -9,7 +9,7 @@ import { useAuthStorage } from './hooks/useAuthStorage'
 
 import { useMessageBus } from '../MessageBusContext'
 
-interface AuthContextType extends AuthState {
+export interface AuthContextType extends AuthState {
   loginHandler: ({ accessToken, autoLogin }: { accessToken: string; autoLogin?: boolean }) => void
   logoutHandler: ({ showToast }?: { showToast?: boolean }) => void
   refreshTokenHandler: ({ accessToken, source }: { accessToken: string; source?: string }) => void

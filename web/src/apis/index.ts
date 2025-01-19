@@ -1,14 +1,13 @@
 import axios, { AxiosError, type AxiosInstance, type AxiosRequestConfig } from 'axios'
 
 import { MESSAGES } from '@allwagelab/constants'
+import type { AuthContextType } from '@allwagelab/message-bus'
 
 const baseURL = import.meta.env.VITE_BASE_URL
 
 interface AxiosInstanceOptions extends AxiosRequestConfig {
   withCredentials?: boolean
 }
-
-type CallbackType = (newToken: string) => void
 
 const defaultOptions: AxiosInstanceOptions = {
   baseURL,
@@ -25,31 +24,69 @@ const createAxiosInstance = (options: AxiosInstanceOptions = {}): AxiosInstance 
   })
 
 const axiosInstance: AxiosInstance = createAxiosInstance()
+const axiosCredentialsInstance: AxiosInstance = createAxiosInstance({ withCredentials: true })
+const axiosPrivateInstance: AxiosInstance = createAxiosInstance({ withCredentials: true })
 
-const axiosCredentialsInstance: AxiosInstance = createAxiosInstance({
-  withCredentials: true,
-})
+class TokenRefreshQueue {
+  private isRefreshing = false
+  private refreshPromise: Promise<string> | null = null
+  private auth: AuthContextType
 
-const axiosPrivateInstance: AxiosInstance = createAxiosInstance({
-  withCredentials: true,
-})
+  constructor(auth: AuthContextType) {
+    this.auth = auth
+  }
 
-// 여러 요청 간의 토큰 갱신 중복 방지
-let isRefreshing = false
-let refreshSubscribers: CallbackType[] = []
+  async refreshToken() {
+    if (!this.isRefreshing) {
+      this.isRefreshing = true
+      this.refreshPromise = this.performTokenRefresh()
+    }
+    return this.refreshPromise
+  }
 
-// 토큰 갱신 완료 후 대기 중인 요청 처리
-const onRefreshed: CallbackType = newToken => {
-  refreshSubscribers.forEach(callback => callback(newToken))
-  refreshSubscribers = []
+  private async performTokenRefresh(): Promise<string> {
+    try {
+      const {
+        data: {
+          data: { accessToken },
+        },
+      } = await axios
+        .create({
+          ...defaultOptions,
+          withCredentials: true,
+        })
+        .post('/auth/refresh/token')
+
+      this.auth.refreshTokenHandler({ accessToken })
+      return accessToken
+    } catch (error) {
+      let errorMessage = `${MESSAGES.AUTH.TOKEN.RENEW_FAIL} ${MESSAGES.AUTH.LOG_IN.RETRY}`
+
+      if (error instanceof AxiosError) {
+        if (error.response) {
+          const status = error.response.status
+          if (status === 401) {
+            errorMessage = `${MESSAGES.AUTH.TOKEN.EXPIRED} ${MESSAGES.AUTH.LOG_IN.RETRY}`
+          } else if (status === 403) {
+            errorMessage = MESSAGES.AUTH.TOKEN.FORBIDDEN
+          }
+        } else {
+          errorMessage = error.message
+        }
+      }
+
+      this.auth.authErrorHandler({ message: errorMessage })
+      return Promise.reject(errorMessage)
+    } finally {
+      this.isRefreshing = false
+      this.refreshPromise = null
+    }
+  }
 }
 
-// 요청 실패 시, 새 토큰을 기다리는 로직
-const addSubscriber = (callback: CallbackType) => {
-  refreshSubscribers.push(callback)
-}
+export const initAxiosInterceptors = (auth: AuthContextType) => {
+  const tokenQueue = new TokenRefreshQueue(auth)
 
-export const initAxiosInterceptors = (auth: any) => {
   axiosPrivateInstance.interceptors.request.use(
     config => {
       if (!config.headers.Authorization) {
@@ -66,59 +103,15 @@ export const initAxiosInterceptors = (auth: any) => {
       const prevRequest = error.config
 
       if (error.response?.status === 401 && !prevRequest._retry) {
-        if (!isRefreshing) {
-          isRefreshing = true
-          prevRequest._retry = true
+        prevRequest._retry = true
 
-          try {
-            const {
-              data: {
-                data: { accessToken },
-              },
-            } = await axiosPrivateInstance.post('/auth/refresh/token')
-
-            auth.refreshTokenHandler({ accessToken })
-
-            isRefreshing = false
-            setTimeout(() => onRefreshed(accessToken), 0) // TODO. fix
-          } catch (err) {
-            isRefreshing = false
-            refreshSubscribers = []
-
-            let errorMessage = `${MESSAGES.AUTH.TOKEN.RENEW_FAIL} ${MESSAGES.AUTH.LOG_IN.RETRY}`
-
-            if (error instanceof AxiosError) {
-              if ('response' in error) {
-                const status = error.response?.status
-                if (status === 401) {
-                  errorMessage = `${MESSAGES.AUTH.TOKEN.EXPIRED} ${MESSAGES.AUTH.LOG_IN.RETRY}`
-                } else if (status === 403) {
-                  errorMessage = MESSAGES.AUTH.TOKEN.FORBIDDEN
-                }
-              } else {
-                errorMessage = `토큰 갱신 실패: ${error.message}`
-              }
-            }
-
-            auth.authErrorHandler({
-              message: errorMessage,
-            })
-
-            return Promise.reject(err)
-          }
+        try {
+          const newToken = await tokenQueue.refreshToken()
+          prevRequest.headers.Authorization = `Bearer ${newToken}`
+          return axiosPrivateInstance(prevRequest)
+        } catch (refreshError) {
+          return Promise.reject(refreshError)
         }
-
-        // 대기 중인 요청 추가
-        return new Promise((resolve, reject) => {
-          addSubscriber(newToken => {
-            if (newToken) {
-              prevRequest.headers.Authorization = `Bearer ${newToken}`
-              resolve(axiosPrivateInstance(prevRequest))
-            } else {
-              reject(error)
-            }
-          })
-        })
       }
 
       return Promise.reject(error)

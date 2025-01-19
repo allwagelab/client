@@ -12,7 +12,7 @@ function Router() {
   const auth = useAuth()
 
   useEffect(() => {
-    initAxiosInterceptors(auth) // Axios Interceptor 초기화
+    initAxiosInterceptors(auth)
   }, [auth])
 
   const routes = useRoutes([protectedRoutes, privateRoutes(auth)])

@@ -1,3 +1,4 @@
+import { Fragment } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 
 import { css } from '@emotion/react'
@@ -104,8 +105,8 @@ function Navigation() {
       </BusinessInfo>
       <MenuGroup>
         {NAV_LIST.map((item, index) => (
-          <>
-            <div key={index}>
+          <Fragment key={index}>
+            <div>
               {item.map(({ name, path, icon, alt }) => (
                 <div
                   key={name}
@@ -118,7 +119,7 @@ function Navigation() {
               ))}
             </div>
             <Divider />
-          </>
+          </Fragment>
         ))}
       </MenuGroup>
 

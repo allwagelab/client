@@ -2,9 +2,8 @@ import { AxiosError } from 'axios'
 
 import { MESSAGES } from '@allwagelab/constants'
 
-import { axiosInstance, axiosCredentialsInstance } from './index'
-
-import type { LoginRequest, LoginResponse, SignupRequest, SignupResponse } from '../types/auth'
+import { axiosInstance, axiosCredentialsInstance } from '@/apis'
+import type { LoginRequest, LoginResponse, SignupRequest, SignupResponse } from '@/types/auth'
 
 export const login = async (data: LoginRequest): Promise<LoginResponse> => {
   try {
