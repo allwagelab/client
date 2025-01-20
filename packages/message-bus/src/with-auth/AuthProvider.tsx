@@ -1,6 +1,7 @@
 /** @jsxImportSource react */
 import { type ReactNode, createContext, useContext, useState, useEffect, useCallback } from 'react'
 
+import { MESSAGES } from '@allwagelab/constants'
 import { showGlobalToast } from '@allwagelab/message-bus'
 import type { AuthState } from '@allwagelab/schemas'
 
@@ -48,7 +49,7 @@ export function AuthProvider({ tokenKey, encodeToken, decodeToken, children }: A
         accessToken,
       })
 
-      showGlobalToast('성공적으로 로그인되었습니다', 'success')
+      showGlobalToast(MESSAGES.AUTH.LOG_IN.DONE, 'success')
     },
     [saveToken],
   )
@@ -62,14 +63,14 @@ export function AuthProvider({ tokenKey, encodeToken, decodeToken, children }: A
       })
 
       if (showToast) {
-        showGlobalToast('성공적으로 로그아웃되었습니다', 'info')
+        showGlobalToast(MESSAGES.AUTH.LOG_OUT.DONE, 'info')
       }
     },
     [removeToken],
   )
 
   const refreshTokenHandler = useCallback(
-    ({ accessToken, source }: { accessToken: string; source?: string }) => {
+    ({ accessToken }: { accessToken: string }) => {
       if (token) {
         saveToken(accessToken)
       }
@@ -79,12 +80,10 @@ export function AuthProvider({ tokenKey, encodeToken, decodeToken, children }: A
         accessToken,
       }))
 
-      if (source !== 'remote') {
-        messageBus.publishEvent('AUTH_TOKEN_REFRESH', {
-          accessToken,
-          source: 'host',
-        })
-      }
+      messageBus.publishEvent('AUTH_TOKEN_REFRESH', {
+        accessToken,
+        source: 'host',
+      })
     },
     [token, saveToken, messageBus],
   )
@@ -94,7 +93,7 @@ export function AuthProvider({ tokenKey, encodeToken, decodeToken, children }: A
       if (process.env.NODE_ENV === 'development') {
         console.error(message) // 인증 에러 디버깅용
       }
-      showGlobalToast('인증이 만료되었습니다', 'error')
+      showGlobalToast(MESSAGES.AUTH.TOKEN.EXPIRED, 'error')
 
       logoutHandler({
         showToast: false,
@@ -110,6 +109,13 @@ export function AuthProvider({ tokenKey, encodeToken, decodeToken, children }: A
   }, [])
 
   useEffect(() => {
+    const refreshTokenHandler = ({ accessToken }: { accessToken: string }) => {
+      setAuthState({
+        isAuthenticated: true,
+        accessToken,
+      })
+    }
+
     messageBus.subscribe('AUTH_ERROR', authErrorHandler)
     messageBus.subscribe('AUTH_TOKEN_REFRESH', refreshTokenHandler)
 

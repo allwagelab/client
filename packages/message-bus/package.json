@@ -17,7 +17,8 @@
     "react": "^18.3.1",
     "@emotion/react": "^11.14.0",
     "@allwagelab/utils": "workspace:*",
-    "@allwagelab/schemas": "workspace:*"
+    "@allwagelab/schemas": "workspace:*",
+    "@allwagelab/constants": "workspace:*"
   },
   "devDependencies": {
     "@types/react": "^18.3.12",

@@ -1,5 +1,6 @@
 import { AxiosError } from 'axios'
 
+import { MESSAGES } from '@allwagelab/constants'
 import { useAuth } from '@allwagelab/message-bus'
 
 import { axiosPrivateInstance } from '@/apis'
@@ -9,24 +10,22 @@ export const useRefreshToken = () => {
 
   const refresh = async () => {
     try {
-      const response = await axiosPrivateInstance.post('/auth/refresh/token', null, {
-        withCredentials: true,
-      })
-      const accessToken = response.data.accessToken
+      const response = await axiosPrivateInstance.post('/auth/refresh/token')
+      const accessToken = response.data.data.accessToken
       auth.refreshTokenHandler({ accessToken })
 
-      return response.data.accessToken
+      return accessToken
     } catch (error) {
-      let errorMessage = '토큰 갱신에 실패했습니다. 다시 로그인해 주세요.'
+      let errorMessage = `${MESSAGES.AUTH.TOKEN.RENEW_FAIL} ${MESSAGES.AUTH.LOG_IN.RETRY}`
 
       if (error instanceof AxiosError) {
         // axios error인 경우
         if ('response' in error) {
           const status = error.response?.status
           if (status === 401) {
-            errorMessage = '인증이 만료되었습니다. 다시 로그인해 주세요.'
+            errorMessage = `${MESSAGES.AUTH.TOKEN.EXPIRED} ${MESSAGES.AUTH.LOG_IN.RETRY}`
           } else if (status === 403) {
-            errorMessage = '접근 권한이 없습니다.'
+            errorMessage = MESSAGES.AUTH.TOKEN.FORBIDDEN
           }
         } else {
           // 일반적인 Error 객체인 경우

@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation } from '@tanstack/react-query'
 import { z } from 'zod'
 
+import { MESSAGES } from '@allwagelab/constants'
 import { Button } from '@allwagelab/react'
 
 import { sendTempPassword } from '@/apis/auth'
@@ -25,8 +26,8 @@ import {
 } from '@/styles'
 
 const findPasswordSchema = z.object({
-  email: z.string().min(1, '이메일을 입력해주세요').email('올바른 이메일 형식을 입력해주세요'),
-  temporaryPassword: z.string().min(1, '임시 비밀번호를 입력해주세요'),
+  email: z.string().min(1, MESSAGES.AUTH.EMAIL.EMPTY).email(MESSAGES.AUTH.EMAIL.INVALID_FORMAT),
+  temporaryPassword: z.string().min(1, MESSAGES.AUTH.PASSWORD.EMPTY_TEMP),
 })
 
 type FindPasswordFormData = z.infer<typeof findPasswordSchema>
@@ -50,7 +51,7 @@ function FindPasswordPage() {
   const { mutate: sendTemporaryPassword, isPending: isSendingTemp } = useMutation({
     mutationFn: sendTempPassword,
     onSuccess: () => {
-      setSuccessMessage('이메일로 임시 비밀번호를 발송했습니다. 이메일을 확인해주세요.')
+      setSuccessMessage(MESSAGES.AUTH.EMAIL.CHECK_TEMP_PASSWORD)
     },
     onError: (error: Error) => {
       setError('email', {
@@ -65,7 +66,7 @@ function FindPasswordPage() {
     onError: () => {
       setError('temporaryPassword', {
         type: 'manual',
-        message: '임시 비밀번호가 올바르지 않습니다',
+        message: MESSAGES.AUTH.PASSWORD.WRONG_TEMP,
       })
     },
     // redirectTo: '/mypage/reset-password',
@@ -126,7 +127,7 @@ function FindPasswordPage() {
           <Label>임시 비밀번호</Label>
           <Input
             type="password"
-            placeholder="발급받은 임시 비밀번호를 입력해주세요"
+            placeholder={MESSAGES.AUTH.PASSWORD.EMPTY_TEMP}
             {...register('temporaryPassword')}
           />
           {errors.temporaryPassword && (

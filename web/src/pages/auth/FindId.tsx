@@ -8,7 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation } from '@tanstack/react-query'
 import { z } from 'zod'
 
-import { PHONE_NUMBER_REGEX } from '@allwagelab/constants'
+import { MESSAGES, PHONE_NUMBER_REGEX } from '@allwagelab/constants'
 import { Button } from '@allwagelab/react'
 import { formatPhoneNumber } from '@allwagelab/utils'
 
@@ -33,9 +33,9 @@ import {
 const findIdSchema = z.object({
   phoneNumber: z
     .string()
-    .min(1, '휴대폰 번호를 입력해주세요')
-    .regex(PHONE_NUMBER_REGEX, '올바른 휴대폰 번호 형식이 아닙니다. (예: 010-0000-0000)'),
-  verificationCode: z.string().min(1, '인증번호를 입력해주세요'),
+    .min(1, MESSAGES.AUTH.PHONE.EMPTY)
+    .regex(PHONE_NUMBER_REGEX, MESSAGES.AUTH.PHONE.INVALID_FORMAT),
+  verificationCode: z.string().min(1, MESSAGES.AUTH.VERIFICATION_CODE.EMPTY),
 })
 
 type FindIdFormData = z.infer<typeof findIdSchema>
@@ -79,7 +79,7 @@ function FindIdPage() {
     onEnd: () => {
       setError('verificationCode', {
         type: 'manual',
-        message: '인증 시간이 만료되었습니다. 다시 시도해주세요.',
+        message: MESSAGES.AUTH.VERIFICATION_CODE.EXPIRED,
       })
     },
   })
@@ -92,7 +92,7 @@ function FindIdPage() {
       startTimer()
     },
     onError: (error: Error) => {
-      if (error.message === '존재하지 않는 휴대폰 번호입니다.') {
+      if (error.message === MESSAGES.AUTH.PHONE.NOT_FOUND) {
         setCurrentStep('NOT_FOUND')
       } else {
         setError('phoneNumber', {
@@ -133,7 +133,7 @@ function FindIdPage() {
     if (!code) {
       setError('verificationCode', {
         type: 'manual',
-        message: '인증번호를 입력해주세요',
+        message: MESSAGES.AUTH.VERIFICATION_CODE.EMPTY,
       })
       return
     }
@@ -163,7 +163,7 @@ function FindIdPage() {
     if (!isPhoneVerified) {
       setError('phoneNumber', {
         type: 'manual',
-        message: '휴대폰 인증이 필요합니다',
+        message: MESSAGES.AUTH.PHONE.REQUIRED_CHECK,
       })
       return
     }
@@ -254,7 +254,7 @@ function FindIdPage() {
           <InputWithButton>
             <Input
               type="text"
-              placeholder="인증번호를 입력해주세요"
+              placeholder={MESSAGES.AUTH.VERIFICATION_CODE.EMPTY}
               {...register('verificationCode')}
             />
             <Button
@@ -270,7 +270,7 @@ function FindIdPage() {
           {errors.verificationCode && (
             <ErrorMessage>{errors.verificationCode.message}</ErrorMessage>
           )}
-          {isPhoneVerified && <SuccessMessage>휴대폰 인증이 완료되었습니다</SuccessMessage>}
+          {isPhoneVerified && <SuccessMessage>{MESSAGES.AUTH.PHONE.VERIFIED}</SuccessMessage>}
         </InputGroup>
 
         <ButtonGroup>

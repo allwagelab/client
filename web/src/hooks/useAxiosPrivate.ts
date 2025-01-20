@@ -28,9 +28,8 @@ export const useAxiosPrivate = () => {
         if (error?.response?.status === 401 && !prevRequest?.sent) {
           prevRequest.sent = true
           const newAccessToken = await renewAccessToken()
-          console.log(newAccessToken)
-          // prevRequest.headers.Authorization = `Bearer ${newAccessToken}`
-          // return axiosPrivateInstance(prevRequest)
+          prevRequest.headers.Authorization = `Bearer ${newAccessToken}`
+          return axiosPrivateInstance(prevRequest)
         }
         return Promise.reject(error)
       },
