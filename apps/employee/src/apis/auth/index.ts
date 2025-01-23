@@ -1,7 +1,7 @@
 import { base } from '@/apis'
 
-const PATH = '/v1/auth'
+const PATH = '/auth'
 
-const refreshToken = () => base.post(`${PATH}/refresh/token`)
+const renewAccessToken = () => base.post<{ data: { accessToken: string } }>(`${PATH}/refresh/token`)
 
-export { refreshToken }
+export { renewAccessToken }

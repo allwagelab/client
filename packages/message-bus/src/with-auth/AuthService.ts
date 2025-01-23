@@ -26,7 +26,7 @@ export class AuthService {
     return this.token
   }
 
-  setToken(token: string, persist = true): void {
+  setToken(token: string, persist = false): void {
     this.token = token
 
     if (persist) {

@@ -9,7 +9,7 @@ interface RouterProps {
 }
 
 function Router({ auth }: RouterProps) {
-  console.log('auth:', auth)
+  console.log('Home Router Auth:', auth)
 
   return (
     <MessageBusProvider>

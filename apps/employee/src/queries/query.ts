@@ -28,8 +28,6 @@ function useAuthQuery<
   const { token } = useAuthStore(state => state)
   const { mutate, status } = AuthQuery.useRefreshToken()
 
-  console.log('token:', token)
-
   if (token) {
     base.defaults.headers.common['authorization'] = `Bearer ${token}`
   }

@@ -57,7 +57,6 @@ class ApiClient {
     }
 
     const accessToken = this.authService.getToken()
-    console.log('accessToken:', accessToken)
     if (accessToken) {
       config.headers.set('Authorization', `Bearer ${accessToken}`)
     }

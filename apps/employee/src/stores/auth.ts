@@ -27,7 +27,6 @@ export const useAuthStateListener = () => {
 
   useEffect(() => {
     const handleTokenRefresh = ({ accessToken }: { accessToken: string }) => {
-      console.log('hello')
       setToken(accessToken)
     }
 

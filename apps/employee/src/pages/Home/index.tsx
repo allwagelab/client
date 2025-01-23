@@ -6,7 +6,6 @@ import { useAuthStore } from '@/stores/auth'
 const HomePage = () => {
   const messageBus = useMessageBus()
   const { data } = EmployeeQuery.usePersonalInfo()
-  console.log('data:', data)
 
   const { token } = useAuthStore(state => state)
 
@@ -22,6 +21,8 @@ const HomePage = () => {
         hoho
       </button>
       <p>token: {token}</p>
+      <br />
+      <p>{JSON.stringify(data)}</p>
     </h1>
   )
 }
