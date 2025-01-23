@@ -1,7 +1,6 @@
 import { MessageBus } from '../MessageBus'
+import type { ToastType } from '../MessageBus.types'
 import { getGlobalMessageBus } from '../MessageBusContext'
-
-type ToastType = 'success' | 'error' | 'info'
 
 /**
  * 전역적으로 토스트 메시지를 표시하는 유틸리티 함수
@@ -14,5 +13,5 @@ export const showGlobalToast = (
   type: ToastType,
   messageBus: MessageBus = getGlobalMessageBus(),
 ) => {
-  messageBus.publishEvent('SHOW_TOAST', { message, type })
+  messageBus.publishEvent('toast:show', { message, type })
 }

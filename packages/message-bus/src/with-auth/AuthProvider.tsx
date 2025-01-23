@@ -1,137 +1,95 @@
 /** @jsxImportSource react */
 import { type ReactNode, createContext, useContext, useState, useEffect, useCallback } from 'react'
 
-import { MESSAGES } from '@allwagelab/constants'
-import { showGlobalToast } from '@allwagelab/message-bus'
 import type { AuthState } from '@allwagelab/schemas'
 
-import { useAuthStorage } from './hooks/useAuthStorage'
+import { AuthService } from './AuthService'
 
+import type { AuthSourceType } from '../MessageBus.types'
 import { useMessageBus } from '../MessageBusContext'
 
 interface AuthContextType extends AuthState {
-  loginHandler: ({ accessToken, autoLogin }: { accessToken: string; autoLogin?: boolean }) => void
-  logoutHandler: ({ showToast }?: { showToast?: boolean }) => void
-  refreshTokenHandler: ({ accessToken, source }: { accessToken: string; source?: string }) => void
-  authErrorHandler: ({ message, source }: { message?: string; source?: string }) => void
+  login: ({ accessToken, autoLogin }: { accessToken: string; autoLogin?: boolean }) => void
+  logout: () => void
+  authStateChange: ({ accessToken }: { accessToken: string }) => void
 }
 
 const AuthContext = createContext<AuthContextType | null>(null)
 
 interface AuthProviderProps {
-  tokenKey: string
-  encodeToken?: (token: string) => string
-  decodeToken?: (encodedToken: string) => string
+  authService: AuthService
   children: ReactNode
 }
 
-export function AuthProvider({ tokenKey, encodeToken, decodeToken, children }: AuthProviderProps) {
+export function AuthProvider({ authService, children }: AuthProviderProps) {
   const messageBus = useMessageBus()
-  const { token, saveToken, removeToken } = useAuthStorage({
-    tokenKey,
-    encode: encodeToken,
-    decode: decodeToken,
-  })
 
-  const [authState, setAuthState] = useState<AuthState>({
-    isAuthenticated: !!token,
-    accessToken: token,
-  })
+  const [authState, setAuthState] = useState<AuthState>(() => ({
+    isAuthenticated: !!authService.getToken(),
+    accessToken: authService.getToken(),
+  }))
 
-  const loginHandler = useCallback(
+  const login = useCallback(
     ({ accessToken, autoLogin = false }: { accessToken: string; autoLogin?: boolean }) => {
-      if (autoLogin) {
-        saveToken(accessToken)
-      }
-
+      authService.handleLogin({ accessToken, autoLogin })
       setAuthState({
         isAuthenticated: true,
         accessToken,
       })
-
-      showGlobalToast(MESSAGES.AUTH.LOG_IN.DONE, 'success')
     },
-    [saveToken],
+    [],
   )
 
-  const logoutHandler = useCallback(
-    ({ showToast = true }: { showToast?: boolean } = {}) => {
-      removeToken()
-      setAuthState({
-        isAuthenticated: false,
-        accessToken: null,
-      })
+  const logout = useCallback(() => {
+    authService.handleLogout()
+    setAuthState({
+      isAuthenticated: false,
+      accessToken: null,
+    })
+  }, [])
 
-      if (showToast) {
-        showGlobalToast(MESSAGES.AUTH.LOG_OUT.DONE, 'info')
-      }
-    },
-    [removeToken],
-  )
-
-  const refreshTokenHandler = useCallback(
-    ({ accessToken }: { accessToken: string }) => {
-      if (token) {
-        saveToken(accessToken)
+  const authStateChange = useCallback(
+    ({ accessToken, source }: { accessToken: string; source?: AuthSourceType }) => {
+      if (source === 'remote') {
+        authService.handleTokenRefresh({ accessToken })
       }
 
       setAuthState(prev => ({
         ...prev,
         accessToken,
       }))
-
-      messageBus.publishEvent('AUTH_TOKEN_REFRESH', {
-        accessToken,
-        source: 'host',
-      })
     },
-    [token, saveToken, messageBus],
-  )
-
-  const authErrorHandler = useCallback(
-    ({ message }: { message?: string }) => {
-      if (process.env.NODE_ENV === 'development') {
-        console.error(message) // 인증 에러 디버깅용
-      }
-      showGlobalToast(MESSAGES.AUTH.TOKEN.EXPIRED, 'error')
-
-      logoutHandler({
-        showToast: false,
-      })
-    },
-    [messageBus, logoutHandler],
+    [],
   )
 
   useEffect(() => {
+    messageBus.subscribe('auth:token-refresh', authStateChange)
+
+    return () => {
+      messageBus.unsubscribe('auth:token-refresh', authStateChange)
+    }
+  }, [messageBus, authStateChange])
+
+  // 초기 토큰 검증
+  useEffect(() => {
+    const token = authService.getToken()
+
     if (token) {
-      loginHandler({ accessToken: token, autoLogin: true })
+      setAuthState({
+        accessToken: token,
+        isAuthenticated: true,
+      })
     }
   }, [])
 
-  useEffect(() => {
-    const refreshTokenHandler = ({ accessToken }: { accessToken: string }) => {
-      setAuthState({
-        isAuthenticated: true,
-        accessToken,
-      })
-    }
+  const contextValue = {
+    ...authState,
+    login,
+    logout,
+    authStateChange,
+  }
 
-    messageBus.subscribe('AUTH_ERROR', authErrorHandler)
-    messageBus.subscribe('AUTH_TOKEN_REFRESH', refreshTokenHandler)
-
-    return () => {
-      messageBus.unsubscribe('AUTH_ERROR', authErrorHandler)
-      messageBus.unsubscribe('AUTH_TOKEN_REFRESH', refreshTokenHandler)
-    }
-  }, [messageBus, authErrorHandler, refreshTokenHandler])
-
-  return (
-    <AuthContext.Provider
-      value={{ ...authState, loginHandler, logoutHandler, refreshTokenHandler, authErrorHandler }}
-    >
-      {children}
-    </AuthContext.Provider>
-  )
+  return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
 }
 
 export const useAuth = () => {

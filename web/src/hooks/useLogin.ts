@@ -23,11 +23,11 @@ export const useLogin = ({
   const auth = useAuth()
   const navigate = useNavigate()
 
-  const { mutate: loginMutate, isPending } = useMutation({
+  const { mutate: loginMutate, isLoading } = useMutation({
     mutationFn: login,
     onSuccess: response => {
       const { accessToken } = response.data
-      auth.loginHandler({ accessToken, autoLogin })
+      auth.login({ accessToken, autoLogin })
 
       if (onSuccess) {
         onSuccess()
@@ -44,6 +44,6 @@ export const useLogin = ({
 
   return {
     login: loginMutate,
-    isLoggingIn: isPending,
+    isLoggingIn: isLoading,
   }
 }

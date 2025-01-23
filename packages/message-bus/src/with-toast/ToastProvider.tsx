@@ -1,12 +1,13 @@
 /** @jsxImportSource @emotion/react */
-import { ReactNode, createContext, useCallback, useContext, useEffect, useState } from 'react'
+import { type ReactNode, createContext, useCallback, useContext, useEffect, useState } from 'react'
 
 import { Toast } from './Toast'
 
+import type { ToastType } from '../MessageBus.types'
 import { useMessageBus } from '../MessageBusContext'
 
 interface ToastContextType {
-  showToast: (message: string, type: 'success' | 'error' | 'info') => void
+  showToast: (message: string, type: ToastType) => void
 }
 
 const ToastContext = createContext<ToastContextType | null>(null)
@@ -18,14 +19,14 @@ interface ToastProviderProps {
 interface ToastMessage {
   id: number
   message: string
-  type: 'success' | 'error' | 'info'
+  type: ToastType
 }
 
 export function ToastProvider({ children }: ToastProviderProps) {
   const [toasts, setToasts] = useState<ToastMessage[]>([])
   const messageBus = useMessageBus()
 
-  const showToast = useCallback((message: string, type: 'success' | 'error' | 'info') => {
+  const showToast = useCallback((message: string, type: ToastType) => {
     setToasts(prev => [...prev, { id: Date.now(), message, type }])
   }, [])
 
@@ -34,20 +35,14 @@ export function ToastProvider({ children }: ToastProviderProps) {
   }, [])
 
   useEffect(() => {
-    const handleShowToast = ({
-      message,
-      type,
-    }: {
-      message: string
-      type: 'success' | 'error' | 'info'
-    }) => {
+    const handleShowToast = ({ message, type }: { message: string; type: ToastType }) => {
       showToast(message, type)
     }
 
-    messageBus.subscribe('SHOW_TOAST', handleShowToast)
+    messageBus.subscribe('toast:show', handleShowToast)
 
     return () => {
-      messageBus.unsubscribe('SHOW_TOAST', handleShowToast)
+      messageBus.unsubscribe('toast:show', handleShowToast)
     }
   }, [messageBus, showToast])
 

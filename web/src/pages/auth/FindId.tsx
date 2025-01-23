@@ -84,7 +84,7 @@ function FindIdPage() {
     },
   })
 
-  const { mutate: sendVerification, isPending: isSendingVerification } = useMutation({
+  const { mutate: sendVerification, isLoading: isSendingVerification } = useMutation({
     mutationFn: requestPhoneVerificationFindId,
     onSuccess: () => {
       setIsCodeSent(true)
@@ -103,7 +103,7 @@ function FindIdPage() {
     },
   })
 
-  const { mutate: verifyPhone, isPending: isVerifyingPhone } = useMutation({
+  const { mutate: verifyPhone, isLoading: isVerifyingPhone } = useMutation({
     mutationFn: ({ phoneNumber, code }: { phoneNumber: string; code: string }) =>
       verifyPhoneNumberFindId(phoneNumber, code),
     onSuccess: ({ email, name }: FoundState) => {

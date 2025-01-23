@@ -16,7 +16,7 @@ function Header() {
       </div>
       <div css={userStyle}>
         <Avatar />
-        <Label onClick={() => auth.logoutHandler()}>USER NAME</Label>
+        <Label onClick={() => auth.logout()}>USER NAME</Label>
       </div>
     </header>
   )

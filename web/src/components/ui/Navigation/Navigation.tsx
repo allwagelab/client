@@ -4,9 +4,8 @@ import { css } from '@emotion/react'
 import styled from '@emotion/styled'
 
 import { URLS } from '@allwagelab/constants'
-import { useAuth } from '@allwagelab/message-bus'
 
-import { useAxiosPrivate } from '@/hooks'
+import { base } from '@/apis/axios'
 
 const NAV_LIST = [
   [
@@ -72,14 +71,12 @@ const NAV_LIST = [
 ]
 
 function Navigation() {
-  const auth = useAuth()
   const navigate = useNavigate()
   const { pathname } = useLocation()
-  const axiosPrivate = useAxiosPrivate()
 
   const onClick = async () => {
     try {
-      const response = await axiosPrivate.get('/company/info')
+      const response = await base.get('/company/info')
       console.log(response)
     } catch (error) {
       console.error(error)
@@ -112,13 +109,10 @@ function Navigation() {
           </>
         ))}
       </MenuGroup>
-
       <br />
       <button type="button" onClick={onClick}>
         api request(/w Auth)
       </button>
-      <br />
-      <span>auth: {JSON.stringify(auth)}</span>
     </Sidebar>
   )
 }
