@@ -1,10 +1,11 @@
-import axios, { type AxiosInstance } from 'axios'
+import axios from 'axios'
 
-export const axiosInstance: AxiosInstance = axios.create({
+const base = axios.create({
   withCredentials: true,
-  baseURL: '/common',
-  headers: {
-    dataType: 'json',
-    contentType: 'application/x-www-form-urlencoded',
-  },
+  baseURL: import.meta.env.VITE_BASE_URL,
 })
+
+export { base }
+
+export * as AuthApi from './auth'
+export * as EmployeeApi from './employee'

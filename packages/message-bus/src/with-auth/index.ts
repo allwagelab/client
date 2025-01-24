@@ -1,2 +1,2 @@
+export * from './AuthService'
 export * from './AuthProvider'
-export * from './RemoteAuthProvider'

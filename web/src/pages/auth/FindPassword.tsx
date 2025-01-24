@@ -48,7 +48,7 @@ function FindPasswordPage() {
     mode: 'onBlur',
   })
 
-  const { mutate: sendTemporaryPassword, isPending: isSendingTemp } = useMutation({
+  const { mutate: sendTemporaryPassword, isLoading: isSendingTemp } = useMutation({
     mutationFn: sendTempPassword,
     onSuccess: () => {
       setSuccessMessage(MESSAGES.AUTH.EMAIL.CHECK_TEMP_PASSWORD)

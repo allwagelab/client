@@ -1,25 +1,24 @@
 import { Routes, Route } from 'react-router-dom'
 
-import { MessageBusProvider, RemoteAuthProvider, ToastProvider } from '@allwagelab/message-bus'
-import type { AuthState } from '@allwagelab/schemas'
+import { MessageBusProvider, ToastProvider } from '@allwagelab/message-bus'
 
 import { EntrancePage, DashboardPage } from '@/pages'
 
-interface Props {
-  auth: AuthState
+interface RouterProps {
+  auth: string | null
 }
 
-function Router({ auth }: Props) {
+function Router({ auth }: RouterProps) {
+  console.log('Home Router Auth:', auth)
+
   return (
     <MessageBusProvider>
       <ToastProvider>
-        <RemoteAuthProvider initialState={auth}>
-          <Routes>
-            <Route index element={<EntrancePage />} />
-            <Route path="/dashboard/*" element={<DashboardPage />} />
-            <Route path="*" element={<>Other...</>} />
-          </Routes>
-        </RemoteAuthProvider>
+        <Routes>
+          <Route index element={<EntrancePage />} />
+          <Route path="/dashboard/*" element={<DashboardPage />} />
+          <Route path="*" element={<>Other...</>} />
+        </Routes>
       </ToastProvider>
     </MessageBusProvider>
   )

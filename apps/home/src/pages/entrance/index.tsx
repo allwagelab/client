@@ -2,10 +2,9 @@ import { useNavigate } from 'react-router-dom'
 
 import viteLogo from '/vite.svg'
 
-import { showGlobalToast, useRemoteAuth } from '@allwagelab/message-bus'
+import { showGlobalToast } from '@allwagelab/message-bus'
 
 const EntrancePage = () => {
-  const auth = useRemoteAuth()
   const navigate = useNavigate()
   const goDashboardPage = () => navigate('/home/dashboard')
 
@@ -31,7 +30,6 @@ const EntrancePage = () => {
         토스트보여줘
       </button>
       <br />
-      <p>auth: {JSON.stringify(auth)}</p>
     </>
   )
 }

@@ -1,12 +1,18 @@
-export type EventMap = {
-  AUTH_LOGIN: { accessToken: string }
-  AUTH_LOGOUT: { showToast?: boolean }
-  AUTH_TOKEN_REFRESH: { accessToken: string; source?: string }
-  AUTH_ERROR: { message: string }
-  AUTH_STATE_CHANGE: { isAuthenticated: boolean }
+export type AuthSourceType = 'host' | 'remote'
 
-  SHOW_TOAST: { message: string; type: 'success' | 'error' | 'info' }
+export type AuthEvents = {
+  'auth:login': { accessToken: string }
+  'auth:logout': { showToast?: boolean }
+  'auth:token-refresh': { accessToken: string; source?: AuthSourceType }
+  'auth:error': { message: string }
 }
 
+export type ToastType = 'success' | 'error' | 'info'
+
+export type ToastEvents = {
+  'toast:show': { message: string; type: ToastType }
+}
+
+export type EventMap = AuthEvents & ToastEvents
 export type EventName = keyof EventMap
 export type EventHandler<T extends EventName> = (data: EventMap[T]) => void

@@ -3,9 +3,11 @@ import { useEffect, useState } from 'react'
 
 import { css, keyframes } from '@emotion/react'
 
+import type { ToastType } from '../MessageBus.types'
+
 interface ToastProps {
   message: string
-  type: 'success' | 'error' | 'info'
+  type: ToastType
   onClose: () => void
   duration?: number
 }

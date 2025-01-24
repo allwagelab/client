@@ -52,7 +52,7 @@ function AccountForm({ onSubmit, defaultValues }: AccountFormProps) {
     defaultValues,
   })
 
-  const { mutate: checkEmail, isPending: isCheckingEmail } = useMutation({
+  const { mutate: checkEmail, isLoading: isCheckingEmail } = useMutation({
     mutationFn: checkEmailDuplicate,
     onSuccess: () => {
       clearErrors('email')
@@ -61,7 +61,7 @@ function AccountForm({ onSubmit, defaultValues }: AccountFormProps) {
     onError: error => {
       setError('email', {
         type: 'manual',
-        message: error.message,
+        message: error instanceof Error ? error.message : '',
       })
       setIsEmailVerified(false)
     },

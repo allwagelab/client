@@ -1,5 +1,5 @@
 /** @jsxImportSource react */
-import { ReactNode } from 'react'
+import type { ReactNode } from 'react'
 
 import { MessageBus } from './MessageBus'
 import { MessageBusContext, getGlobalMessageBus } from './MessageBusContext'

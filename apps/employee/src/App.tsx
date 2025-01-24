@@ -1,16 +1,20 @@
 import { BrowserRouter } from 'react-router-dom'
 
-import Router from './router'
+import { MessageBusProvider, ToastProvider } from '@allwagelab/message-bus'
+
+import { QueryProvider } from '@/providers'
+import { Provider } from '@/providers'
 
 function App() {
-  const initialAuthState = {
-    accessToken: null,
-    isAuthenticated: false,
-  }
-
   return (
     <BrowserRouter>
-      <Router auth={initialAuthState} />
+      <QueryProvider>
+        <MessageBusProvider>
+          <ToastProvider>
+            <Provider auth={null} />
+          </ToastProvider>
+        </MessageBusProvider>
+      </QueryProvider>
     </BrowserRouter>
   )
 }

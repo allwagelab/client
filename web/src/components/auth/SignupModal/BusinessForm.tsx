@@ -71,7 +71,7 @@ export default function BusinessForm({ onSubmit, onBack }: BusinessFormProps) {
     },
   })
 
-  const { mutate: verifyBusiness, isPending: isVerifyingBusiness } = useMutation({
+  const { mutate: verifyBusiness, isLoading: isVerifyingBusiness } = useMutation({
     mutationFn: verifyBusinessNumber,
     onSuccess: () => {
       clearErrors('businessNumber')
@@ -86,7 +86,7 @@ export default function BusinessForm({ onSubmit, onBack }: BusinessFormProps) {
     },
   })
 
-  const { mutate: sendVerification, isPending: isSendingVerification } = useMutation({
+  const { mutate: sendVerification, isLoading: isSendingVerification } = useMutation({
     mutationFn: requestPhoneVerification,
     onSuccess: () => {
       setShowVerificationField(true)
@@ -101,7 +101,7 @@ export default function BusinessForm({ onSubmit, onBack }: BusinessFormProps) {
     },
   })
 
-  const { mutate: verifyPhone, isPending: isVerifyingPhone } = useMutation({
+  const { mutate: verifyPhone, isLoading: isVerifyingPhone } = useMutation({
     mutationFn: ({ phoneNumber, code }: { phoneNumber: string; code: string }) =>
       verifyPhoneNumber(phoneNumber, code),
     onSuccess: () => {

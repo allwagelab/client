@@ -1,30 +1,29 @@
 import type { RouteObject } from 'react-router-dom'
 
-import EmployeeRoutes from 'employee/EmployeeRoutes'
+import Employees from 'employee/Employees'
 import HomeRoutes from 'home/HomeRoutes'
 import ScheduleRoutes from 'schedule/ScheduleRoutes'
 
 import { URLS } from '@allwagelab/constants'
-import type { AuthState } from '@allwagelab/schemas'
 
 import { LayoutComponent } from '@/components'
 
-export const privateRoutes = (auth: AuthState): RouteObject => ({
+export const privateRoutes = (token: string | null): RouteObject => ({
   element: <LayoutComponent.Private />,
   children: [
     {
       children: [
         {
           path: URLS.APP_HOME + '/*',
-          element: <HomeRoutes auth={auth} />,
+          element: <HomeRoutes auth={token} />,
         },
         {
           path: URLS.APP_SCHEDULE + '/*',
-          element: <ScheduleRoutes auth={auth} />,
+          element: <ScheduleRoutes auth={token} />,
         },
         {
           path: URLS.APP_EMPLOYEE + '/*',
-          element: <EmployeeRoutes auth={auth} />,
+          element: <Employees auth={token} />,
         },
       ],
     },
