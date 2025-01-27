@@ -69,14 +69,15 @@ function LoginPage() {
       </TitleGroup>
       <Form onSubmit={handleSubmit(onSubmit)}>
         <InputGroup>
-          <Label>이메일</Label>
-          <Input type="email" placeholder="example@email.com" {...register('email')} />
+          <Label htmlFor="email">이메일</Label>
+          <Input id="email" type="email" placeholder="example@email.com" {...register('email')} />
           {errors.email && <ErrorMessage>{errors.email.message}</ErrorMessage>}
         </InputGroup>
 
         <InputGroup>
-          <Label>비밀번호</Label>
+          <Label htmlFor="password">비밀번호</Label>
           <Input
+            id="password"
             type="password"
             placeholder={MESSAGES.AUTH.PASSWORD.EMPTY}
             {...register('password')}

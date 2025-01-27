@@ -13,8 +13,8 @@ import { Button } from '@allwagelab/react'
 import { formatPhoneNumber } from '@allwagelab/utils'
 
 import { requestPhoneVerificationFindId, verifyPhoneNumberFindId } from '@/apis/auth'
-import SignupModal from '@/components/auth/SignupModal'
-import useTimer from '@/hooks/useTimer'
+import { SignupModal } from '@/components/auth'
+import { useTimer } from '@/hooks'
 import {
   ButtonGroup,
   Container,

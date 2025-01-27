@@ -11,7 +11,7 @@ import { Button } from '@allwagelab/react'
 import { formatBusinessNumber, formatPhoneNumber } from '@allwagelab/utils'
 
 import { verifyBusinessNumber, requestPhoneVerification, verifyPhoneNumber } from '@/apis/auth'
-import useTimer from '@/hooks/useTimer'
+import { useTimer } from '@/hooks'
 import { Label, ErrorMessage, SuccessMessage, Modal } from '@/styles'
 import type { BusinessInfoFormData } from '@/types/auth'
 
