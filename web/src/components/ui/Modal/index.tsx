@@ -25,7 +25,7 @@ function Modal({ isOpen, onClose, children, title }: ModalProps) {
       <Content onClick={e => e.stopPropagation()}>
         <Header>
           <Title>{title}</Title>
-          <CloseButton onClick={onClose}>
+          <CloseButton type="button" name="close" onClick={onClose}>
             <img src="/icons/x.svg" alt="close" />
           </CloseButton>
         </Header>
