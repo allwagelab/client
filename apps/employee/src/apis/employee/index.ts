@@ -1,3 +1,6 @@
 export * from './addEmployee'
-export * from './getPersonalInfo'
+export * from './addStoreWorkType'
+
+export * from './getEmployeeInfo'
 export * from './getEmployeeList'
+export * from './getStoreWorkTypes'
