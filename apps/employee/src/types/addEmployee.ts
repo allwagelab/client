@@ -148,7 +148,7 @@ export type AddEmployeeRequest = EmployeePersonalInfo &
 /**
  * 직원 등록 API 응답 데이터 타입
  */
-interface CreateEmployeeResponse {
+interface AddEmployeeSuccessResponse {
   /** 등록된 직원 이름 */
   name: string
   /** 등록된 직원 이메일 */
@@ -158,7 +158,7 @@ interface CreateEmployeeResponse {
 /**
  * 직원 등록 API 에러 응답 타입
  */
-interface CreateEmployeeErrorResponse {
+interface AddEmployeeErrorResponse {
   /** 에러 메시지 */
   message: 'Bad Request' | 'Not Found'
 }
@@ -178,4 +178,4 @@ interface CreateEmployeeErrorResponse {
  *   message: "Bad Request"
  * }
  */
-export type AddEmployeeResponse = CreateEmployeeResponse | CreateEmployeeErrorResponse
+export type AddEmployeeResponse = AddEmployeeSuccessResponse | AddEmployeeErrorResponse
