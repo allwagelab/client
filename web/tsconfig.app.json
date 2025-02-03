@@ -11,7 +11,10 @@
     "jsxImportSource": "@emotion/react",
     "baseUrl": "./",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "home/HomeRoutes": ["../apps/home/src/router"],
+      "schedule/ScheduleRoutes": ["../apps/schedule/src/router"],
+      "employee/Employees": ["../apps/employee/src/providers/Provider"],
     },
     "types": ["vitest/globals", "@testing-library/jest-dom"],
   },
