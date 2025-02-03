@@ -1,6 +1,6 @@
 import { Routes as RouteGroup, Route } from 'react-router-dom'
 
-import { HomePage } from '@/pages'
+import { EntrancePage } from '@/pages'
 import { useAuthStateListener } from '@/stores/auth'
 
 function Routes() {
@@ -8,7 +8,7 @@ function Routes() {
 
   return (
     <RouteGroup>
-      <Route index element={<HomePage />} />
+      <Route index element={<EntrancePage />} />
       <Route path="*" element={<>Other...</>} />
     </RouteGroup>
   )
