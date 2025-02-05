@@ -8,8 +8,12 @@ on:
     branches:
       - '**'
 
+env:
+  NODE_VERSION: '20.13.0'
+  PNPM_VERSION: '9.1.0'
+
 jobs:
-  test:
+  vitest:
     runs-on: ubuntu-latest
 
     steps:
@@ -18,12 +22,12 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20.13.0'
+          node-version: ${{ env.NODE_VERSION }}
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v3
         with:
-          version: '9.1.0'
+          version: ${{ env.PNPM_VERSION }}
 
       - name: Install dependencies
         run: pnpm install
@@ -39,6 +43,27 @@ jobs:
           name: vitest-report
           path: coverage/
           retention-days: 30
+
+  playwright:
+    runs-on: ubuntu-latest
+    environment: playwright
+    timeout-minutes: 60
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Install dependencies
+        run: pnpm install
 
       - name: Install Playwright Browsers
         run: pnpm exec playwright install --with-deps
@@ -62,12 +87,12 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20.13.0'
+          node-version: ${{ env.NODE_VERSION }}
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v3
         with:
-          version: '9.1.0'
+          version: ${{ env.PNPM_VERSION }}
 
       - name: Install dependencies
         run: pnpm install
