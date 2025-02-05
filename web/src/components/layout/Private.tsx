@@ -1,3 +1,5 @@
+import { Suspense } from 'react'
+import { ErrorBoundary } from 'react-error-boundary'
 import { Outlet, Navigate } from 'react-router-dom'
 
 import { css } from '@emotion/react'
@@ -16,7 +18,11 @@ function Private() {
         <UiComponent.Header />
         <UiComponent.Navigation />
         <main>
-          <Outlet />
+          <ErrorBoundary fallback={<div>Error</div>}>
+            <Suspense fallback={<div>Loading...</div>}>
+              <Outlet />
+            </Suspense>
+          </ErrorBoundary>
         </main>
       </div>
     )

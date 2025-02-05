@@ -1,12 +1,13 @@
+import React from 'react'
 import type { RouteObject } from 'react-router-dom'
-
-import Employees from 'employee/Employees'
-import HomeRoutes from 'home/HomeRoutes'
-import ScheduleRoutes from 'schedule/ScheduleRoutes'
 
 import { URLS } from '@allwagelab/constants'
 
 import { LayoutComponent } from '@/components'
+
+const Home = React.lazy(() => import('home/HomeRoutes'))
+const Employees = React.lazy(() => import('employee/Employees'))
+const Schedule = React.lazy(() => import('schedule/ScheduleRoutes'))
 
 export const privateRoutes = (token: string | null): RouteObject => ({
   element: <LayoutComponent.Private />,
@@ -15,11 +16,11 @@ export const privateRoutes = (token: string | null): RouteObject => ({
       children: [
         {
           path: URLS.APP_HOME + '/*',
-          element: <HomeRoutes auth={token} />,
+          element: <Home auth={token} />,
         },
         {
           path: URLS.APP_SCHEDULE + '/*',
-          element: <ScheduleRoutes auth={token} />,
+          element: <Schedule auth={token} />,
         },
         {
           path: URLS.APP_EMPLOYEE + '/*',
