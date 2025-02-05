@@ -2,10 +2,12 @@ import { useNavigate } from 'react-router-dom'
 
 import { EmployeeQuery } from '@/queries'
 
-const EXAMPLE_EMPLOYEE_ID = 1
+const EXAMPLE_EMPLOYEE_ID = 5
 
 const HomePage = () => {
-  const { data: emplyees } = EmployeeQuery.useEmployeeList()
+  const { data: emplyees } = EmployeeQuery.useEmployeeList({
+    isWorking: true,
+  })
   const { data: detailInfo } = EmployeeQuery.useEmployeeInfo(EXAMPLE_EMPLOYEE_ID)
 
   const navigate = useNavigate()

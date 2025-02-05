@@ -1,14 +1,14 @@
 import { EmployeeApi } from '@/apis'
 import { useAuthQuery } from '@/queries/query'
 
-import { PERSONAL_INFO_KEY } from './keys'
+import { STORE_WORK_TYPE_INFO_KEY } from './keys'
 
 interface UsePersonalInfoOptions {
   enabled?: boolean
 }
 
-function useEmployeeInfo(id: number, options?: UsePersonalInfoOptions) {
-  const result = useAuthQuery([...PERSONAL_INFO_KEY, id], () => EmployeeApi.getEmployeeInfo(id), {
+function useStoreWorkType(options?: UsePersonalInfoOptions) {
+  const result = useAuthQuery(STORE_WORK_TYPE_INFO_KEY, EmployeeApi.getStoreWorkTypes, {
     staleTime: 0,
     cacheTime: 0,
     enabled: options?.enabled,
@@ -18,4 +18,4 @@ function useEmployeeInfo(id: number, options?: UsePersonalInfoOptions) {
   return result
 }
 
-export default useEmployeeInfo
+export default useStoreWorkType
