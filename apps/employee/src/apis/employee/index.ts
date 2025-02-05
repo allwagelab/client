@@ -1,3 +1,6 @@
-import { base } from '..'
+export * from './addEmployee'
+export * from './addStoreWorkType'
 
-export const getPersonalInfo = (id: number) => base.get(`/employee/${id}`)
+export * from './getEmployeeInfo'
+export * from './getEmployeeList'
+export * from './getStoreWorkTypes'
