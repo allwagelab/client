@@ -46,7 +46,6 @@ jobs:
 
   playwright:
     runs-on: ubuntu-latest
-    environment: playwright
     timeout-minutes: 60
 
     steps:
