@@ -7,8 +7,8 @@ interface UsePersonalInfoOptions {
   enabled?: boolean
 }
 
-function usePersonalInfo(id: number, options?: UsePersonalInfoOptions) {
-  const result = useAuthQuery([...PERSONAL_INFO_KEY, id], () => EmployeeApi.getPersonalInfo(id), {
+function useEmployeeInfo(id: number, options?: UsePersonalInfoOptions) {
+  const result = useAuthQuery([...PERSONAL_INFO_KEY, id], () => EmployeeApi.getEmployeeInfo(id), {
     staleTime: 0,
     cacheTime: 0,
     enabled: options?.enabled,
@@ -18,4 +18,4 @@ function usePersonalInfo(id: number, options?: UsePersonalInfoOptions) {
   return result
 }
 
-export default usePersonalInfo
+export default useEmployeeInfo

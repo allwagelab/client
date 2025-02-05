@@ -1,11 +1,16 @@
+import { useNavigate } from 'react-router-dom'
+
 import { EmployeeQuery } from '@/queries'
 
-const EXAMPLE_EMPLOYEE_ID = 1
+const EXAMPLE_EMPLOYEE_ID = 5
 
 const HomePage = () => {
-  const { data: emplyees } = EmployeeQuery.useEmployeeList()
+  const { data: emplyees } = EmployeeQuery.useEmployeeList({
+    isWorking: true,
+  })
+  const { data: detailInfo } = EmployeeQuery.useEmployeeInfo(EXAMPLE_EMPLOYEE_ID)
 
-  const { data: detailInfo } = EmployeeQuery.usePersonalInfo(EXAMPLE_EMPLOYEE_ID)
+  const navigate = useNavigate()
 
   return (
     <div>
@@ -21,6 +26,9 @@ const HomePage = () => {
       )}
       <ul>직원관리</ul>
       <p>직원 1 상세정보: {JSON.stringify(detailInfo)}</p>
+      <button type="button" onClick={() => navigate('/new')}>
+        신규 직원 추가
+      </button>
     </div>
   )
 }
