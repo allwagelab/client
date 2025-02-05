@@ -7,6 +7,9 @@ settings:
 importers:
   .:
     devDependencies:
+      '@playwright/test':
+        specifier: ^1.49.1
+        version: 1.49.1
       '@trivago/prettier-plugin-sort-imports':
         specifier: ^4.3.0
         version: 4.3.0(prettier@3.4.2)
@@ -119,9 +122,6 @@ importers:
       '@originjs/vite-plugin-federation':
         specifier: ^1.3.6
         version: 1.3.8
-      '@playwright/test':
-        specifier: ^1.49.1
-        version: 1.49.1
       '@testing-library/jest-dom':
         specifier: ^6.6.3
         version: 6.6.3
@@ -417,9 +417,6 @@ importers:
       '@originjs/vite-plugin-federation':
         specifier: ^1.3.6
         version: 1.3.8
-      '@playwright/test':
-        specifier: ^1.49.1
-        version: 1.49.1
       '@testing-library/jest-dom':
         specifier: ^6.6.3
         version: 6.6.3
