@@ -42,32 +42,16 @@ export const InputGroup = styled.div`
   padding-bottom: 1.75rem;
 `
 
-export const Input = styled.input`
-  ${({ theme }) => css`
-    flex: 1;
-    padding: 12px;
-    border: 1px solid ${theme.colors.gray30};
-    border-radius: 4px;
-    ${theme.typography.body.b2_rg}
-
-    &:focus {
-      outline: none;
-      border-color: #1a73e8;
-      border-color: ${theme.colors.blue60};
-    }
-
-    &::placeholder {
-      color: ${theme.colors.gray70};
-    }
-  `}
-`
-
 export const InputWithButton = styled.div`
   display: flex;
   gap: 8px;
 
   button {
     min-width: 90px;
+  }
+
+  & > div {
+    flex: 1;
   }
 `
 

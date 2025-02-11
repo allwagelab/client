@@ -15,7 +15,7 @@
     "lint:fix": "pnpm lint:es:fix && pnpm lint:etc:fix"
   },
   "dependencies": {
-    "@allwagelab/react": "^0.0.4",
+    "@allwagelab/react": "^1.0.1",
     "@allwagelab/design": "^1.0.0",
     "@allwagelab/utils": "workspace:*",
     "@allwagelab/schemas": "workspace:*",
