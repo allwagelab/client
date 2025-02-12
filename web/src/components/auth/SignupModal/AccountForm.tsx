@@ -7,7 +7,7 @@ import { useMutation } from '@tanstack/react-query'
 import { z } from 'zod'
 
 import { MESSAGES, PASSWORD_REGEX } from '@allwagelab/constants'
-import { Button } from '@allwagelab/react'
+import { Button, Input } from '@allwagelab/react'
 
 import { checkEmailDuplicate } from '@/apis/auth'
 import { ErrorMessage, SuccessMessage, Label, Modal } from '@/styles'
@@ -92,7 +92,7 @@ function AccountForm({ onSubmit, defaultValues }: AccountFormProps) {
         <Modal.InputGroup>
           <Label>이메일</Label>
           <EmailInputWrapper>
-            <EmailInput
+            <Input
               type="email"
               placeholder="example@email.com"
               {...register('email', {
@@ -101,6 +101,7 @@ function AccountForm({ onSubmit, defaultValues }: AccountFormProps) {
                   setIsEmailVerified(false)
                 },
               })}
+              full
             />
             <Button
               type="button"
@@ -117,20 +118,24 @@ function AccountForm({ onSubmit, defaultValues }: AccountFormProps) {
 
         <Modal.InputGroup>
           <Label>비밀번호</Label>
-          <Modal.Input
+          <Input
             type="password"
             placeholder={MESSAGES.AUTH.PASSWORD.EMPTY}
             {...register('password')}
+            autoComplete="off"
+            full
           />
           {errors.password && <ErrorMessage>{errors.password.message}</ErrorMessage>}
         </Modal.InputGroup>
 
         <Modal.InputGroup>
           <Label>비밀번호 확인</Label>
-          <Modal.Input
+          <Input
             type="password"
             placeholder={MESSAGES.AUTH.PASSWORD.REENTER}
             {...register('passwordConfirm')}
+            autoComplete="off"
+            full
           />
           {errors.passwordConfirm && <ErrorMessage>{errors.passwordConfirm.message}</ErrorMessage>}
         </Modal.InputGroup>
@@ -145,10 +150,9 @@ function AccountForm({ onSubmit, defaultValues }: AccountFormProps) {
 const EmailInputWrapper = styled.div`
   display: flex;
   gap: 8px;
-`
-
-const EmailInput = styled(Modal.Input)`
-  flex: 1;
+  & > div {
+    flex: 1;
+  }
 `
 
 export default AccountForm

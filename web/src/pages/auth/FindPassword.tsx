@@ -6,7 +6,7 @@ import { useMutation } from '@tanstack/react-query'
 import { z } from 'zod'
 
 import { MESSAGES } from '@allwagelab/constants'
-import { Button } from '@allwagelab/react'
+import { Button, Input } from '@allwagelab/react'
 
 import { sendTempPassword } from '@/apis/auth'
 import { useLogin } from '@/hooks'
@@ -14,7 +14,6 @@ import {
   Container,
   ErrorMessage,
   Form,
-  Input,
   InputGroup,
   SubTitle,
   SuccessMessage,
@@ -109,6 +108,8 @@ function FindPasswordPage() {
               placeholder="example@email.com"
               {...register('email')}
               onChange={handleEmailChange}
+              autoComplete="email"
+              full
             />
             <Button
               type="button"
@@ -129,6 +130,8 @@ function FindPasswordPage() {
             type="password"
             placeholder={MESSAGES.AUTH.PASSWORD.EMPTY_TEMP}
             {...register('temporaryPassword')}
+            autoComplete="off"
+            full
           />
           {errors.temporaryPassword && (
             <ErrorMessage>{errors.temporaryPassword.message}</ErrorMessage>

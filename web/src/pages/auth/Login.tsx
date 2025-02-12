@@ -8,20 +8,11 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 
 import { PASSWORD_REGEX, MESSAGES } from '@allwagelab/constants'
-import { Button, Checkbox } from '@allwagelab/react'
+import { Button, Checkbox, Input } from '@allwagelab/react'
 
 import SignupModal from '@/components/auth/SignupModal'
 import { useLogin } from '@/hooks'
-import {
-  Container,
-  ErrorMessage,
-  Form,
-  Input,
-  InputGroup,
-  Label,
-  Title,
-  TitleGroup,
-} from '@/styles'
+import { Container, ErrorMessage, Form, InputGroup, Label, Title, TitleGroup } from '@/styles'
 
 const loginSchema = z.object({
   email: z.string().min(1, MESSAGES.AUTH.EMAIL.EMPTY).email(MESSAGES.AUTH.EMAIL.INVALID_FORMAT),
@@ -70,7 +61,13 @@ function LoginPage() {
       <Form onSubmit={handleSubmit(onSubmit)}>
         <InputGroup>
           <Label>이메일</Label>
-          <Input type="email" placeholder="example@email.com" {...register('email')} />
+          <Input
+            type="email"
+            placeholder="example@email.com"
+            {...register('email')}
+            autoComplete="email"
+            full
+          />
           {errors.email && <ErrorMessage>{errors.email.message}</ErrorMessage>}
         </InputGroup>
 
@@ -80,6 +77,8 @@ function LoginPage() {
             type="password"
             placeholder={MESSAGES.AUTH.PASSWORD.EMPTY}
             {...register('password')}
+            autoComplete="current-password"
+            full
           />
           {errors.password && <ErrorMessage>{errors.password.message}</ErrorMessage>}
         </InputGroup>

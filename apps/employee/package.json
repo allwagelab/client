@@ -26,7 +26,7 @@
     "@allwagelab/constants": "workspace:*",
     "@allwagelab/design": "^1.0.0",
     "@allwagelab/message-bus": "workspace:*",
-    "@allwagelab/react": "^0.0.4",
+    "@allwagelab/react": "^1.0.1",
     "@allwagelab/schemas": "workspace:*",
     "@allwagelab/utils": "workspace:*",
     "@emotion/babel-plugin": "^11.13.5",

@@ -3,6 +3,7 @@ import { css } from '@emotion/react'
 import styled from '@emotion/styled'
 
 import { useAuth } from '@allwagelab/message-bus'
+import { Avatar } from '@allwagelab/react'
 
 function Header() {
   const auth = useAuth()
@@ -15,7 +16,7 @@ function Header() {
         <img src="/icons/setting.svg" alt="setting icon" />
       </div>
       <div css={userStyle}>
-        <Avatar />
+        <Avatar size="sm" />
         <Label onClick={() => auth.logout()}>USER NAME</Label>
       </div>
     </header>
@@ -49,13 +50,6 @@ const userStyle = css`
   align-items: center;
   gap: 8px;
   margin-left: 24px;
-`
-
-const Avatar = styled.div`
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: gray;
 `
 
 const Label = styled.span`

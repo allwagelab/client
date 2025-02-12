@@ -9,7 +9,7 @@ import { useMutation } from '@tanstack/react-query'
 import { z } from 'zod'
 
 import { MESSAGES, PHONE_NUMBER_REGEX } from '@allwagelab/constants'
-import { Button } from '@allwagelab/react'
+import { Button, Input } from '@allwagelab/react'
 import { formatPhoneNumber } from '@allwagelab/utils'
 
 import { requestPhoneVerificationFindId, verifyPhoneNumberFindId } from '@/apis/auth'
@@ -20,7 +20,6 @@ import {
   Container,
   ErrorMessage,
   Form,
-  Input,
   InputGroup,
   InputWithButton,
   Label,
@@ -235,6 +234,8 @@ function FindIdPage() {
               placeholder="010-0000-0000"
               {...register('phoneNumber')}
               onChange={handlePhoneNumberChange}
+              autoComplete="tel"
+              full
             />
 
             <Button
@@ -256,6 +257,7 @@ function FindIdPage() {
               type="text"
               placeholder={MESSAGES.AUTH.VERIFICATION_CODE.EMPTY}
               {...register('verificationCode')}
+              full
             />
             <Button
               type="button"

@@ -7,7 +7,7 @@ import { useMutation } from '@tanstack/react-query'
 import { z } from 'zod'
 
 import { BUSINESS_NUMBER_REGEX, MESSAGES, PHONE_NUMBER_REGEX } from '@allwagelab/constants'
-import { Button } from '@allwagelab/react'
+import { Button, Input, Radio } from '@allwagelab/react'
 import { formatBusinessNumber, formatPhoneNumber } from '@allwagelab/utils'
 
 import { verifyBusinessNumber, requestPhoneVerification, verifyPhoneNumber } from '@/apis/auth'
@@ -26,6 +26,7 @@ const businessInfoSchema = z.object({
     .min(1, MESSAGES.AUTH.PHONE.EMPTY)
     .regex(PHONE_NUMBER_REGEX, MESSAGES.AUTH.PHONE.INVALID_FORMAT),
   employeeCount: z.enum(['under5', 'over5'], {
+    invalid_type_error: MESSAGES.AUTH.BUSINESS.EMPLOYEE.NOT_SELECTED,
     required_error: MESSAGES.AUTH.BUSINESS.EMPLOYEE.NOT_SELECTED,
   }),
 })
@@ -45,6 +46,7 @@ export default function BusinessForm({ onSubmit, onBack }: BusinessFormProps) {
 
   const {
     register,
+    setValue,
     handleSubmit,
     watch,
     trigger,
@@ -204,18 +206,19 @@ export default function BusinessForm({ onSubmit, onBack }: BusinessFormProps) {
       <Modal.InputSection>
         <Modal.InputGroup>
           <Label>사업장 이름</Label>
-          <Modal.Input type="text" placeholder="올웨이지 시청점" {...register('businessName')} />
+          <Input type="text" placeholder="올웨이지 시청점" {...register('businessName')} full />
           {errors.businessName && <ErrorMessage>{errors.businessName.message}</ErrorMessage>}
         </Modal.InputGroup>
 
         <Modal.InputGroup>
           <Label>사업자 등록 번호</Label>
           <InputWithButton>
-            <Modal.Input
+            <Input
               type="text"
               placeholder="000-00-00000"
               {...register('businessNumber')}
               onChange={handleBusinessNumberChange}
+              full
             />
             <Button
               type="button"
@@ -235,11 +238,12 @@ export default function BusinessForm({ onSubmit, onBack }: BusinessFormProps) {
         <Modal.InputGroup>
           <Label>휴대폰 번호</Label>
           <InputWithButton>
-            <Modal.Input
+            <Input
               type="tel"
               placeholder="010-0000-0000"
               {...register('phoneNumber')}
               onChange={handlePhoneNumberChange}
+              full
             />
             <Button
               type="button"
@@ -257,10 +261,11 @@ export default function BusinessForm({ onSubmit, onBack }: BusinessFormProps) {
           <Modal.InputGroup>
             <Label>인증번호</Label>
             <InputWithButton>
-              <Modal.Input
+              <Input
                 type="text"
                 placeholder="인증번호 입력"
                 {...register('verificationCode')}
+                full
               />
               <Button
                 type="button"
@@ -283,16 +288,21 @@ export default function BusinessForm({ onSubmit, onBack }: BusinessFormProps) {
           <Label>직원 수</Label>
           <RadioGroup>
             <RadioLabel>
-              <RadioInput
-                type="radio"
+              <Radio
                 value="under5"
-                defaultChecked
+                checked={watch('employeeCount') === 'under5'}
                 {...register('employeeCount')}
+                onChange={() => setValue('employeeCount', 'under5')}
               />
               5인 미만
             </RadioLabel>
             <RadioLabel>
-              <RadioInput type="radio" value="over5" {...register('employeeCount')} />
+              <Radio
+                value="over5"
+                checked={watch('employeeCount') === 'over5'}
+                {...register('employeeCount')}
+                onChange={() => setValue('employeeCount', 'over5')}
+              />
               5인 이상
             </RadioLabel>
           </RadioGroup>
@@ -332,10 +342,6 @@ const RadioLabel = styled.label`
   display: flex;
   align-items: center;
   gap: 8px;
-  cursor: pointer;
-`
-
-const RadioInput = styled.input`
   cursor: pointer;
 `
 
